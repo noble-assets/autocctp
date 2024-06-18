@@ -6,9 +6,11 @@ type Memo struct {
 }
 
 type DepositForBurn struct {
-	// TODO: Add amount and fee_recipient fields.
 	DestinationDomain uint32 `json:"destination_domain"`
 	MintRecipient     []byte `json:"mint_recipient"`
+
+	Amount       *string `json:"amount"`
+	FeeRecipient *string `json:"fee_recipient"`
 }
 
 type DepositForBurnWithCaller struct {

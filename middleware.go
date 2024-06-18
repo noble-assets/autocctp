@@ -2,6 +2,7 @@ package autocctp
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"cosmossdk.io/math"
@@ -20,12 +21,18 @@ import (
 var _ porttypes.IBCModule = &Middleware{}
 
 type Middleware struct {
-	app    porttypes.IBCModule
-	keeper *cctpkeeper.Keeper
+	app porttypes.IBCModule
+
+	bankKeeper types.BankKeeper
+	server     cctptypes.MsgServer
 }
 
-func NewMiddleware(app porttypes.IBCModule, keeper *cctpkeeper.Keeper) Middleware {
-	return Middleware{app: app, keeper: keeper}
+func NewMiddleware(app porttypes.IBCModule, bankKeeper types.BankKeeper, keeper *cctpkeeper.Keeper) Middleware {
+	return Middleware{
+		app:        app,
+		bankKeeper: bankKeeper,
+		server:     cctpkeeper.NewMsgServerImpl(keeper),
+	}
 }
 
 func (m Middleware) OnChanOpenInit(ctx sdk.Context, order channeltypes.Order, connectionHops []string, portID string, channelID string, channelCap *capabilitytypes.Capability, counterparty channeltypes.Counterparty, version string) (string, error) {
@@ -79,13 +86,53 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 	var memo types.Memo
 	err := json.Unmarshal([]byte(data.GetMemo()), &memo)
 	if err != nil {
-		return channeltypes.NewErrorAcknowledgement(types.ErrMalformedMemo)
+		return channeltypes.NewErrorAcknowledgement(errors.New("malformed memo"))
 	}
+	sender := types.GenerateAddress(packet.GetDestChannel(), data.Sender)
 
-	amount, _ := math.NewIntFromString(data.Amount)
 	if memo.DepositForBurn != nil && memo.DepositForBurnWithCaller == nil {
+		amount, _ := math.NewIntFromString(data.Amount)
+
+		if memo.DepositForBurn.Amount != nil {
+			if memo.DepositForBurn.FeeRecipient != nil {
+				feeRecipient, err := sdk.AccAddressFromBech32(*memo.DepositForBurn.FeeRecipient)
+				if err != nil {
+					return channeltypes.NewErrorAcknowledgement(errors.New("failed to decode fee recipient"))
+				}
+
+				packetAmount := amount
+				amount, ok := math.NewIntFromString(*memo.DepositForBurn.Amount)
+				if !ok {
+					return channeltypes.NewErrorAcknowledgement(errors.New("failed to decode specified amount"))
+				}
+
+				feeAmount := packetAmount.Sub(amount)
+				if !feeAmount.IsPositive() {
+					return channeltypes.NewErrorAcknowledgement(errors.New("specified amount must be strictly less than packet amount"))
+				}
+
+				err = m.bankKeeper.SendCoins(
+					ctx, types.ModuleAddress, feeRecipient,
+					sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(feeAmount.BigInt()))),
+				)
+				if err != nil {
+					return channeltypes.NewErrorAcknowledgement(errors.New("failed to execute fee transfer"))
+				}
+			} else {
+				return channeltypes.NewErrorAcknowledgement(errors.New("specified amount without a fee recipient"))
+			}
+		}
+
+		err = m.bankKeeper.SendCoins(
+			ctx, types.ModuleAddress, sender,
+			sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(amount.BigInt()))),
+		)
+		if err != nil {
+			return channeltypes.NewErrorAcknowledgement(err)
+		}
+
 		msg := &cctptypes.MsgDepositForBurn{
-			From:              types.GenerateAddress(packet.GetDestChannel(), data.Sender).String(),
+			From:              sender.String(),
 			Amount:            amount,
 			DestinationDomain: memo.DepositForBurn.DestinationDomain,
 			MintRecipient:     memo.DepositForBurn.MintRecipient,
@@ -93,15 +140,55 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 		}
 
 		goCtx := sdk.WrapSDKContext(ctx)
-		res, err := cctpkeeper.NewMsgServerImpl(m.keeper).DepositForBurn(goCtx, msg)
+		res, err := m.server.DepositForBurn(goCtx, msg)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
 		}
 
 		return channeltypes.NewResultAcknowledgement([]byte(fmt.Sprintf("{\"nonce\":%d}", res.Nonce)))
 	} else if memo.DepositForBurn == nil && memo.DepositForBurnWithCaller != nil {
+		amount, _ := math.NewIntFromString(data.Amount)
+
+		if memo.DepositForBurnWithCaller.Amount != nil {
+			if memo.DepositForBurnWithCaller.FeeRecipient != nil {
+				feeRecipient, err := sdk.AccAddressFromBech32(*memo.DepositForBurnWithCaller.FeeRecipient)
+				if err != nil {
+					return channeltypes.NewErrorAcknowledgement(errors.New("failed to decode fee recipient"))
+				}
+
+				packetAmount := amount
+				amount, ok := math.NewIntFromString(*memo.DepositForBurnWithCaller.Amount)
+				if !ok {
+					return channeltypes.NewErrorAcknowledgement(errors.New("failed to decode specified amount"))
+				}
+
+				feeAmount := packetAmount.Sub(amount)
+				if !feeAmount.IsPositive() {
+					return channeltypes.NewErrorAcknowledgement(errors.New("specified amount must be strictly less than packet amount"))
+				}
+
+				err = m.bankKeeper.SendCoins(
+					ctx, types.ModuleAddress, feeRecipient,
+					sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(feeAmount.BigInt()))),
+				)
+				if err != nil {
+					return channeltypes.NewErrorAcknowledgement(errors.New("failed to execute fee transfer"))
+				}
+			} else {
+				return channeltypes.NewErrorAcknowledgement(errors.New("specified amount without a fee recipient"))
+			}
+		}
+
+		err = m.bankKeeper.SendCoins(
+			ctx, types.ModuleAddress, sender,
+			sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(amount.BigInt()))),
+		)
+		if err != nil {
+			return channeltypes.NewErrorAcknowledgement(err)
+		}
+
 		msg := &cctptypes.MsgDepositForBurnWithCaller{
-			From:              types.GenerateAddress(packet.GetDestChannel(), data.Sender).String(),
+			From:              sender.String(),
 			Amount:            amount,
 			DestinationDomain: memo.DepositForBurnWithCaller.DestinationDomain,
 			MintRecipient:     memo.DepositForBurnWithCaller.MintRecipient,
@@ -110,14 +197,14 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 		}
 
 		goCtx := sdk.WrapSDKContext(ctx)
-		res, err := cctpkeeper.NewMsgServerImpl(m.keeper).DepositForBurnWithCaller(goCtx, msg)
+		res, err := m.server.DepositForBurnWithCaller(goCtx, msg)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
 		}
 
 		return channeltypes.NewResultAcknowledgement([]byte(fmt.Sprintf("{\"nonce\":%d}", res.Nonce)))
 	} else {
-		return channeltypes.NewErrorAcknowledgement(types.ErrMalformedMemo)
+		return channeltypes.NewErrorAcknowledgement(errors.New("malformed memo"))
 	}
 }
 
