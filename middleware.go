@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"autocctp.dev/types"
 	"cosmossdk.io/math"
-
 	cctpkeeper "github.com/circlefin/noble-cctp/x/cctp/keeper"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,7 +15,6 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v4/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
 	"github.com/cosmos/ibc-go/v4/modules/core/exported"
-	"github.com/noble-assets/autocctp/types"
 )
 
 var _ porttypes.IBCModule = &Middleware{}

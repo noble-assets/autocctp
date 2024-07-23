@@ -1,9 +1,8 @@
-module github.com/noble-assets/autocctp
+module autocctp.dev
 
 go 1.21
 
 require (
-	cosmossdk.io/errors v1.0.0
 	cosmossdk.io/math v1.0.0-beta.4
 	github.com/circlefin/noble-cctp v0.0.0-20240510135541-253cf7eb9436
 	github.com/cosmos/cosmos-sdk v0.45.16
@@ -18,6 +17,7 @@ require (
 	cosmossdk.io/api v0.2.6 // indirect
 	cosmossdk.io/core v0.5.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.3 // indirect
+	cosmossdk.io/errors v1.0.0 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/4meepo/tagalign v1.3.3 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
