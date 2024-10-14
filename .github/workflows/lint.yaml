@@ -1,0 +1,24 @@
+name: Format & Lint
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+    
+      - name: Formatting
+        run: make format
+
+      - name: Linting
+        run: make lint
+        
