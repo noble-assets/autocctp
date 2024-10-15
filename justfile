@@ -1,4 +1,4 @@
-default: format lint test
+default: format test
 
 help:
     just --list
@@ -31,3 +31,4 @@ test-unit:
 	@echo "🤖 Running unit tests..."
 	@go test -cover -coverprofile=coverage.out -race -v
 	@echo "✅ Completed unit tests!"
+
