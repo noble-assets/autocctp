@@ -1,6 +1,6 @@
 module autocctp.dev
 
-go 1.21
+go 1.23
 
 require (
 	cosmossdk.io/math v1.0.0-beta.4
