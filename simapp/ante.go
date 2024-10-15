@@ -12,7 +12,6 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
 	"github.com/noble-assets/forwarding/x/forwarding"
 	forwardingkeeper "github.com/noble-assets/forwarding/x/forwarding/keeper"
-	feeante "github.com/noble-assets/noble/v7/x/globalfee/ante"
 )
 
 type HandlerOptions struct {
@@ -24,13 +23,6 @@ type HandlerOptions struct {
 	StakingSubspace        paramtypes.Subspace
 	ForwardingKeeper       *forwardingkeeper.Keeper
 }
-
-// maxTotalBypassMinFeeMsgGasUsage is the allowed maximum gas usage
-// for all the bypass msgs in a transactions.
-// A transaction that contains only bypass message types and the gas usage does not
-// exceed maxTotalBypassMinFeeMsgGasUsage can be accepted with a zero fee.
-// For details, see gaiafeeante.NewFeeDecorator()
-var maxTotalBypassMinFeeMsgGasUsage uint64 = 1_000_000
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
 // numbers, checks signatures & account numbers, and deducts fees from the first
@@ -61,7 +53,6 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		feeante.NewFeeDecorator(options.GlobalFeeSubspace, options.StakingSubspace, maxTotalBypassMinFeeMsgGasUsage),
 
 		ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper),
 		ante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators

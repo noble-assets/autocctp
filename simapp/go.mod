@@ -5,11 +5,11 @@ go 1.23.2
 require (
 	github.com/circlefin/noble-cctp v0.0.0-20240510135541-253cf7eb9436
 	github.com/circlefin/noble-fiattokenfactory v0.0.0-20240502160322-738932cb316d
+	github.com/confio/tgrade v1.0.1
 	github.com/cosmos/cosmos-sdk v0.45.16
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v4 v4.1.2
 	github.com/cosmos/ibc-go/v4 v4.6.0
 	github.com/noble-assets/forwarding v1.1.0
-	github.com/noble-assets/noble/v7 v7.0.0
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/cobra v1.7.0
@@ -21,7 +21,6 @@ require (
 )
 
 require (
-	adr36.dev v0.0.0-20240829163820-17879c0e838f // indirect
 	cosmossdk.io/api v0.2.6 // indirect
 	cosmossdk.io/core v0.5.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.3 // indirect
@@ -31,6 +30,8 @@ require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.2 // indirect
 	github.com/ChainSafe/go-schnorrkel v1.0.0 // indirect
+	github.com/CosmWasm/wasmd v0.27.0 // indirect
+	github.com/CosmWasm/wasmvm v1.0.0 // indirect
 	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/Workiva/go-datastructures v1.0.53 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
@@ -53,6 +54,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
 	github.com/cosmos/iavl v0.19.5 // indirect
+	github.com/cosmos/ibc-go/v3 v3.1.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.12.2 // indirect
 	github.com/creachadair/taskgroup v0.4.2 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
@@ -109,10 +111,7 @@ require (
 	github.com/mimoo/StrobeGo v0.0.0-20220103164710-9a04d6ca976b // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/monerium/module-noble v1.0.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
-	github.com/noble-assets/halo v1.0.1 // indirect
-	github.com/ondoprotocol/usdy-noble v1.0.0 // indirect
 	github.com/onsi/ginkgo v1.16.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/petermattis/goid v0.0.0-20230317030725-371a4b8eda08 // indirect
@@ -159,9 +158,6 @@ require (
 replace (
 	// use cosmos compatible ChainSafe/go-schnorrkel
 	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d
-
-	// use send restriction compatible cosmos/cosmos-sdk
-	github.com/cosmos/cosmos-sdk => github.com/noble-assets/cosmos-sdk v0.45.16-send-restrictions
 
 	// use macos sonoma compatible cosmos/ledger-cosmos-go
 	github.com/cosmos/ledger-cosmos-go => github.com/cosmos/ledger-cosmos-go v0.12.4

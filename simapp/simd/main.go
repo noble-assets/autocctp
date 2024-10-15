@@ -5,11 +5,9 @@ import (
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	simapp "autocctp.dev/simapp"
+	app "autocctp.dev/simapp"
 
-	"github.com/noble-assets/noble/v7/cmd"
-	//"autocctp.dev/simapp/simd/cmd"
-	"github.com/noble-assets/noble/v7/app"
+	"autocctp.dev/simapp/simd/cmd"
 )
 
 func main() {
@@ -19,7 +17,7 @@ func main() {
 		app.DefaultNodeHome,
 		app.ChainID,
 		app.ModuleBasics,
-		simapp.New,
+		app.New,
 	)
 
 	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
