@@ -49,6 +49,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cosmos/ibc-go/v4/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v4/modules/apps/transfer/keeper"
@@ -59,12 +60,6 @@ import (
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
 	"github.com/spf13/cast"
-	paramauthorityibc "github.com/strangelove-ventures/paramauthority/x/ibc"
-	paramauthorityibctypes "github.com/strangelove-ventures/paramauthority/x/ibc/types"
-	paramauthority "github.com/strangelove-ventures/paramauthority/x/params"
-	paramauthoritykeeper "github.com/strangelove-ventures/paramauthority/x/params/keeper"
-	paramauthorityupgrade "github.com/strangelove-ventures/paramauthority/x/upgrade"
-	paramauthorityupgradekeeper "github.com/strangelove-ventures/paramauthority/x/upgrade/keeper"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmjson "github.com/tendermint/tendermint/libs/json"
@@ -112,17 +107,14 @@ var (
 		staking.AppModuleBasic{},
 		distr.AppModuleBasic{},
 		capability.AppModuleBasic{},
-		paramauthority.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		ibc.AppModuleBasic{},
-		paramauthorityupgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		fiattokenfactorymodule.AppModuleBasic{},
 		cctp.AppModuleBasic{},
-		paramauthorityibc.AppModuleBasic{},
 		forwarding.AppModuleBasic{},
 	)
 
@@ -178,11 +170,11 @@ type App struct {
 	SlashingKeeper   slashingkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
-	UpgradeKeeper    paramauthorityupgradekeeper.Keeper
-	ParamsKeeper     paramauthoritykeeper.Keeper
+	ParamsKeeper     paramskeeper.Keeper
 	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
+	UpgradeKeeper    upgradekeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper         capabilitykeeper.ScopedKeeper
@@ -322,13 +314,12 @@ func New(
 		authtypes.FeeCollectorName,
 	)
 
-	app.UpgradeKeeper = paramauthorityupgradekeeper.NewKeeper(
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
 		keys[upgradetypes.StoreKey],
 		appCodec,
 		homePath,
 		app.BaseApp,
-		app.GetSubspace(upgradetypes.ModuleName),
 	)
 
 	// register the staking hooks
@@ -432,10 +423,8 @@ func New(
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		paramauthorityupgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
-		paramauthority.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		fiattokenfactorymodule,
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
@@ -523,12 +512,6 @@ func New(
 
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 	app.mm.RegisterServices(app.configurator)
-
-	// Register authoritative IBC client update and IBC upgrade msg handlers
-	paramauthorityibctypes.RegisterMsgServer(
-		app.configurator.MsgServer(),
-		paramauthorityibc.NewMsgServer(app.UpgradeKeeper, app.IBCKeeper.ClientKeeper),
-	)
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	overrideModules := map[string]module.AppModuleSimulation{
@@ -718,8 +701,8 @@ func GetMaccPerms() map[string][]string {
 }
 
 // initParamsKeeper init params keeper and its subspaces
-func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramauthoritykeeper.Keeper {
-	paramsKeeper := paramauthoritykeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
+func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
