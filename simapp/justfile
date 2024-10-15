@@ -1,0 +1,27 @@
+# Default name for the binary
+name := "simapp"
+# Default name for the app
+appname := "simd"
+# Latest commit hash
+commit := `git log -1 --format=%H`
+
+# Try to fetch the tag of the current commit
+tagversion := if os_family() == "windows" { `git describe --exact-match 2>&1 || echo ""` } else { `git describe --exact-match 2>/dev/null || echo ""` }
+# If the current commit is not tagged, get if the branch is dirty (unpushed changes)
+dirtybranch := if tagversion == "" {
+  `git status --porcelain || echo ""`
+} else {
+  tagversion
+}
+# Current git branch name
+branch := `git rev-parse --abbrev-ref HEAD`
+# If the branch is dirty, append "-dirty" to the branch name for the version
+version := if dirtybranch == "" {
+  branch
+} else {
+  branch + "-dirty"
+}
+
+# Build the simapp binary
+build:
+  @go build -mod=readonly -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name={{name}} -X github.com/cosmos/cosmos-sdk/version.AppName={{appname}} -X github.com/cosmos/cosmos-sdk/version.Version={{version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{commit}}" -o build/ ./...

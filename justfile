@@ -1,5 +1,7 @@
-default: format test
+# Format, build and test the simapp
+default: format tidy build test
 
+# Run the help command to see all the available commands
 help:
     just --list
 
@@ -7,13 +9,11 @@ help:
 ###                                 Golang                                  ###
 ###############################################################################
 
-MODULES := . simapp
-
+# Clean up the go.mod on all modules
 tidy:
-	@for module in $(MODULES); do \
-		(cd $$module && go mod tidy); \
-	go work sync; \
-	done
+	@go mod tidy
+	@go work sync
+	@cd simapp && go mod tidy
 
 ###############################################################################
 ###                          Formatting & Linting                           ###
@@ -37,15 +37,17 @@ lint:
 ###                                  Build                                  ###
 ###############################################################################
 
+# Build the simapp binary
 build:
 	@echo "🤖 Building simd..."
-	@cd simapp && make build 1> /dev/null
+	@cd simapp && just build
 	@echo "✅ Completed build!"
 
 ###############################################################################
 ###                                 Testing                                 ###
 ###############################################################################
 
+# Run all the tests
 test: test-unit
 
 test-unit:

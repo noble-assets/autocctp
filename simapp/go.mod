@@ -5,9 +5,7 @@ go 1.23.2
 require (
 	github.com/circlefin/noble-cctp v0.0.0-20240510135541-253cf7eb9436
 	github.com/circlefin/noble-fiattokenfactory v0.0.0-20240502160322-738932cb316d
-	github.com/confio/tgrade v1.0.1
 	github.com/cosmos/cosmos-sdk v0.45.16
-	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v4 v4.1.2
 	github.com/cosmos/ibc-go/v4 v4.6.0
 	github.com/noble-assets/forwarding v1.1.0
 	github.com/rs/zerolog v1.27.0
@@ -15,7 +13,6 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.15.0
-	github.com/strangelove-ventures/paramauthority v1.1.0
 	github.com/tendermint/tendermint v0.34.27
 	github.com/tendermint/tm-db v0.6.7
 )
@@ -30,8 +27,6 @@ require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.2 // indirect
 	github.com/ChainSafe/go-schnorrkel v1.0.0 // indirect
-	github.com/CosmWasm/wasmd v0.27.0 // indirect
-	github.com/CosmWasm/wasmvm v1.0.0 // indirect
 	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/Workiva/go-datastructures v1.0.53 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
@@ -54,7 +49,6 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
 	github.com/cosmos/iavl v0.19.5 // indirect
-	github.com/cosmos/ibc-go/v3 v3.1.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.12.2 // indirect
 	github.com/creachadair/taskgroup v0.4.2 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
@@ -94,7 +88,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hdevalence/ed25519consensus v0.1.0 // indirect
 	github.com/holiman/uint256 v1.2.3 // indirect
-	github.com/iancoleman/orderedmap v0.2.0 // indirect
 	github.com/improbable-eng/grpc-web v0.15.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmhodges/levigo v1.0.0 // indirect
