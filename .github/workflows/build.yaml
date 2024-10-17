@@ -20,7 +20,7 @@ jobs:
           # Heighliner chains.yaml config
           chain: autocctp-simd
           dockerfile: cosmos
-          build-target: cd simapp && make build
+          build-target: make build
           build-dir: simapp
           binaries: |
             - simapp/build/simd
