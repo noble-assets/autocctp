@@ -20,6 +20,15 @@ lint:
     @go run {{golangci_lint_cmd}} run --timeout=10m
     @echo "✅ Completed linting!"
 
+###############################################################################
+###                                  Build                                  ###
+###############################################################################
+
+# Build the simapp binary
+build:
+	@echo "🤖 Building simd..."
+	@cd simapp && just build
+	@echo "✅ Completed build!"
 
 ###############################################################################
 ###                                 Testing                                 ###
