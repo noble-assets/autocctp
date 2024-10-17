@@ -29,5 +29,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: autocctp_simapp.tar
-          path: heighliner
+          path: autocctp_simapp.tar
    
