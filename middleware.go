@@ -10,11 +10,11 @@ import (
 	cctpkeeper "github.com/circlefin/noble-cctp/x/cctp/keeper"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	transfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v4/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
-	"github.com/cosmos/ibc-go/v4/modules/core/exported"
+	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
+	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
+	"github.com/cosmos/ibc-go/v8/modules/core/exported"
 )
 
 var _ porttypes.IBCModule = &Middleware{}
@@ -112,7 +112,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 
 				err = m.bankKeeper.SendCoins(
 					ctx, types.ModuleAddress, feeRecipient,
-					sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(feeAmount.BigInt()))),
+					sdk.NewCoins(sdk.NewCoin(denom, math.NewIntFromBigInt(feeAmount.BigInt()))),
 				)
 				if err != nil {
 					return channeltypes.NewErrorAcknowledgement(errors.New("failed to execute fee transfer"))
@@ -124,7 +124,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 
 		err = m.bankKeeper.SendCoins(
 			ctx, types.ModuleAddress, sender,
-			sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(amount.BigInt()))),
+			sdk.NewCoins(sdk.NewCoin(denom, math.NewIntFromBigInt(amount.BigInt()))),
 		)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
@@ -168,7 +168,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 
 				err = m.bankKeeper.SendCoins(
 					ctx, types.ModuleAddress, feeRecipient,
-					sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(feeAmount.BigInt()))),
+					sdk.NewCoins(sdk.NewCoin(denom, math.NewIntFromBigInt(feeAmount.BigInt()))),
 				)
 				if err != nil {
 					return channeltypes.NewErrorAcknowledgement(errors.New("failed to execute fee transfer"))
@@ -180,7 +180,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 
 		err = m.bankKeeper.SendCoins(
 			ctx, types.ModuleAddress, sender,
-			sdk.NewCoins(sdk.NewCoin(denom, sdk.NewIntFromBigInt(amount.BigInt()))),
+			sdk.NewCoins(sdk.NewCoin(denom, math.NewIntFromBigInt(amount.BigInt()))),
 		)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
