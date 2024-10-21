@@ -2,8 +2,13 @@ package e2e
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 
+	types "autocctp.dev/types"
+	"cosmossdk.io/math"
+	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
@@ -77,13 +82,113 @@ func TestCCTP(t *testing.T) {
 		_ = ic.Close()
 	})
 
-	err = testutil.WaitForBlocks(ctx, 10, noble, gaia)
-	require.NoError(t, err, "failed to wait for blocks")
+	nobleValidator := noble.Validators[0]
+	mintAmount := math.NewInt(1000000000000)
+	halfMintAmount := math.NewInt(500000000000)
 
-	// Step 1: Mint some USDC
-	// Step 2: Send USDC to gaia
-	// Step 3: Check USDC balance on gaia
+	// Step 1: Mint 1000000000000 USDC
+
+	nobleUser := interchaintest.GetAndFundTestUsers(t, ctx, "wallet", mintAmount, noble)[0]
+	gaiaUser := interchaintest.GetAndFundTestUsers(t, ctx, "wallet", mintAmount, gaia)[0]
+
+	_, err = nobleValidator.ExecTx(ctx, gw.FiatTfRoles.MasterMinter.KeyName(),
+		"fiat-tokenfactory", "configure-minter-controller", gw.FiatTfRoles.MinterController.FormattedAddress(), gw.FiatTfRoles.Minter.FormattedAddress(),
+	)
+	require.NoError(t, err, "failed to execute configure minter controller tx")
+
+	_, err = nobleValidator.ExecTx(ctx, gw.FiatTfRoles.MinterController.KeyName(),
+		"fiat-tokenfactory", "configure-minter", gw.FiatTfRoles.Minter.FormattedAddress(), mintAmount.String()+DenomMetadataUsdc.Base,
+	)
+	require.NoError(t, err, "failed to execute configure minter tx")
+
+	_, err = nobleValidator.ExecTx(ctx, gw.FiatTfRoles.Minter.KeyName(),
+		"fiat-tokenfactory", "mint", nobleUser.FormattedAddress(), mintAmount.String()+DenomMetadataUsdc.Base,
+	)
+	require.NoError(t, err, "failed to execute mint to user tx")
+
+	balance, err := noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
+	require.NoError(t, err, "failed to get balance")
+	require.Equal(t, mintAmount.String(), balance.String())
+
+	// Step 2: Send 1000000000000 USDC to gaia
+	srcTx, err := noble.SendIBCTransfer(ctx, "channel-0", nobleUser.KeyName(), ibc.WalletAmount{
+		Address: gaiaUser.FormattedAddress(),
+		Denom:   DenomMetadataUsdc.Base,
+		Amount:  mintAmount,
+	}, ibc.TransferOptions{})
+	require.NoError(t, err, "failed to execute transfer tx")
+	nobleHeight, err := noble.Height(ctx)
+	require.NoError(t, err, "failed to get height")
+	srcAck, err := testutil.PollForAck(ctx, noble, nobleHeight, nobleHeight+10, srcTx.Packet)
+	require.NoError(t, err, "failed to poll for ack")
+	require.NoError(t, srcAck.Validate(), "invalid acknowledgement on source chain")
+	balance, err = noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
+	require.NoError(t, err, "failed to get balance")
+	require.Equal(t, math.ZeroInt().String(), balance.String())
+
+	// Step 3: Check USDC balance on gaia to be 1000000000000
+	srcDenomTrace := transfertypes.ParseDenomTrace(transfertypes.GetPrefixedDenom("transfer", "channel-0", DenomMetadataUsdc.Base))
+	dstIbcDenom := srcDenomTrace.IBCDenom()
+	balance, err = gaia.GetBalance(ctx, gaiaUser.FormattedAddress(), dstIbcDenom)
+	require.NoError(t, err, "failed to get balance")
+	require.Equal(t, mintAmount.String(), balance.String())
+
 	// Step 4: Send 1/2 USDC back to noble with autocctp msg
+	mintRecipient := make([]byte, 32)
+	copy(mintRecipient[12:], common.FromHex("0xfCE4cE85e1F74C01e0ecccd8BbC4606f83D3FC90"))
+	depositAmount := halfMintAmount.String()
+	memo := types.Memo{
+		DepositForBurn: &types.DepositForBurn{
+			DestinationDomain: 0,
+			MintRecipient:     mintRecipient,
+			Amount:            &depositAmount,
+			FeeRecipient:      nil,
+		},
+	}
+	memoJSON, err := json.Marshal(memo)
+	require.NoError(t, err, "failed to marshal memo")
+	dstTx, err := gaia.SendIBCTransfer(ctx, "channel-0", gaiaUser.KeyName(), ibc.WalletAmount{
+		Address: nobleUser.FormattedAddress(),
+		Denom:   dstIbcDenom,
+		Amount:  halfMintAmount,
+	}, ibc.TransferOptions{
+		Memo: string(memoJSON),
+	})
+	require.NoError(t, err, "failed to execute transfer tx")
+	gaiaHeight, err := gaia.Height(ctx)
+	require.NoError(t, err, "failed to get height")
+	dstAck, err := testutil.PollForAck(ctx, gaia, gaiaHeight, gaiaHeight+10, dstTx.Packet)
+	require.NoError(t, err, "failed to poll for ack")
+	require.NoError(t, dstAck.Validate(), "invalid acknowledgement on source chain")
+
+	balance, err = gaia.GetBalance(ctx, gaiaUser.FormattedAddress(), dstIbcDenom)
+	require.NoError(t, err, "failed to get balance")
+	require.Equal(t, math.ZeroInt().String(), balance.String())
+
 	// Step 5: Check USDC balance on noble - should not exist here
+	balance, err = noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
+	require.NoError(t, err, "failed to get balance")
+	require.Equal(t, math.ZeroInt().String(), balance.String())
+
 	// Setp 6: Send the remaining 1/2 USDC back to noble without autocctp msg
+	dstTx, err = gaia.SendIBCTransfer(ctx, "channel-0", gaiaUser.KeyName(), ibc.WalletAmount{
+		Address: nobleUser.FormattedAddress(),
+		Denom:   dstIbcDenom,
+		Amount:  halfMintAmount,
+	}, ibc.TransferOptions{})
+	require.NoError(t, err, "failed to execute transfer tx")
+	gaiaHeight, err = gaia.Height(ctx)
+	require.NoError(t, err, "failed to get height")
+	dstAck, err = testutil.PollForAck(ctx, gaia, gaiaHeight, gaiaHeight+10, dstTx.Packet)
+	require.NoError(t, err, "failed to poll for ack")
+	require.NoError(t, dstAck.Validate(), "invalid acknowledgement on source chain")
+
+	balance, err = gaia.GetBalance(ctx, gaiaUser.FormattedAddress(), dstIbcDenom)
+	require.NoError(t, err, "failed to get balance")
+	//require.Equal(t, math.ZeroInt().String(), balance.String())
+
+	// Step 7: Check USDC balance on noble to be 500000000000
+	balance, err = noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
+	require.NoError(t, err, "failed to get balance")
+	require.Equal(t, halfMintAmount.String(), balance.String())
 }

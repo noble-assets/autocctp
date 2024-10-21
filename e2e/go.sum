@@ -1,3 +1,5 @@
+autocctp.dev v0.0.0-20241015110507-1a1aa2d7ac16 h1:yqlbDce84YqtZsIwESUy2EwqVVP7rAIWMbtM7G/yv8k=
+autocctp.dev v0.0.0-20241015110507-1a1aa2d7ac16/go.mod h1:Bd5KA7KJ2KyxQ70xL/gwYHZ5pHY2Hw0lkySZldVXf1M=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.38.0/go.mod h1:990N+gfupTy94rShfmMCWGDn0LpTmnzTp2qbd1dvSRU=

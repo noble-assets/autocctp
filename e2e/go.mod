@@ -3,10 +3,12 @@ module autocctp.dev/e2e
 go 1.23.2
 
 require (
+	autocctp.dev v0.0.0-20241015110507-1a1aa2d7ac16
 	cosmossdk.io/math v1.3.0
 	github.com/circlefin/noble-cctp v0.0.0-20241016210224-38595d108987
 	github.com/circlefin/noble-fiattokenfactory v0.0.0-20241015182229-c20bd0c8442f
 	github.com/cosmos/cosmos-sdk v0.50.10
+	github.com/cosmos/ibc-go/v8 v8.5.1
 	github.com/docker/docker v24.0.9+incompatible
 	github.com/strangelove-ventures/interchaintest/v8 v8.7.1
 	github.com/stretchr/testify v1.9.0
@@ -75,7 +77,6 @@ require (
 	github.com/cosmos/gogoproto v1.7.0 // indirect
 	github.com/cosmos/iavl v1.2.0 // indirect
 	github.com/cosmos/ibc-go/modules/capability v1.0.1 // indirect
-	github.com/cosmos/ibc-go/v8 v8.5.1 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
 	github.com/cosmos/interchain-security/v5 v5.1.1 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
@@ -292,3 +293,5 @@ replace (
 
 	github.com/vedhavyas/go-subkey => github.com/strangelove-ventures/go-subkey v1.0.7
 )
+
+replace autocctp.dev => ../
