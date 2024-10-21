@@ -1,6 +1,7 @@
 package app
 
 import (
+	autocctp "autocctp.dev"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/circlefin/noble-fiattokenfactory/x/blockibc"
 	pfm "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
@@ -112,6 +113,7 @@ func (app *App) RegisterLegacyModules() error {
 		pfmkeeper.DefaultRefundTransferPacketTimeoutTimestamp,
 	)
 	transferStack = blockibc.NewIBCMiddleware(transferStack, app.FTFKeeper)
+	transferStack = autocctp.NewMiddleware(transferStack, app.BankKeeper, app.CCTPKeeper)
 
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icahost.NewIBCModule(app.ICAHostKeeper)).
