@@ -137,12 +137,13 @@ func TestCCTP(t *testing.T) {
 	mintRecipient := make([]byte, 32)
 	copy(mintRecipient[12:], common.FromHex("0xfCE4cE85e1F74C01e0ecccd8BbC4606f83D3FC90"))
 	depositAmount := halfMintAmount.String()
+	feeRecipient := nobleUser.FormattedAddress()
 	memo := types.Memo{
 		DepositForBurn: &types.DepositForBurn{
 			DestinationDomain: 0,
 			MintRecipient:     mintRecipient,
 			Amount:            &depositAmount,
-			FeeRecipient:      nil,
+			FeeRecipient:      &feeRecipient,
 		},
 	}
 	memoJSON, err := json.Marshal(memo)
@@ -163,7 +164,7 @@ func TestCCTP(t *testing.T) {
 
 	balance, err = gaia.GetBalance(ctx, gaiaUser.FormattedAddress(), dstIbcDenom)
 	require.NoError(t, err, "failed to get balance")
-	require.Equal(t, math.ZeroInt().String(), balance.String())
+	require.Equal(t, halfMintAmount.String(), balance.String())
 
 	// Step 5: Check USDC balance on noble - should not exist here
 	balance, err = noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
