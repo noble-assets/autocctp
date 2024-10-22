@@ -1,11 +1,13 @@
 package autocctp_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
 	autocctp "autocctp.dev"
 	mock "autocctp.dev/test/mock"
+	"autocctp.dev/types"
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
@@ -20,24 +22,29 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-// 3. types.Memo is empty
-// 4. Packet is deposit for burn - amount is nil
-// 5. Packet is deposit for burn - fee recipient is nil
-// 6. Packet is deposit for burn - fee recipient is invalid bech32
-// 7. Packet is deposit for burn - amount is invalid
-// 8. Packet is deposit for burn - specified amount is greater than packet amount
-// 9. Packet is deposit for burn - fee transfer failed
-// 10. Packet is deposit for burn - deposit success - assert ack
-// 11. Packet is deposit for burn with caller - amount is nil
-// 12. Packet is deposit for burn with caller - fee recipient is nil
-// 13. Packet is deposit for burn with caller - fee recipient is invalid bech32
-// 14. Packet is deposit for burn with caller - amount is invalid
-// 15. Packet is deposit for burn with caller - specified amount is greater than packet amount
-// 16. Packet is deposit for burn with caller - fee transfer failed
-// 17. Packet is deposit for burn with caller - deposit success - assert ack
-
 var (
-	transferDenom = "transfer"
+	cctpAmount   = "99"
+	feeRecipient = "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue"
+	autocctpMemo = types.Memo{
+		DepositForBurn: &types.DepositForBurn{
+			DestinationDomain: 0,
+			MintRecipient:     []byte("mintRecipient"),
+			Amount:            &cctpAmount,
+			FeeRecipient:      &feeRecipient,
+		},
+	}
+	transferPacket = transfertypes.FungibleTokenPacketData{
+		Denom:    "transfer/channel-0/uusdc",
+		Amount:   "100",
+		Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+		Receiver: authtypes.NewModuleAddress("autocctp").String(),
+	}
+	packet = channeltypes.Packet{
+		SourcePort:         "transfer",
+		SourceChannel:      "channel-0",
+		DestinationPort:    "transfer",
+		DestinationChannel: "channel-1",
+	}
 )
 
 func TestMiddleware(t *testing.T) {
@@ -56,35 +63,101 @@ func TestMiddleware(t *testing.T) {
 		{
 			name: "Receiver is not the autocctp module address",
 			getPacket: func() channeltypes.Packet {
-				transferPacket := transfertypes.FungibleTokenPacketData{
-					Denom:    "testDenom",
-					Amount:   "100",
-					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
-					Receiver: "cosmos1vzxkv3lxccnttr9rs0002s93sgw72h7ghukuhs",
-				}
-				transferData, err := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
-				require.NoError(t, err)
-				return channeltypes.Packet{
-					SourcePort:         "transfer",
-					SourceChannel:      "channel-0",
-					DestinationPort:    "transfer",
-					DestinationChannel: "channel-1",
-					Data:               transferData,
-				}
+				transferPacket.Receiver = "cosmos1vzxkv3lxccnttr9rs0002s93sgw72h7ghukuhs"
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
 			},
 			expectSuccess: true,
 		},
 		{
 			name: "Sender chain is source chain",
 			getPacket: func() channeltypes.Packet {
+				transferPacket.Denom = "testDenom"
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: true,
+		},
+		{
+			name: "types.Memo is empty",
+			getPacket: func() channeltypes.Packet {
+				memo := types.Memo{}
+				memobz, _ := json.Marshal(memo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
-					Denom:    "testDenom",
+					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
 					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
 					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
 				}
-				transferData, err := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
-				require.NoError(t, err)
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Packet is deposit for burn - amount is greater than sent amount",
+			getPacket: func() channeltypes.Packet {
+				overAmount := "200"
+				autocctpMemo.DepositForBurn.Amount = &overAmount
+				memobz, _ := json.Marshal(autocctpMemo)
+				transferPacket.Memo = string(memobz)
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Packet is deposit for burn - fee recipient is nil",
+			getPacket: func() channeltypes.Packet {
+				cctpAmount := "50"
+				memo := types.Memo{
+					DepositForBurn: &types.DepositForBurn{
+						DestinationDomain: 0,
+						MintRecipient:     []byte("mintRecipient"),
+						Amount:            &cctpAmount,
+					},
+				}
+				memobz, _ := json.Marshal(memo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Packet is deposit for burn - fee recipient is invalid bech32",
+			getPacket: func() channeltypes.Packet {
+				cctpAmount := "50"
+				feeRecipient := "invalidbech32"
+				memo := types.Memo{
+					DepositForBurn: &types.DepositForBurn{
+						DestinationDomain: 0,
+						MintRecipient:     []byte("mintRecipient"),
+						Amount:            &cctpAmount,
+						FeeRecipient:      &feeRecipient,
+					},
+				}
+				memobz, _ := json.Marshal(memo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
 				return channeltypes.Packet{
 					SourcePort:         "transfer",
 					SourceChannel:      "channel-0",
@@ -93,9 +166,45 @@ func TestMiddleware(t *testing.T) {
 					Data:               transferData,
 				}
 			},
-			expectSuccess: true,
+			expectSuccess: false,
+		},
+		{
+			name: "Packet is deposit for burn - amount is invalid",
+			getPacket: func() channeltypes.Packet {
+				cctpAmount := "👻"
+				feeRecipient := "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue"
+				memo := types.Memo{
+					DepositForBurn: &types.DepositForBurn{
+						DestinationDomain: 0,
+						MintRecipient:     []byte("mintRecipient"),
+						Amount:            &cctpAmount,
+						FeeRecipient:      &feeRecipient,
+					},
+				}
+				memobz, _ := json.Marshal(memo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
 		},
 	}
+	// 9. Packet is deposit for burn - fee transfer failed
+	// 10. Packet is deposit for burn - deposit success - assert ack
+	// 11. Packet is deposit for burn with caller - amount is greater than sent amount
+	// 12. Packet is deposit for burn with caller - fee recipient is nil
+	// 13. Packet is deposit for burn with caller - fee recipient is invalid bech32
+	// 14. Packet is deposit for burn with caller - amount is invalid
+	// 15. Packet is deposit for burn with caller - specified amount is greater than packet amount
+	// 16. Packet is deposit for burn with caller - fee transfer failed
+	// 17. Packet is deposit for burn with caller - deposit success - assert ack
 	for _, tc := range testcases {
 		t.Run(fmt.Sprintf("Case: %s", tc.name), func(t *testing.T) {
 			db := dbm.NewMemDB()
@@ -110,7 +219,11 @@ func TestMiddleware(t *testing.T) {
 			middleware := autocctp.NewMiddleware(ibcModule, bankKeeper, nil)
 			packet := tc.getPacket()
 			gomock.InOrder(
-				ibcModule.EXPECT().OnRecvPacket(ctx, packet, relayer).Return(channeltypes.NewResultAcknowledgement([]byte(""))),
+				ibcModule.EXPECT().OnRecvPacket(ctx, packet, relayer).
+					Return(channeltypes.NewResultAcknowledgement([]byte(""))),
+
+				// bankKeeper.EXPECT().SendCoins(ctx, types.ModuleAddress, gomock.Any(), gomock.Any()).
+				// 	Return(nil),
 			)
 
 			ack := middleware.OnRecvPacket(ctx, packet, relayer)
