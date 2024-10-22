@@ -104,7 +104,13 @@ func TestMiddleware(t *testing.T) {
 				overAmount := "200"
 				autocctpMemo.DepositForBurn.Amount = &overAmount
 				memobz, _ := json.Marshal(autocctpMemo)
-				transferPacket.Memo = string(memobz)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
 				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
 				packet.Data = transferData
 				return packet
@@ -114,15 +120,8 @@ func TestMiddleware(t *testing.T) {
 		{
 			name: "Packet is deposit for burn - fee recipient is nil",
 			getPacket: func() channeltypes.Packet {
-				cctpAmount := "50"
-				memo := types.Memo{
-					DepositForBurn: &types.DepositForBurn{
-						DestinationDomain: 0,
-						MintRecipient:     []byte("mintRecipient"),
-						Amount:            &cctpAmount,
-					},
-				}
-				memobz, _ := json.Marshal(memo)
+				autocctpMemo.DepositForBurn.FeeRecipient = nil
+				memobz, _ := json.Marshal(autocctpMemo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
 					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
@@ -172,16 +171,8 @@ func TestMiddleware(t *testing.T) {
 			name: "Packet is deposit for burn - amount is invalid",
 			getPacket: func() channeltypes.Packet {
 				cctpAmount := "👻"
-				feeRecipient := "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue"
-				memo := types.Memo{
-					DepositForBurn: &types.DepositForBurn{
-						DestinationDomain: 0,
-						MintRecipient:     []byte("mintRecipient"),
-						Amount:            &cctpAmount,
-						FeeRecipient:      &feeRecipient,
-					},
-				}
-				memobz, _ := json.Marshal(memo)
+				autocctpMemo.DepositForBurn.Amount = &cctpAmount
+				memobz, _ := json.Marshal(autocctpMemo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
 					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
