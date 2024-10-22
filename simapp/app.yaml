@@ -28,6 +28,7 @@ modules:
         - account: fiat-tokenfactory
           permissions: [ burner, minter ]
         - account: cctp
+        - account: autocctp
       authority: authority # Utilize our custom x/authority module.
   - name: authz
     config:
