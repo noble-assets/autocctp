@@ -7,7 +7,6 @@ import (
 
 	types "autocctp.dev/types"
 	"cosmossdk.io/math"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/strangelove-ventures/interchaintest/v8"
@@ -140,7 +139,8 @@ func TestCCTP(t *testing.T) {
 	copy(mintRecipient[12:], common.FromHex("0xfCE4cE85e1F74C01e0ecccd8BbC4606f83D3FC90"))
 	depositAmount := halfMintAmount.Sub(math.OneInt()).String() // 500000000000 - 1
 	feeRecipient := nobleUser.FormattedAddress()
-	autocctpAcc := authtypes.NewModuleAddress("autocctp")
+	autocctpAcc, err := noble.AuthQueryModuleAddress(ctx, "autocctp")
+	require.NoError(t, err, "failed to get autocctp module address")
 	memo := types.Memo{
 		DepositForBurn: &types.DepositForBurn{
 			DestinationDomain: 0,
@@ -152,7 +152,7 @@ func TestCCTP(t *testing.T) {
 	memoJSON, err := json.Marshal(memo)
 	require.NoError(t, err, "failed to marshal memo")
 	dstTx, err := gaia.SendIBCTransfer(ctx, "channel-0", gaiaUser.KeyName(), ibc.WalletAmount{
-		Address: autocctpAcc.String(),
+		Address: autocctpAcc,
 		Denom:   dstIbcDenom,
 		Amount:  halfMintAmount,
 	}, ibc.TransferOptions{
