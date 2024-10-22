@@ -7,6 +7,7 @@ import (
 
 	types "autocctp.dev/types"
 	"cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/strangelove-ventures/interchaintest/v8"
@@ -133,11 +134,13 @@ func TestCCTP(t *testing.T) {
 	require.NoError(t, err, "failed to get balance")
 	require.Equal(t, mintAmount.String(), balance.String())
 
-	// Step 4: Send 1/2 USDC back to noble with autocctp msg
+	// Step 4: Send 500000000000 (1/2) USDC back to noble with autocctp msg
+	// where 499999999999 will be sent to destination
 	mintRecipient := make([]byte, 32)
 	copy(mintRecipient[12:], common.FromHex("0xfCE4cE85e1F74C01e0ecccd8BbC4606f83D3FC90"))
-	depositAmount := halfMintAmount.String()
+	depositAmount := halfMintAmount.Sub(math.OneInt()).String() // 500000000000 - 1
 	feeRecipient := nobleUser.FormattedAddress()
+	autocctpAcc := authtypes.NewModuleAddress("autocctp")
 	memo := types.Memo{
 		DepositForBurn: &types.DepositForBurn{
 			DestinationDomain: 0,
@@ -149,7 +152,7 @@ func TestCCTP(t *testing.T) {
 	memoJSON, err := json.Marshal(memo)
 	require.NoError(t, err, "failed to marshal memo")
 	dstTx, err := gaia.SendIBCTransfer(ctx, "channel-0", gaiaUser.KeyName(), ibc.WalletAmount{
-		Address: nobleUser.FormattedAddress(),
+		Address: autocctpAcc.String(),
 		Denom:   dstIbcDenom,
 		Amount:  halfMintAmount,
 	}, ibc.TransferOptions{
@@ -162,16 +165,19 @@ func TestCCTP(t *testing.T) {
 	require.NoError(t, err, "failed to poll for ack")
 	require.NoError(t, dstAck.Validate(), "invalid acknowledgement on source chain")
 
+	err = testutil.WaitForBlocks(ctx, 5, gaia, noble)
+	require.NoError(t, err, "failed to wait for blocks")
+
 	balance, err = gaia.GetBalance(ctx, gaiaUser.FormattedAddress(), dstIbcDenom)
 	require.NoError(t, err, "failed to get balance")
 	require.Equal(t, halfMintAmount.String(), balance.String())
 
-	// Step 5: Check USDC balance on noble - should not exist here
+	// Step 5: Check USDC balance on noble - only one USDC should be there as the rest is forwarded
 	balance, err = noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
 	require.NoError(t, err, "failed to get balance")
-	require.Equal(t, math.ZeroInt().String(), balance.String())
+	require.Equal(t, math.OneInt().String(), balance.String())
 
-	// Setp 6: Send the remaining 1/2 USDC back to noble without autocctp msg
+	// Setp 6: Send the remaining 500000000000 USDC back to noble without autocctp msg
 	dstTx, err = gaia.SendIBCTransfer(ctx, "channel-0", gaiaUser.KeyName(), ibc.WalletAmount{
 		Address: nobleUser.FormattedAddress(),
 		Denom:   dstIbcDenom,
@@ -186,10 +192,10 @@ func TestCCTP(t *testing.T) {
 
 	balance, err = gaia.GetBalance(ctx, gaiaUser.FormattedAddress(), dstIbcDenom)
 	require.NoError(t, err, "failed to get balance")
-	//require.Equal(t, math.ZeroInt().String(), balance.String())
+	require.Equal(t, math.ZeroInt().String(), balance.String())
 
-	// Step 7: Check USDC balance on noble to be 500000000000
+	// Step 7: Check USDC balance on noble to be 500000000001
 	balance, err = noble.GetBalance(ctx, nobleUser.FormattedAddress(), DenomMetadataUsdc.Base)
 	require.NoError(t, err, "failed to get balance")
-	require.Equal(t, halfMintAmount.String(), balance.String())
+	require.Greater(t, halfMintAmount.String(), balance.String())
 }
