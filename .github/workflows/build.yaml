@@ -1,0 +1,33 @@
+name: E2E Test
+
+on: 
+    pull_request
+
+jobs:
+  build_image:
+    name: Building Heighliner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker image
+        uses: strangelove-ventures/heighliner-build-action@v1.0.3
+        with:
+          registry: "" # empty registry, image only shared for e2e testing
+          tag: local # emulate local environment for consistency in interchaintest cases
+          tar-export-path: autocctp_simapp.tar # export a tarball that can be uploaded as an artifact for the e2e jobs
+          platform: linux/amd64 # test runner architecture only
+          git-ref: ${{ github.head_ref }} # source code ref
+
+          # Heighliner chains.yaml config
+          chain: autocctp-simd
+          dockerfile: cosmos
+          build-target: make build
+          build-dir: simapp
+          binaries: |
+            - simapp/build/simd
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: autocctp_simapp.tar
+          path: autocctp_simapp.tar
+   
