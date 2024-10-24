@@ -11,9 +11,9 @@ import (
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
+	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
@@ -23,14 +23,25 @@ import (
 )
 
 var (
-	cctpAmount   = "99"
-	feeRecipient = "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue"
-	autocctpMemo = types.Memo{
+	cctpAmount                 = "99"
+	feeRecipient               = "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue"
+	autocctpDepositForBurnMemo = types.Memo{
 		DepositForBurn: &types.DepositForBurn{
 			DestinationDomain: 0,
 			MintRecipient:     []byte("mintRecipient"),
 			Amount:            &cctpAmount,
 			FeeRecipient:      &feeRecipient,
+		},
+	}
+	autocctpDepositForBurnWithCallerMemo = types.Memo{
+		DepositForBurnWithCaller: &types.DepositForBurnWithCaller{
+			DepositForBurn: types.DepositForBurn{
+				DestinationDomain: 0,
+				MintRecipient:     []byte("mintRecipient"),
+				Amount:            &cctpAmount,
+				FeeRecipient:      &feeRecipient,
+			},
+			DestinationCaller: []byte("destinationCaller"),
 		},
 	}
 	transferPacket = transfertypes.FungibleTokenPacketData{
@@ -54,14 +65,14 @@ func TestMiddleware(t *testing.T) {
 		expectSuccess bool
 	}{
 		{
-			name: "Packet not transfer type",
+			name: "Success: Packet not transfer type, so move on",
 			getPacket: func() channeltypes.Packet {
 				return channeltypes.Packet{}
 			},
 			expectSuccess: true,
 		},
 		{
-			name: "Receiver is not the autocctp module address",
+			name: "Success: Receiver address is not the autocctp module address, so do not perform autocctp transfer",
 			getPacket: func() channeltypes.Packet {
 				transferPacket.Receiver = "cosmos1vzxkv3lxccnttr9rs0002s93sgw72h7ghukuhs"
 				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
@@ -71,7 +82,7 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: true,
 		},
 		{
-			name: "Sender chain is source chain",
+			name: "Success: Sender chain is source chain, so move on",
 			getPacket: func() channeltypes.Packet {
 				transferPacket.Denom = "testDenom"
 				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
@@ -81,7 +92,7 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: true,
 		},
 		{
-			name: "types.Memo is empty",
+			name: "Fail: types.Memo exists but is empty",
 			getPacket: func() channeltypes.Packet {
 				memo := types.Memo{}
 				memobz, _ := json.Marshal(memo)
@@ -99,11 +110,11 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: false,
 		},
 		{
-			name: "Packet is deposit for burn - amount is greater than sent amount",
+			name: "Fail: DepositForBurn - forward amount is greater than transferred amount",
 			getPacket: func() channeltypes.Packet {
 				overAmount := "200"
-				autocctpMemo.DepositForBurn.Amount = &overAmount
-				memobz, _ := json.Marshal(autocctpMemo)
+				autocctpDepositForBurnMemo.DepositForBurn.Amount = &overAmount
+				memobz, _ := json.Marshal(autocctpDepositForBurnMemo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
 					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
@@ -118,10 +129,11 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: false,
 		},
 		{
-			name: "Packet is deposit for burn - fee recipient is nil",
+			name: "Fail: DepositForBurnWithCaller - foward amount is greater than transferred amount",
 			getPacket: func() channeltypes.Packet {
-				autocctpMemo.DepositForBurn.FeeRecipient = nil
-				memobz, _ := json.Marshal(autocctpMemo)
+				overAmount := "200"
+				autocctpDepositForBurnWithCallerMemo.DepositForBurnWithCaller.Amount = &overAmount
+				memobz, _ := json.Marshal(autocctpDepositForBurnWithCallerMemo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
 					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
@@ -136,19 +148,47 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: false,
 		},
 		{
-			name: "Packet is deposit for burn - fee recipient is invalid bech32",
+			name: "Fail: DepositForBurn - fee recipient is nil",
 			getPacket: func() channeltypes.Packet {
-				cctpAmount := "50"
+				autocctpDepositForBurnMemo.DepositForBurn.FeeRecipient = nil
+				memobz, _ := json.Marshal(autocctpDepositForBurnMemo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Fail: DepositForBurnWithCaller - fee recipient is nil",
+			getPacket: func() channeltypes.Packet {
+				autocctpDepositForBurnWithCallerMemo.DepositForBurnWithCaller.FeeRecipient = nil
+				memobz, _ := json.Marshal(autocctpDepositForBurnWithCallerMemo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Fail: DepositForBurn - fee recipient is invalid bech32",
+			getPacket: func() channeltypes.Packet {
 				feeRecipient := "invalidbech32"
-				memo := types.Memo{
-					DepositForBurn: &types.DepositForBurn{
-						DestinationDomain: 0,
-						MintRecipient:     []byte("mintRecipient"),
-						Amount:            &cctpAmount,
-						FeeRecipient:      &feeRecipient,
-					},
-				}
-				memobz, _ := json.Marshal(memo)
+				autocctpDepositForBurnMemo.DepositForBurn.FeeRecipient = &feeRecipient
+				memobz, _ := json.Marshal(autocctpDepositForBurnMemo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
 					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
@@ -168,11 +208,54 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: false,
 		},
 		{
-			name: "Packet is deposit for burn - amount is invalid",
+			name: "Fail: DepositForBurnWithCaller - fee recipient is invalid bech32",
+			getPacket: func() channeltypes.Packet {
+				feeRecipient := "invalidbech32"
+				autocctpDepositForBurnWithCallerMemo.DepositForBurnWithCaller.FeeRecipient = &feeRecipient
+				memobz, _ := json.Marshal(autocctpDepositForBurnWithCallerMemo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				return channeltypes.Packet{
+					SourcePort:         "transfer",
+					SourceChannel:      "channel-0",
+					DestinationPort:    "transfer",
+					DestinationChannel: "channel-1",
+					Data:               transferData,
+				}
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Fail: DepositForBurn - forward amount is invalid",
 			getPacket: func() channeltypes.Packet {
 				cctpAmount := "👻"
-				autocctpMemo.DepositForBurn.Amount = &cctpAmount
-				memobz, _ := json.Marshal(autocctpMemo)
+				autocctpDepositForBurnMemo.DepositForBurn.Amount = &cctpAmount
+				memobz, _ := json.Marshal(autocctpDepositForBurnMemo)
+				transferPacket := transfertypes.FungibleTokenPacketData{
+					Denom:    "transfer/channel-0/uusdc",
+					Amount:   "100",
+					Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+					Receiver: authtypes.NewModuleAddress("autocctp").String(),
+					Memo:     string(memobz),
+				}
+				transferData, _ := transfertypes.ModuleCdc.MarshalJSON(&transferPacket)
+				packet.Data = transferData
+				return packet
+			},
+			expectSuccess: false,
+		},
+		{
+			name: "Fail: DepositForBurnWithCaller - forward amount is invalid",
+			getPacket: func() channeltypes.Packet {
+				cctpAmount := "👻"
+				autocctpDepositForBurnWithCallerMemo.DepositForBurnWithCaller.Amount = &cctpAmount
+				memobz, _ := json.Marshal(autocctpDepositForBurnWithCallerMemo)
 				transferPacket := transfertypes.FungibleTokenPacketData{
 					Denom:    "transfer/channel-0/uusdc",
 					Amount:   "100",
@@ -187,37 +270,24 @@ func TestMiddleware(t *testing.T) {
 			expectSuccess: false,
 		},
 	}
-	// 9. Packet is deposit for burn - fee transfer failed
-	// 10. Packet is deposit for burn - deposit success - assert ack
-	// 11. Packet is deposit for burn with caller - amount is greater than sent amount
-	// 12. Packet is deposit for burn with caller - fee recipient is nil
-	// 13. Packet is deposit for burn with caller - fee recipient is invalid bech32
-	// 14. Packet is deposit for burn with caller - amount is invalid
-	// 15. Packet is deposit for burn with caller - specified amount is greater than packet amount
-	// 16. Packet is deposit for burn with caller - fee transfer failed
-	// 17. Packet is deposit for burn with caller - deposit success - assert ack
 	for _, tc := range testcases {
 		t.Run(fmt.Sprintf("Case: %s", tc.name), func(t *testing.T) {
-			db := dbm.NewMemDB()
 			logger := log.NewTestLogger(t)
-			stateStore := store.NewCommitMultiStore(db, logger, metrics.NewNoOpMetrics())
-			ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, logger)
-			relayer := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			ctx := sdk.NewContext(store.NewCommitMultiStore(dbm.NewMemDB(), logger, metrics.NewNoOpMetrics()), tmproto.Header{}, false, logger)
+			// Setting up mocks
 			ctl := gomock.NewController(t)
 			defer ctl.Finish()
+			packet := tc.getPacket()
 			bankKeeper := mock.NewMockBankKeeper(ctl)
 			ibcModule := mock.NewMockIBCModule(ctl)
-			middleware := autocctp.NewMiddleware(ibcModule, bankKeeper, nil)
-			packet := tc.getPacket()
-			gomock.InOrder(
-				ibcModule.EXPECT().OnRecvPacket(ctx, packet, relayer).
-					Return(channeltypes.NewResultAcknowledgement([]byte(""))),
+			cctpServer := mock.NewMockMsgServer(ctl)
+			ibcModule.EXPECT().OnRecvPacket(gomock.Any(), gomock.Any(), gomock.Any()).
+				Return(channeltypes.NewResultAcknowledgement([]byte("")))
+			bankKeeper.EXPECT().SendCoins(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+				Return(nil).AnyTimes()
+			middleware := autocctp.NewMiddleware(ibcModule, bankKeeper, cctpServer)
 
-				// bankKeeper.EXPECT().SendCoins(ctx, types.ModuleAddress, gomock.Any(), gomock.Any()).
-				// 	Return(nil),
-			)
-
-			ack := middleware.OnRecvPacket(ctx, packet, relayer)
+			ack := middleware.OnRecvPacket(ctx, packet, nil)
 
 			if tc.expectSuccess {
 				require.True(t, ack.Success())
@@ -226,4 +296,103 @@ func TestMiddleware(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestMiddleware_DepositForBurn_Success(t *testing.T) {
+	logger := log.NewTestLogger(t)
+	ctx := sdk.NewContext(store.NewCommitMultiStore(dbm.NewMemDB(), logger, metrics.NewNoOpMetrics()), tmproto.Header{}, false, logger)
+	// Setting up mocks
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+	bankKeeper := mock.NewMockBankKeeper(ctl)
+	ibcModule := mock.NewMockIBCModule(ctl)
+	cctpServer := mock.NewMockMsgServer(ctl)
+	ibcModule.EXPECT().OnRecvPacket(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(channeltypes.NewResultAcknowledgement([]byte(""))).Times(1)
+	bankKeeper.EXPECT().SendCoins(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil).Times(2)
+	cctpServer.EXPECT().DepositForBurn(gomock.Any(), gomock.Any()).Return(&cctptypes.MsgDepositForBurnResponse{
+		Nonce: 10,
+	}, nil).Times(1)
+	middleware := autocctp.NewMiddleware(ibcModule, bankKeeper, cctpServer)
+
+	memo := types.Memo{
+		DepositForBurn: &types.DepositForBurn{
+			DestinationDomain: 0,
+			MintRecipient:     []byte("mintRecipient"),
+			Amount:            &cctpAmount,
+			FeeRecipient:      &feeRecipient,
+		},
+	}
+	memobz, _ := json.Marshal(memo)
+	testTransferPacket := transfertypes.FungibleTokenPacketData{
+		Denom:    "transfer/channel-0/uusdc",
+		Amount:   "100",
+		Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+		Receiver: authtypes.NewModuleAddress("autocctp").String(),
+		Memo:     string(memobz),
+	}
+	testTransferData, _ := transfertypes.ModuleCdc.MarshalJSON(&testTransferPacket)
+	testPacket := channeltypes.Packet{
+		SourcePort:         "transfer",
+		SourceChannel:      "channel-0",
+		DestinationPort:    "transfer",
+		DestinationChannel: "channel-1",
+		Data:               testTransferData,
+	}
+
+	res := middleware.OnRecvPacket(ctx, testPacket, nil)
+
+	require.True(t, res.Success())
+}
+
+func TestMiddleware_DepositForBurnWithCaller_Success(t *testing.T) {
+	logger := log.NewTestLogger(t)
+	ctx := sdk.NewContext(store.NewCommitMultiStore(dbm.NewMemDB(), logger, metrics.NewNoOpMetrics()), tmproto.Header{}, false, logger)
+	// Setting up mocks
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+	bankKeeper := mock.NewMockBankKeeper(ctl)
+	ibcModule := mock.NewMockIBCModule(ctl)
+	cctpServer := mock.NewMockMsgServer(ctl)
+	ibcModule.EXPECT().OnRecvPacket(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(channeltypes.NewResultAcknowledgement([]byte(""))).Times(1)
+	bankKeeper.EXPECT().SendCoins(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil).Times(2)
+	cctpServer.EXPECT().DepositForBurnWithCaller(gomock.Any(), gomock.Any()).Return(&cctptypes.MsgDepositForBurnWithCallerResponse{
+		Nonce: 10,
+	}, nil).Times(1)
+	middleware := autocctp.NewMiddleware(ibcModule, bankKeeper, cctpServer)
+
+	memo := types.Memo{
+		DepositForBurnWithCaller: &types.DepositForBurnWithCaller{
+			DepositForBurn: types.DepositForBurn{
+				DestinationDomain: 0,
+				MintRecipient:     []byte("mintRecipient"),
+				Amount:            &cctpAmount,
+				FeeRecipient:      &feeRecipient,
+			},
+			DestinationCaller: []byte("destinationCaller"),
+		},
+	}
+	memobz, _ := json.Marshal(memo)
+	testTransferPacket := transfertypes.FungibleTokenPacketData{
+		Denom:    "transfer/channel-0/uusdc",
+		Amount:   "100",
+		Sender:   "cosmos1wnlew8ss0sqclfalvj6jkcyvnwq79fd74qxxue",
+		Receiver: authtypes.NewModuleAddress("autocctp").String(),
+		Memo:     string(memobz),
+	}
+	testTransferData, _ := transfertypes.ModuleCdc.MarshalJSON(&testTransferPacket)
+	testPacket := channeltypes.Packet{
+		SourcePort:         "transfer",
+		SourceChannel:      "channel-0",
+		DestinationPort:    "transfer",
+		DestinationChannel: "channel-1",
+		Data:               testTransferData,
+	}
+
+	res := middleware.OnRecvPacket(ctx, testPacket, nil)
+
+	require.True(t, res.Success())
 }
