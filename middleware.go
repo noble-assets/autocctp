@@ -136,9 +136,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 			MintRecipient:     memo.DepositForBurn.MintRecipient,
 			BurnToken:         denom,
 		}
-
-		goCtx := sdk.WrapSDKContext(ctx)
-		res, err := m.server.DepositForBurn(goCtx, msg)
+		res, err := m.server.DepositForBurn(ctx, msg)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
 		}
@@ -193,9 +191,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 			BurnToken:         denom,
 			DestinationCaller: memo.DepositForBurnWithCaller.DestinationCaller,
 		}
-
-		goCtx := sdk.WrapSDKContext(ctx)
-		res, err := m.server.DepositForBurnWithCaller(goCtx, msg)
+		res, err := m.server.DepositForBurnWithCaller(ctx, msg)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
 		}
