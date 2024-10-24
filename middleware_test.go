@@ -344,6 +344,10 @@ func TestMiddleware_DepositForBurn_Success(t *testing.T) {
 	res := middleware.OnRecvPacket(ctx, testPacket, nil)
 
 	require.True(t, res.Success())
+	var ack channeltypes.Acknowledgement
+	err := channeltypes.SubModuleCdc.UnmarshalJSON(res.Acknowledgement(), &ack)
+	require.NoError(t, err)
+	require.Equal(t, "{\"nonce\":10}", string(ack.GetResult()))
 }
 
 func TestMiddleware_DepositForBurnWithCaller_Success(t *testing.T) {
@@ -395,4 +399,8 @@ func TestMiddleware_DepositForBurnWithCaller_Success(t *testing.T) {
 	res := middleware.OnRecvPacket(ctx, testPacket, nil)
 
 	require.True(t, res.Success())
+	var ack channeltypes.Acknowledgement
+	err := channeltypes.SubModuleCdc.UnmarshalJSON(res.Acknowledgement(), &ack)
+	require.NoError(t, err)
+	require.Equal(t, "{\"nonce\":10}", string(ack.GetResult()))
 }
