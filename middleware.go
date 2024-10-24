@@ -7,7 +7,6 @@ import (
 
 	"autocctp.dev/types"
 	"cosmossdk.io/math"
-	cctpkeeper "github.com/circlefin/noble-cctp/x/cctp/keeper"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
@@ -26,11 +25,11 @@ type Middleware struct {
 	server     cctptypes.MsgServer
 }
 
-func NewMiddleware(app porttypes.IBCModule, bankKeeper types.BankKeeper, keeper *cctpkeeper.Keeper) Middleware {
+func NewMiddleware(app porttypes.IBCModule, bankKeeper types.BankKeeper, cctpServer cctptypes.MsgServer) Middleware {
 	return Middleware{
 		app:        app,
 		bankKeeper: bankKeeper,
-		server:     cctpkeeper.NewMsgServerImpl(keeper),
+		server:     cctpServer,
 	}
 }
 
@@ -112,7 +111,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 
 				err = m.bankKeeper.SendCoins(
 					ctx, types.ModuleAddress, feeRecipient,
-					sdk.NewCoins(sdk.NewCoin(denom, math.NewIntFromBigInt(feeAmount.BigInt()))),
+					sdk.NewCoins(sdk.NewCoin(denom, feeAmount)),
 				)
 				if err != nil {
 					return channeltypes.NewErrorAcknowledgement(errors.New("failed to execute fee transfer"))
@@ -137,9 +136,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 			MintRecipient:     memo.DepositForBurn.MintRecipient,
 			BurnToken:         denom,
 		}
-
-		goCtx := sdk.WrapSDKContext(ctx)
-		res, err := m.server.DepositForBurn(goCtx, msg)
+		res, err := m.server.DepositForBurn(ctx, msg)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
 		}
@@ -194,9 +191,7 @@ func (m Middleware) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, re
 			BurnToken:         denom,
 			DestinationCaller: memo.DepositForBurnWithCaller.DestinationCaller,
 		}
-
-		goCtx := sdk.WrapSDKContext(ctx)
-		res, err := m.server.DepositForBurnWithCaller(goCtx, msg)
+		res, err := m.server.DepositForBurnWithCaller(ctx, msg)
 		if err != nil {
 			return channeltypes.NewErrorAcknowledgement(err)
 		}
