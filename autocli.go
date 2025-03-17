@@ -35,6 +35,19 @@ func (AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			Service: autocctpv1.Msg_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
+					RpcMethod: "ClearAccount",
+					Use:       "clear-account [address] (--fallback)",
+					Short:     "Manually clear funds inside an AutoCCTP account",
+					Long: `Manually clear funds inside an AutoCCTP account specifying if they should be transferred
+					to the mint recipient or the fallback account`,
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"fallback": {
+							Usage: "Clear funds to fallback address, if exists",
+						},
+					},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
+				},
+				{
 					RpcMethod: "RegisterAccount",
 					Skip:      true,
 				},
