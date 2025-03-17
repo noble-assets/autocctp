@@ -1,0 +1,6 @@
+.idea
+
+.autocctp
+build
+go.work.sum
+coverage.out
