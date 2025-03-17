@@ -42,10 +42,9 @@ license:
 	@go-license --config .github/license.yaml $(FILES)
 	@echo "✅ Completed license added!"
 
-PREFIXES="github.com/cosmos,cosmossdk.io,github.com/cometbft,github.com/grpc-ecosystem"
 format:
 	@echo "🤖 Running formatters..."
-	@go run $(goimports_reviser) -company-prefixes $PREFIXES -excludes 'utils/tools.go' -rm-unused -set-alias ./...
+	@go run $(goimports_reviser) -company-prefixes "github.com/cosmos,cosmossdk.io,github.com/cometbft,github.com/grpc-ecosystem" -excludes 'utils/tools.go' -rm-unused -set-alias ./...
 	@go run $(gofumpt_cmd) -l -w .
 	@echo "✅ Completed formatting!"
 

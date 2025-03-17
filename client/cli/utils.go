@@ -26,9 +26,10 @@ import (
 	"strconv"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+	"github.com/ethereum/go-ethereum/common"
+
 	"github.com/cosmos/btcutil/base58"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/common"
 
 	"autocctp.dev/types"
 )
