@@ -21,9 +21,8 @@
 package autocctp
 
 import (
-	"github.com/spf13/cobra"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	"github.com/spf13/cobra"
 
 	autocctpv1 "autocctp.dev/api/v1"
 	"autocctp.dev/client/cli"
@@ -45,9 +44,31 @@ func (AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			},
 			EnhanceCustomCommand: true,
 		},
+		Query: &autocliv1.ServiceCommandDescriptor{
+			Service: autocctpv1.Query_ServiceDesc.ServiceName,
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "Address",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "Stats",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "StatsByDestinationDomain",
+					Skip:      true,
+				},
+			},
+			EnhanceCustomCommand: true,
+		},
 	}
 }
 
 func (AppModule) GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
+}
+
+func (AppModule) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
 }
