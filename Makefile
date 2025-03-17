@@ -53,3 +53,13 @@ lint:
 	@echo "🤖 Running linter..."
 	@go run $(golangci_lint_cmd) run --timeout=10m
 	@echo "✅ Completed linting!"
+
+
+###############################################################################
+###                                 Testing                                 ###
+###############################################################################
+
+test-unit:
+	@echo "🤖 Running unit tests for types package..."
+	@go test -v ./types/...
+	@echo "✅ Completed unit tests!"

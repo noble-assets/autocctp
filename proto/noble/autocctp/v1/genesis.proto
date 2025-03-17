@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package noble.autocctp.v1;
+
+option go_package = "autocctp.dev/types";
+
+// GenesisState defines the genesis state of the AutoCCTP module.
+message GenesisState {
+  map<uint32, uint64> num_of_accounts = 1;
+  map<uint32, uint64> num_of_transfers = 2;
+  map<uint32, uint64> total_transferred = 3;
+}
