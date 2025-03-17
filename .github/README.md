@@ -83,6 +83,7 @@ The module's state consists of the following Cosmos SDK collections:
 A custom AutoCCTP account can be registered on the chain in two ways:
 
 1. `types.MsgRegisterAccount`
+
 2. `types.MsgRegisterAccountSignerlessly`
 
 The difference between the two methods is that the second one does not require a
