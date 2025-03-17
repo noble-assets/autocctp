@@ -58,9 +58,31 @@ func (AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			},
 			EnhanceCustomCommand: true,
 		},
+		Query: &autocliv1.ServiceCommandDescriptor{
+			Service: autocctpv1.Query_ServiceDesc.ServiceName,
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "Address",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "Stats",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "StatsByDestinationDomain",
+					Skip:      true,
+				},
+			},
+			EnhanceCustomCommand: true,
+		},
 	}
 }
 
 func (AppModule) GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
+}
+
+func (AppModule) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
 }

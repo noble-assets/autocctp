@@ -114,6 +114,7 @@ func (m AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawM
 
 func (m AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(m.keeper))
+	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(m.keeper))
 }
 
 func (m AppModule) EndBlock(ctx context.Context) error {
