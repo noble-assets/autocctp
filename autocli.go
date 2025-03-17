@@ -21,9 +21,8 @@
 package autocctp
 
 import (
-	"github.com/spf13/cobra"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	"github.com/spf13/cobra"
 
 	autocctpv1 "autocctp.dev/api/v1"
 	"autocctp.dev/client/cli"
@@ -34,6 +33,19 @@ func (AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 		Tx: &autocliv1.ServiceCommandDescriptor{
 			Service: autocctpv1.Msg_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "ClearAccount",
+					Use:       "clear-account [address] (--fallback)",
+					Short:     "Manually clear funds inside an AutoCCTP account",
+					Long: `Manually clear funds inside an AutoCCTP account specifying if they should be transferred
+					to the mint recipient or the fallback account`,
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"fallback": {
+							Usage: "Clear funds to fallback address, if exists",
+						},
+					},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
+				},
 				{
 					RpcMethod: "RegisterAccount",
 					Skip:      true,
