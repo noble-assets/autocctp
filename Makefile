@@ -77,3 +77,13 @@ test-unit:
 	@echo "🤖 Running unit tests for cli package..."
 	@go test -v ./client/...
 	@echo "✅ Completed unit tests!"
+
+local-image:
+	@echo "🤖 Building image..."
+	@heighliner build --chain noble-autocctp-simd --file e2e/chains.yaml --local 1> /dev/null
+	@echo "✅ Completed build!"
+
+test-e2e:
+	@echo "🤖 Running e2e tests..."
+	@cd e2e && go test -timeout 15m -race -v ./...
+	@echo "✅ Completed e2e tests!"
