@@ -20,31 +20,12 @@
 
 package types
 
-import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-)
-
-var amino = codec.NewLegacyAmino()
-
-func init() {
-	RegisterLegacyAminoCodec(amino)
-	amino.Seal()
-}
-
-func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgRegisterAccount{}, "noble/autocctp/RegisterAccount", nil)
-}
-
-func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	registry.RegisterImplementations((*sdk.AccountI)(nil), &Account{})
-	registry.RegisterImplementations((*authtypes.GenesisAccount)(nil), &Account{})
-	registry.RegisterImplementations((*cryptotypes.PubKey)(nil), &PubKey{})
-
-	registry.RegisterImplementations((*sdk.Msg)(nil)) // &MsgRegisterAccount{},
-
-	// msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
+// GetAccountProperties returns the account properties from the message.
+func (msg MsgRegisterAccount) GetAccountProperties() AccountProperties {
+	return AccountProperties{
+		DestinationDomain: msg.DestinationDomain,
+		MintRecipient:     msg.MintRecipient,
+		FallbackRecipient: msg.FallbackRecipient,
+		DestinationCaller: msg.DestinationCaller,
+	}
 }
