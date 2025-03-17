@@ -21,9 +21,8 @@
 package autocctp
 
 import (
-	"github.com/spf13/cobra"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	"github.com/spf13/cobra"
 
 	autocctpv1 "autocctp.dev/api/v1"
 	"autocctp.dev/client/cli"
