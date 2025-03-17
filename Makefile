@@ -1,4 +1,14 @@
 .PHONY: proto-format proto-lint proto-gen license build
+all: proto-all format lint license test-unit build
+
+###############################################################################
+###                                  Build                                  ###
+###############################################################################
+
+build:
+	@echo "🤖 Building simd..."
+	@cd simapp && make build 1> /dev/null
+	@echo "✅ Completed build!"
 
 ###############################################################################
 ###                                Protobuf                                 ###
