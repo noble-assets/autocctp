@@ -25,7 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Account is a custom account type used for AutoCCTP transfers.
+// Account is the custom AutoCCTP account type containing transfer information.
 type Account struct {
 	*types.BaseAccount `protobuf:"bytes,1,opt,name=base_account,json=baseAccount,proto3,embedded=base_account" json:"base_account,omitempty"`
 	DestinationDomain  uint32 `protobuf:"varint,2,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
@@ -95,7 +95,7 @@ func (m *Account) GetDestinationCaller() []byte {
 	return nil
 }
 
-// PubKey is a custom public key type used for singlerlessly account registration.
+// PubKey is the custom AutoCCTP public key type used for custom AutoCCTP accounts.
 type PubKey struct {
 	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 }

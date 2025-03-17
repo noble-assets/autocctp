@@ -1129,7 +1129,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Account is a custom account type used for AutoCCTP transfers.
+// Account is the custom AutoCCTP account type containing transfer information.
 type Account struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1197,7 +1197,7 @@ func (x *Account) GetDestinationCaller() []byte {
 	return nil
 }
 
-// PubKey is a custom public key type used for singlerlessly account registration.
+// PubKey is the custom AutoCCTP public key type used for custom AutoCCTP accounts.
 type PubKey struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

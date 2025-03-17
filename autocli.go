@@ -37,6 +37,10 @@ func (AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "RegisterAccount",
 					Skip:      true,
 				},
+				{
+					RpcMethod: "RegisterAccountSignerlessly",
+					Skip:      true,
+				},
 			},
 			EnhanceCustomCommand: true,
 		},
