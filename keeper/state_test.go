@@ -26,6 +26,7 @@ import (
 	"cosmossdk.io/math"
 	"github.com/stretchr/testify/assert"
 
+	"autocctp.dev/utils"
 	"autocctp.dev/utils/mocks"
 )
 
@@ -143,7 +144,7 @@ func TestGetPendingTransfers(t *testing.T) {
 	assert.Equal(t, 0, len(acc), "expected no pending transfers to be returned")
 
 	// ARRANGE
-	_, err = generateDummyPendingTransfers(ctx, k, 2, "", false)
+	_, err = utils.DummyPendingTransfersTest(ctx, k, 2, "", false)
 	assert.NoError(t, err, "expected no error in the generation of dummy transfers")
 
 	// ACT

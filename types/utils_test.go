@@ -139,7 +139,7 @@ func TestValidateDestinationCaller(t *testing.T) {
 
 func TestValidateExistingAccount(t *testing.T) {
 	// ARRANGE: Create a new account
-	addr := sdk.AccAddress(utils.TestAddressBytes())
+	addr := sdk.AccAddress(utils.AddressBytesTest())
 	baseAcc := &authtypes.BaseAccount{Address: addr.String()}
 
 	// ACT: Validate account
@@ -173,7 +173,7 @@ func TestValidateExistingAccount(t *testing.T) {
 	require.NoError(t, err, "expecting no error when account was created singerlessly")
 
 	// ARRANGE: Change the expected address from previous test
-	expAddress := sdk.AccAddress(utils.TestAddressBytes())
+	expAddress := sdk.AccAddress(utils.AddressBytesTest())
 
 	// ACT: Validate account
 	err = types.ValidateExistingAccount(baseAcc, expAddress)

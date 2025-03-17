@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package noble.autocctp.v1;
+
+option go_package = "autocctp.dev/types";
+
+// AccountRegistered is emitted whenever a new AutoCCTP account is registered.
+message AccountRegistered {
+  string address = 1;
+  uint32 destination_domain = 2;
+  bytes mint_recipient = 3;
+  string fallback_recipient = 4;
+  bytes destination_caller = 5;
+  bool signerlessly = 6;
+}

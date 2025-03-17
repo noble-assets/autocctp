@@ -21,9 +21,6 @@
 package utils
 
 import (
-	crand "crypto/rand"
-	"math/rand"
-
 	"github.com/cometbft/cometbft/crypto/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -31,58 +28,64 @@ import (
 	"autocctp.dev/types"
 )
 
-func generateRandomBytes(n int) []byte {
-	b := make([]byte, n)
-	_, err := crand.Read(b)
-	if err != nil {
-		panic(err)
+func ValidPropertiesTest(withCaller bool) types.AccountProperties {
+	mintRecipient := make([]byte, 32)
+	copy(mintRecipient[12:], sdk.AccAddress(AddressBytesTest()))
+
+	fallbackRecipient := AddressTest()
+
+	destinationCaller := []byte{}
+	if withCaller {
+		destinationCaller = make([]byte, 32)
+		copy(destinationCaller[12:], sdk.AccAddress(AddressBytesTest()))
 	}
-	return b
+
+	return types.AccountProperties{
+		DestinationDomain: 0,
+		MintRecipient:     mintRecipient,
+		FallbackRecipient: fallbackRecipient,
+		DestinationCaller: destinationCaller,
+	}
 }
 
-func generateRandomDestinationDomain() uint32 {
-	return rand.Uint32() % 10
-}
-
-// DummyAccount returns a dummy AutoCCTP account for testing.
-func DummyAccount(withCaller bool) types.Account {
-	accAddr := sdk.AccAddress(TestAddressBytes())
+// DummyAccountTest returns a dummy AutoCCTP account for testing.
+func DummyAccountTest(withCaller bool) types.Account {
+	accAddr := sdk.AccAddress(AddressBytesTest())
 	baseAcc := authtypes.NewBaseAccountWithAddress(accAddr)
 	acc := types.Account{
 		BaseAccount:       baseAcc,
-		DestinationDomain: generateRandomDestinationDomain(),
-		FallbackRecipient: TestAddress(),
-		MintRecipient:     generateRandomBytes(32),
+		DestinationDomain: randomDestinationDomainTest(),
+		FallbackRecipient: AddressTest(),
+		MintRecipient:     randomBytesTest(32),
 	}
 
 	if withCaller {
-		acc.DestinationCaller = generateRandomBytes(32)
+		acc.DestinationCaller = randomBytesTest(32)
 	}
 
 	return acc
 }
 
-// TestAddress is a test util to generate a bech32 address with "noble" prefix.
-func TestAddress() string {
-	return generateNobleAddress(TestAddressBytes())
+// AddressTest is a test util to generate a bech32 address with "noble" prefix.
+func AddressTest() string {
+	return generateNobleAddressTest(AddressBytesTest())
 }
 
-// TestAddressBytes is a test util which returns the bytes of an address from a private key
+// AddressBytesTest is a test util which returns the bytes of an address from a private key
 // generated using the secp256k1 algorithm.
-func TestAddressBytes() []byte {
+func AddressBytesTest() []byte {
 	key := secp256k1.GenPrivKey()
 	return key.PubKey().Address().Bytes()
 }
 
-func generateNobleAddress(bytes []byte) string {
+func generateNobleAddressTest(bytes []byte) string {
 	address, _ := sdk.Bech32ifyAddressBytes("noble", bytes)
 	return address
 }
 
-// TestSDKConfig is a test util which set the Cosmos SDK Config to use
+// SDKConfigTest is a test util which set the Cosmos SDK Config to use
 // "noble" prefix for accounts without sealing it.
-// TODO: move to init()
-func TestSDKConfig() {
+func SDKConfigTest() {
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount("noble", "noblepub")
 }
