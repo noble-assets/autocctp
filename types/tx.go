@@ -29,3 +29,13 @@ func (msg MsgRegisterAccount) GetAccountProperties() AccountProperties {
 		DestinationCaller: msg.DestinationCaller,
 	}
 }
+
+// GetAccountProperties returns the account properties from the message.
+func (msg MsgRegisterAccountSignerlessly) GetAccountProperties() AccountProperties {
+	return AccountProperties{
+		DestinationDomain: msg.DestinationDomain,
+		MintRecipient:     msg.MintRecipient,
+		FallbackRecipient: msg.FallbackRecipient,
+		DestinationCaller: msg.DestinationCaller,
+	}
+}
