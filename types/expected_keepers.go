@@ -23,8 +23,9 @@ package types
 import (
 	"context"
 
-	"cosmossdk.io/core/address"
 	fiattokenfactorytypes "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/types"
+
+	"cosmossdk.io/core/address"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

@@ -23,8 +23,9 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"autocctp.dev/utils"
 	"autocctp.dev/utils/mocks"

@@ -25,11 +25,12 @@ import (
 	"testing"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+	"github.com/stretchr/testify/require"
+
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/types"
 	"autocctp.dev/utils"
