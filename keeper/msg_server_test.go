@@ -156,6 +156,21 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 				return s.RegisterAccount(ctx, &msg)
 			},
 		},
+		{
+			mode: "signerless",
+			msg: func() interface{} {
+				return types.MsgRegisterAccountSignerlessly{
+					Signer:            signer,
+					DestinationDomain: accountProperties.DestinationDomain,
+					MintRecipient:     accountProperties.MintRecipient,
+					FallbackRecipient: accountProperties.FallbackRecipient,
+				}
+			},
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
+				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+				return s.RegisterAccountSignerlessly(ctx, &msg)
+			},
+		},
 	}
 
 	for _, tC := range testCases {
