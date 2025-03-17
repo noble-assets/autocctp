@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Msg_RegisterAccount_FullMethodName             = "/noble.autocctp.v1.Msg/RegisterAccount"
 	Msg_RegisterAccountSignerlessly_FullMethodName = "/noble.autocctp.v1.Msg/RegisterAccountSignerlessly"
+	Msg_ClearAccount_FullMethodName                = "/noble.autocctp.v1.Msg/ClearAccount"
 )
 
 // MsgClient is the client API for Msg service.
@@ -29,6 +30,7 @@ const (
 type MsgClient interface {
 	RegisterAccount(ctx context.Context, in *MsgRegisterAccount, opts ...grpc.CallOption) (*MsgRegisterAccountResponse, error)
 	RegisterAccountSignerlessly(ctx context.Context, in *MsgRegisterAccountSignerlessly, opts ...grpc.CallOption) (*MsgRegisterAccountSignerlesslyResponse, error)
+	ClearAccount(ctx context.Context, in *MsgClearAccount, opts ...grpc.CallOption) (*MsgClearAccountResponse, error)
 }
 
 type msgClient struct {
@@ -59,12 +61,23 @@ func (c *msgClient) RegisterAccountSignerlessly(ctx context.Context, in *MsgRegi
 	return out, nil
 }
 
+func (c *msgClient) ClearAccount(ctx context.Context, in *MsgClearAccount, opts ...grpc.CallOption) (*MsgClearAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgClearAccountResponse)
+	err := c.cc.Invoke(ctx, Msg_ClearAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility.
 type MsgServer interface {
 	RegisterAccount(context.Context, *MsgRegisterAccount) (*MsgRegisterAccountResponse, error)
 	RegisterAccountSignerlessly(context.Context, *MsgRegisterAccountSignerlessly) (*MsgRegisterAccountSignerlesslyResponse, error)
+	ClearAccount(context.Context, *MsgClearAccount) (*MsgClearAccountResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedMsgServer) RegisterAccount(context.Context, *MsgRegisterAccou
 }
 func (UnimplementedMsgServer) RegisterAccountSignerlessly(context.Context, *MsgRegisterAccountSignerlessly) (*MsgRegisterAccountSignerlesslyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccountSignerlessly not implemented")
+}
+func (UnimplementedMsgServer) ClearAccount(context.Context, *MsgClearAccount) (*MsgClearAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClearAccount not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -138,6 +154,24 @@ func _Msg_RegisterAccountSignerlessly_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ClearAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClearAccount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClearAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ClearAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClearAccount(ctx, req.(*MsgClearAccount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAccountSignerlessly",
 			Handler:    _Msg_RegisterAccountSignerlessly_Handler,
+		},
+		{
+			MethodName: "ClearAccount",
+			Handler:    _Msg_ClearAccount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
