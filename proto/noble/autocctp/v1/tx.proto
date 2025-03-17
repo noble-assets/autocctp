@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package noble.autocctp.v1;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "autocctp.dev/types";
+
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc RegisterAccount(MsgRegisterAccount) returns (MsgRegisterAccountResponse);
+}
+
+//
+
+// MsgRegisterAccount is the message used to register a new AutoCCTP account.
+message MsgRegisterAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "noble/autocctp/RegisterAccount";
+
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  uint32 destination_domain = 2;
+  bytes mint_recipient = 3;
+  // FallbackRecipient ia the Noble local account that can be used as the fallback for the
+  // transfer in case the CCTP transfer fails.
+  string fallback_recipient = 4;
+  bytes destination_caller = 5;
+}
+
+// MsgRegisterAccountResponse is the response message returned when a new AutoCCTP
+// account is registered.
+message MsgRegisterAccountResponse {
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
