@@ -36,7 +36,6 @@ import (
 )
 
 func TestRegisterAccount_NewAccount(t *testing.T) {
-	// ARRANGE
 	signer := utils.AddressTest()
 	accountProperties := utils.ValidPropertiesTest(false)
 	customAddress := types.GenerateAddress(accountProperties)
@@ -87,8 +86,6 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 			assert.Error(t, err, "expected error when account properties validation fails")
 			assert.ErrorContains(t, err, types.ErrInvalidAccountProperties.Error())
 
-			// ARRANGE
-
 			// ACT: Register a new account succeed.
 			resp, err := tC.serverCall(server, ctx, validMsg)
 
@@ -115,7 +112,6 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 }
 
 func TestRegisterAccount_ExistingAccount(t *testing.T) {
-	// ARRANGE
 	signer := utils.AddressTest()
 
 	accountProperties := utils.ValidPropertiesTest(false)
@@ -173,7 +169,7 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			_, ok := acc.(*authtypes.BaseAccount)
 			assert.True(t, ok, "the account should be initially a base account")
 			_, ok = acc.(*types.Account)
-			assert.False(t, ok, "the account sould NOT be initially of custom type")
+			assert.False(t, ok, "the account should NOT be initially of custom type")
 
 			// ACT
 			_, err = tC.serverCall(server, ctx, msg)
@@ -222,7 +218,7 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			// ACT
 			_, err = tC.serverCall(server, ctx, msg)
 
-			// ASSERT: One account has been added but no prending transfers because the balance was empty.
+			// ASSERT: One account has been added but no pending transfers because the balance was empty.
 			assert.NoError(t, err, "expected no error during account registration")
 
 			nAccount, _ = k.NumOfAccounts.Get(ctx, accountProperties.DestinationDomain)
