@@ -146,7 +146,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 
 			if tC.errContains != "" {
 				require.Error(t, err, "expected an error")
-				require.ErrorContains(t, err, tC.errContains, "epxected a different error")
+				require.ErrorContains(t, err, tC.errContains, "expected a different error")
 				require.Nil(t, accountProperties, "expected nil response when receiving an error")
 			} else {
 				require.NoError(t, err, "expected no error")

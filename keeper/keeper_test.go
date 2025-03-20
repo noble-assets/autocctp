@@ -37,7 +37,7 @@ func TestValidateAccountProperties(t *testing.T) {
 	validProperties := utils.ValidPropertiesTest(false)
 	validPropertiesWithCaller := utils.ValidPropertiesTest(true)
 
-	invalidFalbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
+	invalidFallbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
 
 	testCases := []struct {
 		name        string
@@ -64,7 +64,7 @@ func TestValidateAccountProperties(t *testing.T) {
 		{
 			name: "fail when the fallback recipient is not chain address",
 			setup: func(ap *types.AccountProperties) {
-				ap.FallbackRecipient = invalidFalbackRecipient
+				ap.FallbackRecipient = invalidFallbackRecipient
 			},
 			withCaller:  false,
 			errContains: types.ErrInvalidFallbackRecipient.Error(),

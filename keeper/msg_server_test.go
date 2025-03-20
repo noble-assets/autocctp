@@ -41,7 +41,7 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 	accountProperties := utils.ValidPropertiesTest(false)
 	customAddress := types.GenerateAddress(accountProperties)
 
-	invalidFalbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
+	invalidFallbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
 
 	testCases := []struct {
 		mode       string
@@ -78,7 +78,7 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 
 			// ACT
 			invalidProp := accountProperties
-			invalidProp.FallbackRecipient = invalidFalbackRecipient
+			invalidProp.FallbackRecipient = invalidFallbackRecipient
 
 			invalidMsg := tC.msg(invalidProp)
 			_, err := tC.serverCall(server, ctx, invalidMsg)
