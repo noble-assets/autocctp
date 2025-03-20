@@ -57,8 +57,9 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			name: "fails when num of transfers keys > num of accounts",
 			genesisModifier: func(g *types.GenesisState) {
-				g.NumOfTransfers = map[uint32]uint64{0: 10}
-				g.TotalTransferred = map[uint32]uint64{0: 10}
+				g.NumOfAccounts = map[uint32]uint64{0: 10}
+				g.NumOfTransfers = map[uint32]uint64{0: 10, 1: 10}
+				g.TotalTransferred = map[uint32]uint64{0: 10, 1: 10}
 			},
 			errContains: "domains without accounts",
 		},

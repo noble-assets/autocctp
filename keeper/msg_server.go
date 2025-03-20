@@ -41,7 +41,7 @@ func NewMsgServer(keeper *Keeper) types.MsgServer {
 
 // RegisterAccount is the server entrypoint to register a new AutoCCTP account.
 func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterAccount) (*types.MsgRegisterAccountResponse, error) {
-	// Meesage inputs validation
+	// Message inputs validation
 	if msg == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("msg to register account cannot be nil")
 	}

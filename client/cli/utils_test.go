@@ -31,7 +31,6 @@ import (
 )
 
 func TestValidateAndParseDomainFields(t *testing.T) {
-	// ARRANGE
 	utils.SDKConfigTest()
 
 	testCases := []struct {
@@ -66,7 +65,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 		},
 		{
 			name:              "fail when destination chain is ethereum and mint recipient is a solana address",
-			destinationDomain: "1",
+			destinationDomain: "0",
 			mintRecipient:     "2WjnnBcYf4ff9xyDoH8yevnKF3yhH98DCcdy6PSmjNDa",
 			errContains:       "address not in hex format",
 		},
@@ -108,7 +107,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 			errContains:       "",
 			postChecks: func(aP *types.AccountProperties) {
 				require.Equal(t, 32, len(aP.MintRecipient), "expected mint recipient 32 bytes")
-				require.Equal(t, 0, len(aP.DestinationCaller), "expected empty destinationc caller")
+				require.Equal(t, 0, len(aP.DestinationCaller), "expected empty destination caller")
 			},
 		},
 		{
@@ -131,14 +130,13 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 			errContains:       "",
 			postChecks: func(aP *types.AccountProperties) {
 				require.Equal(t, 32, len(aP.MintRecipient), "expected mint recipient 32 bytes")
-				require.Equal(t, 0, len(aP.DestinationCaller), "expected empty destinationc caller")
+				require.Equal(t, 0, len(aP.DestinationCaller), "expected empty destination caller")
 			},
 		},
 	}
 
 	for _, tC := range testCases {
 		t.Run(tC.name, func(t *testing.T) {
-			// ACT
 			accountProperties, err := cli.ValidateAndParseAccountFields(
 				tC.destinationDomain,
 				tC.mintRecipient,
@@ -146,7 +144,6 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 				tC.destinationCaller,
 			)
 
-			// ASSERT
 			if tC.errContains != "" {
 				require.Error(t, err, "expected an error")
 				require.ErrorContains(t, err, tC.errContains, "epxected a different error")

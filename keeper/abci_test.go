@@ -21,6 +21,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,6 +32,9 @@ import (
 )
 
 func TestExecuteTransfer(t *testing.T) {
+	expCall := "expected %s call(s) to the DepositForBurn endpoint"
+	expCallWithCaller := "expected %s call(s) to the DepositForBurnWithCaller endpoint"
+
 	m, k, ctx := mocks.AutoCCTPKeeper(t)
 	mc := m.CCTPServer.MockCounter
 	bk := m.BankKeeper
@@ -51,8 +55,8 @@ func TestExecuteTransfer(t *testing.T) {
 	k.ExecuteTransfers(ctx)
 
 	// ASSERT
-	assert.Equal(t, 0, mc.NumDepositForBurn, "expected no calls to the DepositForBurn endpoint")
-	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, "expected no calls to the DepositForBurnWithCaller endpoint")
+	assert.Equal(t, 0, mc.NumDepositForBurn, fmt.Sprintf(expCall, "no"))
+	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, fmt.Sprintf(expCallWithCaller, "no"))
 
 	// ARRANGE: Add funds to the accounts in the pending transfers but not of the minting denom.
 	bk.Balances[addresses[0]] = sdk.Coins{sdk.NewInt64Coin("ubtc", 10)}
@@ -61,8 +65,8 @@ func TestExecuteTransfer(t *testing.T) {
 	k.ExecuteTransfers(ctx)
 
 	// ASSERT
-	assert.Equal(t, 0, mc.NumDepositForBurn, "expected no calls to the DepositForBurn endpoint")
-	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, "expected no calls to the DepositForBurnWithCaller endpoint")
+	assert.Equal(t, 0, mc.NumDepositForBurn, fmt.Sprintf(expCall, "no"))
+	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, fmt.Sprintf(expCallWithCaller, "no"))
 
 	// ARRANGE: Add correct funds to the account.
 	bk.Balances[addresses[0]] = sdk.Coins{sdk.NewInt64Coin("uusdc", 10)}
@@ -71,8 +75,8 @@ func TestExecuteTransfer(t *testing.T) {
 	k.ExecuteTransfers(ctx)
 
 	// ASSERT: CCTP server is called properly.
-	assert.Equal(t, 1, mc.NumDepositForBurn, "expected one call to the DepositForBurn endpoint")
-	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, "expected no calls to the DepositForBurnWithCaller endpoint")
+	assert.Equal(t, 1, mc.NumDepositForBurn, fmt.Sprintf(expCall, "one"))
+	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, fmt.Sprintf(expCallWithCaller, "no"))
 
 	// ARRANGE: Create a account with destination caller and multiple tokens in the balance.
 	// Similar to previous test but the account has multiple tokens and the CCTP method called is different.
@@ -89,8 +93,8 @@ func TestExecuteTransfer(t *testing.T) {
 	k.ExecuteTransfers(ctx)
 
 	// ASSERT: CCTP server is called properly, with one call per tokens for the account with caller.
-	assert.Equal(t, 0, mc.NumDepositForBurn, "expected no calls to the DepositForBurn endpoint")
-	assert.Equal(t, 1, mc.NumDepositForBurnWithCaller, "expected 1 call to the DepositForBurnWithCaller endpoint")
+	assert.Equal(t, 0, mc.NumDepositForBurn, fmt.Sprintf(expCall, "no"))
+	assert.Equal(t, 1, mc.NumDepositForBurnWithCaller, fmt.Sprintf(expCallWithCaller, "one"))
 	numOfTransfers, err := k.NumOfTransfers.Get(ctx, 0)
 	assert.NoError(t, err)
 	assert.Equal(t, uint64(1), numOfTransfers, "expected a different amount of transfers")
@@ -119,8 +123,8 @@ func TestExecuteTransfer(t *testing.T) {
 	k.ExecuteTransfers(ctx)
 
 	// ASSERT: calls to endpoints remain unaltered
-	assert.Equal(t, 0, mc.NumDepositForBurn, "expected no calls to the DepositForBurn endpoint")
-	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, "expected no calls to the DepositForBurnWithCaller endpoint")
+	assert.Equal(t, 0, mc.NumDepositForBurn, fmt.Sprintf(expCall, "no"))
+	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller, fmt.Sprintf(expCallWithCaller, "no"))
 	_, err = k.NumOfTransfers.Get(ctx, 0)
 	assert.Error(t, err, "expected no transfers when cctp returns an error")
 	_, err = k.TotalTransferred.Get(ctx, 0)

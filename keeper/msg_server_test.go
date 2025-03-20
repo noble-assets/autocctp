@@ -159,7 +159,6 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			m.BankKeeper.Balances[registeredAcc.GetAddress().String()] = sdk.Coins{sdk.NewInt64Coin("uusdc", 1)}
 
 			// ACT
-			// _, err = server.RegisterAccount(ctx, &msg)
 			_, err = tC.serverCall(server, ctx, msg)
 
 			// ASSERT
@@ -177,7 +176,6 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			assert.False(t, ok, "the account sould NOT be initially of custom type")
 
 			// ACT
-			// _, err = server.RegisterAccount(ctx, &msg)
 			_, err = tC.serverCall(server, ctx, msg)
 
 			// ASSERT: One account has been added along with the pending transfer.
@@ -202,7 +200,6 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			assert.NoError(t, err)
 
 			// ACT: Trying to register again the account fails.
-			// _, err = server.RegisterAccount(ctx, &msg)
 			_, err = tC.serverCall(server, ctx, msg)
 
 			// ASSERT: The function did't change the state.
@@ -222,8 +219,7 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			registeredAcc = m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
 			m.AccountKeeper.Accounts[registeredAcc.GetAddress().String()] = registeredAcc
 
-			// ACT: Register a new account.
-			// _, err = server.RegisterAccount(ctx, &msg)
+			// ACT
 			_, err = tC.serverCall(server, ctx, msg)
 
 			// ASSERT: One account has been added but no prending transfers because the balance was empty.
@@ -244,11 +240,10 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			}
 			m.AccountKeeper.Accounts[unsupportedAcc.GetAddress().String()] = &unsupportedAcc
 
-			// ACT: Register a new account.
-			// _, err = server.RegisterAccount(ctx, &msg)
+			// ACT
 			_, err = tC.serverCall(server, ctx, msg)
 
-			// ASSERT:
+			// ASSERT
 			assert.Error(t, err, "expected error during account registration")
 			assert.ErrorContains(t, err, "unsupported account type", "expected a different error")
 		})

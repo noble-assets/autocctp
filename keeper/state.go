@@ -48,7 +48,10 @@ func (k *Keeper) IncrementNumOfTransfers(ctx context.Context, destinationDomain 
 
 func (k *Keeper) IncrementTotalTransferred(ctx context.Context, destinationDomain uint32, amount math.Int) {
 	if !amount.IsUint64() {
-		k.logger.Error("increment total transferred because invalid amount", "destination_domain", destinationDomain, "success", false)
+		k.logger.Error("increment total transferred because invalid amount",
+			"destination_domain", destinationDomain,
+			"amount", amount.String(),
+		)
 		return
 	}
 
@@ -68,7 +71,6 @@ func (k *Keeper) GetPendingTransfers(ctx context.Context) ([]types.Account, erro
 
 		return false, nil
 	}); err != nil {
-		k.logger.Error("get pending transfers from state")
 		return []types.Account{}, err
 	}
 
@@ -83,7 +85,7 @@ func (k *Keeper) GetNumOfAccountPerDestination(ctx context.Context) (map[uint32]
 
 		return false, nil
 	}); err != nil {
-		return make(map[uint32]uint64), err
+		return nil, err
 	}
 
 	return numOfAccounts, nil
@@ -97,7 +99,7 @@ func (k *Keeper) GetNumOfTransfersPerDestination(ctx context.Context) (map[uint3
 
 		return false, nil
 	}); err != nil {
-		return make(map[uint32]uint64), err
+		return nil, err
 	}
 
 	return numOfTransfers, nil
@@ -111,7 +113,7 @@ func (k *Keeper) GetTotalTransferredPerDestination(ctx context.Context) (map[uin
 
 		return false, nil
 	}); err != nil {
-		return make(map[uint32]uint64), err
+		return nil, err
 	}
 
 	return totTransferred, nil

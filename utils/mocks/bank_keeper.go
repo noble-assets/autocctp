@@ -30,8 +30,6 @@ import (
 	"autocctp.dev/types"
 )
 
-type SendRestrictionFn func(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error)
-
 var (
 	_ types.BankKeeper     = BankKeeper{}
 	_ cctptypes.BankKeeper = BankKeeper{}
@@ -39,9 +37,8 @@ var (
 
 type BankKeeper struct {
 	// Failing defines if calls to SendCoins return an error response.
-	Failing     bool
-	Balances    map[string]sdk.Coins
-	Restriction SendRestrictionFn
+	Failing  bool
+	Balances map[string]sdk.Coins
 }
 
 func NoOpSendRestrictionFn(_ context.Context, _, toAddr sdk.AccAddress, _ sdk.Coins) (sdk.AccAddress, error) {
