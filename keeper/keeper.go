@@ -135,9 +135,12 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	}
 
 	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
-	if coins.AmountOf(mintingDenom).IsPositive() {
-		err = k.PendingTransfers.Set(ctx, account.Address, *account)
+	if len(coins) != 1 || !coins.AmountOf(mintingDenom).IsPositive() {
+		return toAddr, fmt.Errorf("autocctp accounts can only receive %s coins", mintingDenom)
 	}
+
+	// TODO: do we want to error here or allow the transfer in any case?
+	err = k.PendingTransfers.Set(ctx, account.Address, *account)
 
 	return toAddr, err
 }
