@@ -54,13 +54,13 @@ func AutoCCTPAccount(withCaller bool) types.Account {
 	baseAcc := authtypes.NewBaseAccountWithAddress(accAddr)
 	acc := types.Account{
 		BaseAccount:       baseAcc,
-		DestinationDomain: randomDestinationDomainTest(),
+		DestinationDomain: randomDestinationDomain(),
 		FallbackRecipient: NobleAddress(),
-		MintRecipient:     randomBytesTest(32),
+		MintRecipient:     randomBytes(32),
 	}
 
 	if withCaller {
-		acc.DestinationCaller = randomBytesTest(32)
+		acc.DestinationCaller = randomBytes(32)
 	}
 
 	return acc
