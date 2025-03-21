@@ -24,12 +24,11 @@ import (
 	"fmt"
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 )
 
 func TestExecuteTransfer(t *testing.T) {
@@ -49,7 +48,7 @@ func TestExecuteTransfer(t *testing.T) {
 	assert.Equal(t, 0, mc.NumDepositForBurnWithCaller)
 
 	// ARRANGE: One pending transfer is registered but the account has not funds.
-	addresses, err := utils.DummyPendingTransfersTest(ctx, k, 1, "", false)
+	addresses, err := testutil.PendingTransfers(ctx, k, 1, "", false)
 	assert.NoError(t, err)
 
 	// ACT
@@ -83,7 +82,7 @@ func TestExecuteTransfer(t *testing.T) {
 	// Similar to previous test but the account has multiple tokens and the CCTP method called is different.
 	mocks.ResetTest(t, ctx, k, m)
 
-	addresses, err = utils.DummyPendingTransfersTest(ctx, k, 1, "0", true)
+	addresses, err = testutil.PendingTransfers(ctx, k, 1, "0", true)
 	assert.NoError(t, err)
 	bk.Balances[addresses[0]] = sdk.NewCoins(
 		sdk.NewInt64Coin("uusdc", 1_000_000),
@@ -107,9 +106,9 @@ func TestExecuteTransfer(t *testing.T) {
 	mocks.ResetTest(t, ctx, k, m)
 	cctps.Failing = true
 
-	addresses, err = utils.DummyPendingTransfersTest(ctx, k, 1, "0", false)
+	addresses, err = testutil.PendingTransfers(ctx, k, 1, "0", false)
 	assert.NoError(t, err)
-	addressesWithCaller, err := utils.DummyPendingTransfersTest(ctx, k, 1, "0", true)
+	addressesWithCaller, err := testutil.PendingTransfers(ctx, k, 1, "0", true)
 	assert.NoError(t, err)
 
 	bk.Balances[addresses[0]] = sdk.NewCoins(

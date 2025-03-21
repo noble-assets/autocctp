@@ -25,23 +25,27 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectestutil "github.com/cosmos/cosmos-sdk/codec/testutil"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cosmos/cosmos-sdk/testutil"
+	sdktestutil "github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+	"github.com/stretchr/testify/assert"
 
 	"autocctp.dev/keeper"
+	"autocctp.dev/testutil"
 	"autocctp.dev/types"
 )
+
+func init() {
+	testutil.SetSDKConfig()
+}
 
 type Mocks struct {
 	AccountKeeper *AccountKeeper
@@ -79,7 +83,7 @@ func AutoCCTPKeeper(t testing.TB) (*Mocks, *keeper.Keeper, sdk.Context) {
 func autoCCTPKeeperWithMocks(t testing.TB, m *Mocks) (*keeper.Keeper, sdk.Context) {
 	key := storetypes.NewKVStoreKey(types.ModuleName)
 	tkey := storetypes.NewTransientStoreKey(fmt.Sprintf("transient_%s", types.ModuleName))
-	wrapper := testutil.DefaultContextWithDB(t, key, tkey)
+	wrapper := sdktestutil.DefaultContextWithDB(t, key, tkey)
 
 	cfg := MakeTestEncodingConfig("noble")
 	types.RegisterInterfaces(cfg.InterfaceRegistry)

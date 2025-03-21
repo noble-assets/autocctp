@@ -25,15 +25,14 @@ import (
 	"testing"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
-	"github.com/stretchr/testify/require"
-
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/stretchr/testify/require"
 
+	"autocctp.dev/testutil"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
 )
 
 func TestValidateMintRecipient(t *testing.T) {
@@ -140,7 +139,7 @@ func TestValidateDestinationCaller(t *testing.T) {
 
 func TestValidateExistingAccount(t *testing.T) {
 	// ARRANGE: Create a new account
-	addr := sdk.AccAddress(utils.AddressBytesTest())
+	addr := sdk.AccAddress(testutil.AddressBytes())
 	baseAcc := &authtypes.BaseAccount{Address: addr.String()}
 
 	// ACT: Validate account
@@ -174,7 +173,7 @@ func TestValidateExistingAccount(t *testing.T) {
 	require.NoError(t, err, "expecting no error when account was created singerlessly")
 
 	// ARRANGE: Change the expected address from previous test
-	expAddress := sdk.AccAddress(utils.AddressBytesTest())
+	expAddress := sdk.AccAddress(testutil.AddressBytes())
 
 	// ACT: Validate account
 	err = types.ValidateExistingAccount(baseAcc, expAddress)

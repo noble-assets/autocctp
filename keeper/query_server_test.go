@@ -23,25 +23,22 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/keeper"
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
 )
 
 func TestAddress(t *testing.T) {
-	utils.SDKConfigTest()
-
-	validProperties := utils.ValidPropertiesTest(false)
+	validProperties := testutil.ValidProperties(false)
 	address := types.GenerateAddress(validProperties)
 
-	validPropertiesWithCaller := utils.ValidPropertiesTest(true)
+	validPropertiesWithCaller := testutil.ValidProperties(true)
 	addressWithCaller := types.GenerateAddress(validPropertiesWithCaller)
 
 	testCases := []struct {

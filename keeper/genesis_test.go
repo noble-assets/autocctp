@@ -23,11 +23,10 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
-	"cosmossdk.io/math"
-
-	"autocctp.dev/utils/mocks"
+	"autocctp.dev/testutil/mocks"
 )
 
 func TestExportGenesis(t *testing.T) {
