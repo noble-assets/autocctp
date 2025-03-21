@@ -23,12 +23,11 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/spf13/cobra"
 
 	"autocctp.dev/types"
 )
@@ -128,11 +127,12 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 			// Create an empty signature with the custom PubKey to allow non existent
 			// account to send `MsgRegisterAccountSignerlessly` messages.
 			err = builder.SetSignatures(signingtypes.SignatureV2{
-				PubKey: &types.PubKey{Key: address},
+				PubKey: &types.PubKey{Key: address.Bytes()},
 				Data: &signingtypes.SingleSignatureData{
 					SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
 					Signature: []byte(""),
 				},
+				Sequence: 0,
 			})
 			if err != nil {
 				return nil
