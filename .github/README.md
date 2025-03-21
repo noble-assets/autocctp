@@ -1,5 +1,21 @@
+<div align="center">
 [![GitHub tag](https://img.shields.io/github/tag/noble-assets/autocctp?include_prereleases=&sort=semver&color=blue)](https://github.com/noble-assets/autocctp/releases/)
 [![License](https://img.shields.io/badge/License-BUSL-blue)](#license)
+[![Unit Tests](https://github.com/noble-assets/autocctp/actions/workflows/unit-tests.yaml/badge.svg)](https://github.com/noble-assets/autocctp/actions/workflows/unit-tests.yaml)
+  <a href="https://github.com/noble-assets/noble/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/noble-assets/noble?style=for-the-badge&label=Latest%20Release&color=BAC3FF"></a>
+</div>
+
+<div align="center">
+  <a href="https://github.com/noble-assets/autocctp/releases/">
+    <img alt="Latest Tag" src="https://img.shields.io/github/tag/noble-assets/autocctp?include_prereleases=&sort=semver&color=BAC3FF&style=for-the-badge">
+  </a>
+  <a href="#license">
+    <img alt="License" src="https://img.shields.io/badge/License-BUSL-blue?style=for-the-badge&color=BAC3FF">
+  </a>
+  <a href="https://github.com/noble-assets/autocctp/actions/workflows/unit-tests.yaml">
+    <img alt="Unit Tests" src="https://github.com/noble-assets/autocctp/actions/workflows/unit-tests.yaml/badge.svg?style=for-the-badge">
+  </a>
+</div>
 
 ![Banner](./assets/banner.png)
 
