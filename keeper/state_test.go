@@ -23,8 +23,9 @@ package keeper_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/assert"
+
+	"cosmossdk.io/math"
 
 	"autocctp.dev/testutil"
 	"autocctp.dev/testutil/mocks"
