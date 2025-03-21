@@ -1,3 +1,6 @@
+[![GitHub tag](https://img.shields.io/github/tag/noble-assets/autocctp?include_prereleases=&sort=semver&color=blue)](https://github.com/noble-assets/autocctp/releases/)
+[![License](https://img.shields.io/badge/License-BUSL-blue)](#license)
+
 ![Banner](./assets/banner.png)
 
 The `x/autocctp` module is designed to facilitate the transfer of
