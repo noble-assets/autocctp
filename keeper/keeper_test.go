@@ -23,20 +23,19 @@ package keeper_test
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
 )
 
 func TestValidateAccountProperties(t *testing.T) {
 	_, k, _ := mocks.AutoCCTPKeeper(t)
-	validProperties := utils.ValidPropertiesTest(false)
-	validPropertiesWithCaller := utils.ValidPropertiesTest(true)
+	validProperties := testutil.ValidProperties(false)
+	validPropertiesWithCaller := testutil.ValidProperties(true)
 
 	invalidFalbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
 
@@ -116,7 +115,7 @@ func TestSendRestrictionFn(t *testing.T) {
 	mocks, k, ctx := mocks.AutoCCTPKeeper(t)
 	ak := mocks.AccountKeeper
 
-	acc := utils.DummyAccountTest(false)
+	acc := testutil.AutoCCTPAccount(false)
 
 	// ACT
 	toAddr, err := k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), sdk.Coins{})

@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"testing"
 
-	"autocctp.dev/utils"
+	"autocctp.dev/testutil"
 	"cosmossdk.io/math"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	fiattokenfactorytypes "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/types"
@@ -153,9 +153,9 @@ func NewAutoCCTPSuite(t *testing.T, isZeroFees bool, isIBC bool) (context.Contex
 
 	suite.destinationDomain = 0
 
-	addr := utils.AddressBytesTest()
+	addr := testutil.AddressBytes()
 	suite.mintRecipient = common.BytesToAddress(addr).String()
-	addr = utils.AddressBytesTest()
+	addr = testutil.AddressBytes()
 	suite.destinationCaller = common.BytesToAddress(addr).String()
 
 	if isIBC {

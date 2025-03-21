@@ -23,12 +23,11 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/assert"
 
-	"cosmossdk.io/math"
-
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 )
 
 func TestIncrementNumOfAccounts(t *testing.T) {
@@ -145,7 +144,7 @@ func TestGetPendingTransfers(t *testing.T) {
 	assert.Equal(t, 0, len(acc), "expected no pending transfers to be returned")
 
 	// ARRANGE
-	_, err = utils.DummyPendingTransfersTest(ctx, k, 2, "", false)
+	_, err = testutil.DummyPendingTransfersTest(ctx, k, 2, "", false)
 	assert.NoError(t, err, "expected no error in the generation of dummy transfers")
 
 	// ACT

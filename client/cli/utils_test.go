@@ -26,13 +26,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/client/cli"
+	"autocctp.dev/testutil"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
 )
 
 func TestValidateAndParseDomainFields(t *testing.T) {
 	// ARRANGE
-	utils.SDKConfigTest()
+	testutil.SetSDKConfig()
 
 	testCases := []struct {
 		name              string
