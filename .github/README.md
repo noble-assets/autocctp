@@ -1,12 +1,12 @@
 <div align="center">
   <a href="https://github.com/noble-assets/autocctp/releases/latest">
-    <img alt="Latest Release" src="https://img.shields.io/github/tag/noble-assets/autocctp?include_prereleases=&sort=semver&color=BAC3FF&style=for-the-badge">
+    <img alt="Latest Release" src="https://img.shields.io/github/v/release/noble-assets/autocctp?labelColor=1E2457&color=BAC3FF">
   </a>
-  <a href="#license">
+  <a href="https://github.com/noble-assets/autocctp/LICENSE">
     <img alt="License" src="https://img.shields.io/badge/License-BUSL-red?labelColor=1E2457&color=BAC3FF&link=https%3A%2F%2Fgithub.com%2Fnoble-assets%2Fautocctp%2Fblob%2Fstepit%2Fdocs%2FLICENSE">
   </a>
   <a href="https://github.com/noble-assets/autocctp/actions/workflows/unit-tests.yaml">
-    <img alt="CI" src="https://github.com/noble-assets/autocctp/actions/workflows/ci.yaml=?style=for-the-badge&color=BAC3FF">
+    <img alt="E2E Tests" src="https://img.shields.io/github/actions/workflow/status/noble-assets/autocctp/e2e-tests.yaml?style=flat&label=Tests&labelColor=1E2457">
   </a>
 </div>
 <br>
