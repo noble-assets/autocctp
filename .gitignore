@@ -1,6 +1,5 @@
-.idea
-
 .autocctp
+.idea
 build
 go.work.sum
 coverage.out
