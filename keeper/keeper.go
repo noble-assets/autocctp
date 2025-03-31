@@ -140,7 +140,7 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	return toAddr, err
 }
 
-// registerAccount handles the registration of a custom account given the AutoCCTP properties.
+// registerAccount handles the AutoCCTP account registration given certain properties.
 //
 // CONTRACT: the function assumes properties have already been validated.
 func (k Keeper) registerAccount(ctx context.Context, accountProperties types.AccountProperties) (string, error) {
