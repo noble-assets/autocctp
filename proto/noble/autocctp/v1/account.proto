@@ -8,7 +8,7 @@ import "gogoproto/gogo.proto";
 
 option go_package = "autocctp.dev/types";
 
-// Account is a custom account type used for AutoCCTP transfers.
+// Account is the custom AutoCCTP account type containing transfer information.
 message Account {
   option (cosmos_proto.implements_interface) = "cosmos.auth.v1beta1.AccountI";
 
