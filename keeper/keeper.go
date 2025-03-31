@@ -53,8 +53,7 @@ type Keeper struct {
 	// TotalTransferred keeps track of the total value transferred per destination domain.
 	TotalTransferred collections.Map[uint32, uint64]
 
-	// PendingTransfers is a transient map that keeps track of the auto CCTP pending
-	// transfers for the current block.
+	// PendingTransfers is a transient map that keeps track of the pending transfers for the current block.
 	PendingTransfers collections.Map[string, types.Account]
 }
 
