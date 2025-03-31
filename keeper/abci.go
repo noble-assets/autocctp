@@ -69,7 +69,7 @@ func (k *Keeper) ExecuteTransfers(ctx context.Context) {
 				"from", transfer.Address,
 				"to", transfer.MintRecipient,
 				"denom", balance.Denom,
-				"destination domain", transfer.DestinationDomain,
+				"destination_domain", transfer.DestinationDomain,
 				"amount", balance.Amount,
 				"err", err,
 			)
