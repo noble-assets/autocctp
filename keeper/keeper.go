@@ -46,7 +46,7 @@ type Keeper struct {
 
 	cctpServer types.CCTPServer
 
-	// NumOfAccounts keeps track of the number of accounts created for every destination domain.
+	// NumOfAccounts keeps track of the number of accounts registered per destination domain.
 	NumOfAccounts collections.Map[uint32, uint64]
 	// NumOfTransfers keeps track of the number of auto CCTP transfers executed per destination domain.
 	NumOfTransfers collections.Map[uint32, uint64]
