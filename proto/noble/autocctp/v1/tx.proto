@@ -15,8 +15,6 @@ service Msg {
   rpc RegisterAccount(MsgRegisterAccount) returns (MsgRegisterAccountResponse);
 }
 
-//
-
 // MsgRegisterAccount is the message used to register a new AutoCCTP account.
 message MsgRegisterAccount {
   option (cosmos.msg.v1.signer) = "signer";
