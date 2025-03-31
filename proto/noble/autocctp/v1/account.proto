@@ -20,7 +20,7 @@ message Account {
   bytes destination_caller = 5;
 }
 
-// PubKey is a custom public key type used for singlerlessly account registration.
+// PubKey is the custom AutoCCTP public key type used for custom AutoCCTP accounts.
 message PubKey {
   option (gogoproto.goproto_stringer) = false;
 

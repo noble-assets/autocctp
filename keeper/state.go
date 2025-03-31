@@ -22,6 +22,8 @@ package keeper
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"cosmossdk.io/math"
 
@@ -30,35 +32,41 @@ import (
 
 // Setters
 
-func (k *Keeper) IncrementNumOfAccounts(ctx context.Context, destinationDomain uint32) {
+func (k *Keeper) IncrementNumOfAccounts(ctx context.Context, destinationDomain uint32) error {
 	count, _ := k.NumOfAccounts.Get(ctx, destinationDomain)
 
 	if err := k.NumOfAccounts.Set(ctx, destinationDomain, count+1); err != nil {
-		k.logger.Error("increment number of accounts", "destination_domain", destinationDomain)
+		return fmt.Errorf("error incrementing the number of accounts: %w", err)
 	}
+
+	return nil
 }
 
-func (k *Keeper) IncrementNumOfTransfers(ctx context.Context, destinationDomain uint32) {
+func (k *Keeper) IncrementNumOfTransfers(ctx context.Context, destinationDomain uint32) error {
 	count, _ := k.NumOfTransfers.Get(ctx, destinationDomain)
 
 	if err := k.NumOfTransfers.Set(ctx, destinationDomain, count+1); err != nil {
-		k.logger.Error("increment number of transfers", "destination_domain", destinationDomain)
+		return fmt.Errorf("error incrementing the number of transfers: %w", err)
 	}
+
+	return nil
 }
 
-func (k *Keeper) IncrementTotalTransferred(ctx context.Context, destinationDomain uint32, amount math.Int) {
+func (k *Keeper) IncrementTotalTransferred(ctx context.Context, destinationDomain uint32, amount math.Int) error {
 	if !amount.IsUint64() {
 		k.logger.Error("increment total transferred because invalid amount",
 			"destination_domain", destinationDomain,
 			"amount", amount.String(),
 		)
-		return
+		return errors.New("error incrementing total transferred: not uint64 amount")
 	}
 
 	tot, _ := k.TotalTransferred.Get(ctx, destinationDomain)
 	if err := k.TotalTransferred.Set(ctx, destinationDomain, tot+amount.Uint64()); err != nil {
-		k.logger.Error("increment total transferred", "destination_domain", destinationDomain)
+		return fmt.Errorf("error incrementing total transferred: %w", err)
 	}
+
+	return nil
 }
 
 // Getters

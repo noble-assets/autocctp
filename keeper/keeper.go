@@ -65,8 +65,8 @@ func NewKeeper(
 	eventService event.Service,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	cctpServer types.CCTPServer,
 	ftfKeeper types.FiatTokenfactoryKeeper,
+	cctpServer types.CCTPServer,
 ) *Keeper {
 	builder := collections.NewSchemaBuilder(storeService)
 	transientBuilder := collections.NewSchemaBuilderFromAccessor(transientService.OpenTransientStore)
@@ -77,7 +77,7 @@ func NewKeeper(
 
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
-		ftfKeeper:     fiattokenfactory,
+		ftfKeeper:     ftfKeeper,
 
 		cctpServer: cctpServer,
 
@@ -95,8 +95,8 @@ func NewKeeper(
 	return keeper
 }
 
-// CCTPServer is a method used to set the CCTP server into the AutoCCTP keeper. This method is
-// required because is the only way to inject a server dependency into the keeper using deepinject.
+// SetCCTPServer allows us to override the CCTP server inside the keeper.
+// This is required because servers can't be injected via depinject.
 func (k *Keeper) SetCCTPServer(cctpServer types.CCTPServer) {
 	k.cctpServer = cctpServer
 }
@@ -158,7 +158,9 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 			rawAccount = types.NewAccount(account, accountProperties)
 			k.accountKeeper.SetAccount(ctx, rawAccount)
 
-			k.IncrementNumOfAccounts(ctx, accountProperties.DestinationDomain)
+			if err := k.IncrementNumOfAccounts(ctx, accountProperties.DestinationDomain); err != nil {
+				return "", err
+			}
 		case *types.Account:
 			return "", errors.New("account has already been registered")
 		default:
@@ -182,7 +184,9 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 	account := types.NewAccount(baseAccount, accountProperties)
 
 	k.accountKeeper.SetAccount(ctx, account)
-	k.IncrementNumOfAccounts(ctx, accountProperties.DestinationDomain)
+	if err := k.IncrementNumOfAccounts(ctx, accountProperties.DestinationDomain); err != nil {
+		return "", err
+	}
 
 	return address.String(), nil
 }

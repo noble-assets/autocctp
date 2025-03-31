@@ -74,8 +74,12 @@ func (k *Keeper) ExecuteTransfers(ctx context.Context) {
 				"err", err,
 			)
 		} else {
-			k.IncrementNumOfTransfers(ctx, transfer.DestinationDomain)
-			k.IncrementTotalTransferred(ctx, transfer.DestinationDomain, balance.Amount)
+			if err := k.IncrementNumOfTransfers(ctx, transfer.DestinationDomain); err != nil {
+				k.logger.Error("end block", "error", err)
+			}
+			if err := k.IncrementTotalTransferred(ctx, transfer.DestinationDomain, balance.Amount); err != nil {
+				k.logger.Error("end block", "error", err)
+			}
 		}
 	}
 }
