@@ -65,8 +65,8 @@ func NewKeeper(
 	eventService event.Service,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	fiattokenfactory types.FiatTokenfactoryKeeper,
 	cctpServer types.CCTPServer,
+	ftfKeeper types.FiatTokenfactoryKeeper,
 ) *Keeper {
 	builder := collections.NewSchemaBuilder(storeService)
 	transientBuilder := collections.NewSchemaBuilderFromAccessor(transientService.OpenTransientStore)
