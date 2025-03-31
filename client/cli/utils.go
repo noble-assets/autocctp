@@ -66,7 +66,7 @@ var supportedDomains = map[uint32]Domain{
 	10: UNICHAIN,
 }
 
-// ValidateDestinationDomain returns a Domain type or an error if the domain is Noble or not valid.
+// ValidateDestinationDomain returns a Domain type or an error if the domain is Noble or invalid.
 func ValidateDestinationDomain(destinationDomain string) (Domain, error) {
 	dD, err := strconv.ParseUint(destinationDomain, cctptypes.BaseTen, cctptypes.DomainBitLen)
 	if err != nil {
