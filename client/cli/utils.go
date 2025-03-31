@@ -84,7 +84,7 @@ func ValidateDestinationDomain(destinationDomain string) (Domain, error) {
 }
 
 // parseAddress parses an encoded address into a 32 length byte array. If the encoded bytes are
-// less than 32, the function left pad with zeros to obtain the length used in cross-chain transfers.
+// less than 32, the function left pads to obtain the length used in cross-chain transfers.
 func (d Domain) parseAddress(address string) ([]byte, error) {
 	var bz []byte
 	switch d {
