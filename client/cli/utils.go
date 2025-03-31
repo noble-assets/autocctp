@@ -33,7 +33,7 @@ import (
 	"autocctp.dev/types"
 )
 
-// Domains represents a destination domain supported by CCTP.
+// Domain represents a destination domain supported by CCTP.
 //
 // https://developers.circle.com/stablecoins/supported-domains
 type Domain uint32
