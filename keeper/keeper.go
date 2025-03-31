@@ -50,7 +50,7 @@ type Keeper struct {
 	NumOfAccounts collections.Map[uint32, uint64]
 	// NumOfTransfers keeps track of the number of auto CCTP transfers executed per destination domain.
 	NumOfTransfers collections.Map[uint32, uint64]
-	// TotalTransferred keeps track of the total USDC transferred per destination domain.
+	// TotalTransferred keeps track of the total value transferred per destination domain.
 	TotalTransferred collections.Map[uint32, uint64]
 
 	// PendingTransfers is a transient map that keeps track of the auto CCTP pending
