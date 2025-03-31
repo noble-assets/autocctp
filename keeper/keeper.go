@@ -101,7 +101,7 @@ func (k *Keeper) SetCCTPServer(cctpServer types.CCTPServer) {
 	k.cctpServer = cctpServer
 }
 
-// ValidateAccountProperties returns an error if one of the properties is not valid.
+// ValidateAccountProperties returns an error if any account properties is not valid.
 func (k *Keeper) ValidateAccountProperties(accountProperties types.AccountProperties) error {
 	if err := types.ValidateMintRecipient(accountProperties.MintRecipient); err != nil {
 		return types.ErrInvalidMintRecipient.Wrap(err.Error())
