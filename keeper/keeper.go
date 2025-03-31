@@ -120,7 +120,7 @@ func (k *Keeper) ValidateAccountProperties(accountProperties types.AccountProper
 }
 
 // SendRestrictionFn checks every transfer executed on the Noble chain to see if
-// the recipient is an AutoCCTP accountKeeper, allowing us to mark accounts for clearing.
+// the recipient is an AutoCCTP account, allowing us to mark them for clearing.
 func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress, coins sdk.Coins) (newToAddr sdk.AccAddress, err error) {
 	rawAccount := k.accountKeeper.GetAccount(ctx, toAddr)
 	if rawAccount == nil {
