@@ -45,7 +45,7 @@ func (k *Keeper) InitGenesis(ctx context.Context, genesis types.GenesisState) {
 }
 
 func (k *Keeper) ExportGenesis(ctx context.Context) *types.GenesisState {
-	// NOTE: errors are intentionally not handled to unconditionally allow genesis export.
+	// NOTE: Errors are intentionally ignored to always allow genesis export.
 	numOfAccount, _ := k.GetNumOfAccountPerDestination(ctx)
 	numOfTransfers, _ := k.GetNumOfTransfersPerDestination(ctx)
 	totTransferred, _ := k.GetTotalTransferredPerDestination(ctx)
