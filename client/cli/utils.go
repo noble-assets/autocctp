@@ -102,7 +102,7 @@ func (d Domain) parseAddress(address string) ([]byte, error) {
 	case NOBLE:
 		return nil, errors.New("destination domain cannot be source domain")
 	default:
-		return nil, fmt.Errorf("domain %d is currently not supported", uint32(d))
+		return nil, fmt.Errorf("destination domain %d is not supported", uint32(d))
 	}
 
 	return LeftPadBytes(bz)
