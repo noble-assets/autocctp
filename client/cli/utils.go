@@ -80,6 +80,7 @@ func ValidateDestinationDomain(destinationDomain string) (Domain, error) {
 	if domain == NOBLE {
 		return 0, errors.New("destination domain cannot be source domain")
 	}
+
 	return domain, nil
 }
 
