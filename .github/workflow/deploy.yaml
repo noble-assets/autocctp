@@ -28,7 +28,9 @@ jobs:
           rm -rf vangen
 
       - name: Build Site
-        run: vangen
+        run: |
+          vangen
+          echo "autocctp.dev" > ./vangen/CNAME
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
