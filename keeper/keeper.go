@@ -193,10 +193,10 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 	return address.String(), nil
 }
 
-// clearAccount handles the clearing of an account's balance either by registering it for
-// pending CCTP transfers or by sending funds to a fallback address.
+// clearAccount handles the clearing of an account's balance either by marking it for
+// clearing via a CCTP transfer or directly sending the funds to the fallback address.
 //
-// Returns an error if the registration or the transfer fail.
+// Returns an error if the marking or transfer fails.
 func (k Keeper) clearAccount(ctx context.Context, account *types.Account, coins sdk.Coins, isFallbackTransfer bool) error {
 	if !isFallbackTransfer {
 		if err := k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
