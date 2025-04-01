@@ -68,8 +68,6 @@ message MsgRegisterAccountSignerlesslyResponse {
   string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
-//
-
 // MsgClearAccount is the message used to initiate the transfer of funds from the account associated
 // with the specified address and the previously specified mint recipient.
 message MsgClearAccount {
