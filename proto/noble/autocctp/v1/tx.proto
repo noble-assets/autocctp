@@ -57,7 +57,7 @@ message MsgRegisterAccountSignerlessly {
   bytes mint_recipient = 3;
   // FallbackRecipient ia the Noble local account that can be used as the fallback for the
   // transfer in case the CCTP transfer fails.
-  string fallback_recipient = 4;
+  string fallback_recipient = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bytes destination_caller = 5;
 }
 
