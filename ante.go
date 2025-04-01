@@ -47,9 +47,9 @@ func SigVerificationGasConsumer(meter storetypes.GasMeter, sig signing.Signature
 
 // SigVerificationDecorator is a custom ante handler used to verify signerless registration messages for AutoCCTP accounts.
 type SigVerificationDecorator struct {
-	fiatTokenfactory types.FiatTokenfactoryKeeper
-	bank             types.BankKeeper
-	underlying       ante.SigVerificationDecorator
+	ftf        types.FiatTokenfactoryKeeper
+	bank       types.BankKeeper
+	underlying ante.SigVerificationDecorator
 }
 
 var _ sdk.AnteDecorator = SigVerificationDecorator{}
@@ -64,9 +64,9 @@ func NewSigVerificationDecorator(
 	signModeHandler *txsigning.HandlerMap,
 ) SigVerificationDecorator {
 	return SigVerificationDecorator{
-		fiatTokenfactory: fk,
-		bank:             bk,
-		underlying:       ante.NewSigVerificationDecorator(ak, signModeHandler),
+		ftf:        fk,
+		bank:       bk,
+		underlying: ante.NewSigVerificationDecorator(ak, signModeHandler),
 	}
 }
 
@@ -83,7 +83,7 @@ func (d SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 
 		// Check if the balance of the wannabe AutoCCTP account is not zero to prevent spam
 		// attacks of AutoCCTP accounts.
-		mintToken := d.fiatTokenfactory.GetMintingDenom(ctx)
+		mintToken := d.ftf.GetMintingDenom(ctx)
 		balance := d.bank.GetBalance(ctx, address, mintToken.Denom)
 		if balance.IsZero() || msg.Signer != address.String() {
 			return d.underlying.AnteHandle(ctx, tx, simulate, next)

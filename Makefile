@@ -36,6 +36,7 @@ goimports_reviser=github.com/incu6us/goimports-reviser/v3
 gofumpt_cmd=mvdan.cc/gofumpt
 golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint
 
+PREFIXES="github.com/cosmos,cosmossdk.io,github.com/cometbft" 
 FILES := $(shell find . -name "*.go" -not -path "./simapp/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go")
 license:
 	@echo "🤖 Adding license to files..."
@@ -44,7 +45,7 @@ license:
 
 format:
 	@echo "🤖 Running formatters..."
-	@go run $(goimports_reviser) -company-prefixes "github.com/cosmos,cosmossdk.io,github.com/cometbft,github.com/grpc-ecosystem" -excludes 'utils/tools.go' -rm-unused -set-alias ./...
+	@go run $(goimports_reviser) -company-prefixes $(PREFIXES) -excludes 'utils/tools.go' -rm-unused -set-alias ./...
 	@go run $(gofumpt_cmd) -l -w .
 	@echo "✅ Completed formatting!"
 

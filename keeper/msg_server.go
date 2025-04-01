@@ -24,7 +24,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"autocctp.dev/types"
 )
@@ -68,7 +68,7 @@ func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterA
 func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.MsgRegisterAccountSignerlessly) (*types.MsgRegisterAccountSignerlesslyResponse, error) {
 	// Meesage inputs validation
 	if msg == nil {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("msg to register account signerlessly cannot be nil")
+		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to register account signerlessly cannot be nil")
 	}
 
 	accountProperties := msg.GetAccountProperties()
