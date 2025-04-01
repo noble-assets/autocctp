@@ -14,7 +14,7 @@ message AccountRegistered {
   bool signerlessly = 6;
 }
 
-// AccountClearingInitiated is an event emitted when the account associated with the
+// AccountCleared is an event emitted when the AutoCCTP account associated with the
 // address is cleared.
 message AccountCleared {
   string address = 1;
