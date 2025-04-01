@@ -23,7 +23,7 @@ package keeper
 import (
 	"context"
 
-	errorsmod "cosmossdk.io/errors"
+	sdkerrors "cosmossdk.io/errors"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"autocctp.dev/types"
@@ -50,7 +50,7 @@ func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterA
 	// State transition logic.
 	address, err := ms.registerAccount(ctx, accountProperties)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to register the account")
+		return nil, sdkerrors.Wrap(err, "failed to register the account")
 	}
 
 	return &types.MsgRegisterAccountResponse{Address: address}, ms.eventService.EventManager(ctx).Emit(ctx, &types.AccountRegistered{
@@ -79,7 +79,7 @@ func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.
 	// State transition logic.
 	address, err := ms.registerAccount(ctx, accountProperties)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to register then account signerlessly")
+		return nil, sdkerrors.Wrap(err, "failed to register then account signerlessly")
 	}
 
 	return &types.MsgRegisterAccountSignerlesslyResponse{Address: address}, ms.eventService.EventManager(ctx).Emit(ctx, &types.AccountRegistered{
