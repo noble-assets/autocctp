@@ -89,8 +89,8 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-account-signerlessly [destination-domain] [mint-recipient] (destination-caller)",
 		Short: "Register signerlessly an AutoCCTP account for a destination domain, a mint recipient, and a fallback recipient",
-		Long: `Register signerlessly an AutoCCTP account for a destination domain, a mint recipient, and a fallback recipient, with an optional destination caller.
-		A signerlessly registration does not require transaction sender to have an account registered because no signature is required. `,
+		Long: `Signerlessly register an AutoCCTP account for a destination domain, a mint recipient, and a fallback recipient, with an optional destination caller.
+		A signerless registration does not require an existing wallet because no signature is required.`,
 		Args: cobra.RangeArgs(3, 4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
