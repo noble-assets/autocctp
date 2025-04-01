@@ -107,7 +107,7 @@ func (m *AccountRegistered) GetSignerlessly() bool {
 	return false
 }
 
-// AccountClearingInitiated is an event emitted when the account associated with the
+// AccountCleared is an event emitted when the AutoCCTP account associated with the
 // address is cleared.
 type AccountCleared struct {
 	Address  string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
