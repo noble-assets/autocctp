@@ -24,6 +24,7 @@ import (
 	"context"
 
 	sdkerrors "cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"autocctp.dev/types"
@@ -90,4 +91,45 @@ func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.
 		DestinationCaller: msg.DestinationCaller,
 		Signerlessly:      true,
 	})
+}
+
+// ClearAccount is the server entrypoint to retry the CCTP transfer associated with an AutoCCTP
+// account or to clear the account sending funds to the fallback address.
+func (ms msgServer) ClearAccount(ctx context.Context, msg *types.MsgClearAccount) (*types.MsgClearAccountResponse, error) {
+	// Meesage inputs validation
+	if msg == nil {
+		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to clear an account cannot be nil")
+	}
+
+	address, err := ms.accountKeeper.AddressCodec().StringToBytes(msg.Address)
+	if err != nil {
+		return nil, errorstypes.ErrInvalidAddress.Wrapf("failed to decode autocctp address: %s", err.Error())
+	}
+
+	rawAccount := ms.accountKeeper.GetAccount(ctx, address)
+	if rawAccount == nil {
+		return nil, types.ErrInvalidClearingAccount.Wrapf("account does not exist")
+	}
+	account, ok := rawAccount.(*types.Account)
+	if !ok {
+		return nil, types.ErrInvalidClearingAccount.Wrapf("account is not an autocctp account")
+	}
+
+	if msg.Fallback && msg.Signer != account.FallbackRecipient {
+		return nil, errorstypes.ErrUnauthorized.Wrapf("msg sender must be fallback account: %s != %s", msg.Signer, account.FallbackRecipient)
+	}
+
+	mintingToken := ms.ftfKeeper.GetMintingDenom(ctx)
+	balance := ms.bankKeeper.GetBalance(ctx, address, mintingToken.Denom)
+	if balance.IsZero() {
+		return nil, types.ErrInvalidClearingAccount.Wrapf("account does not require clearing")
+	}
+
+	// State transition logic.
+	err = ms.clearAccount(ctx, account, sdk.NewCoins(balance), msg.Fallback)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "failed to clear the account")
+	}
+
+	return &types.MsgClearAccountResponse{}, nil
 }

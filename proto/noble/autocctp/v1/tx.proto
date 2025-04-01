@@ -14,6 +14,7 @@ service Msg {
 
   rpc RegisterAccount(MsgRegisterAccount) returns (MsgRegisterAccountResponse);
   rpc RegisterAccountSignerlessly(MsgRegisterAccountSignerlessly) returns (MsgRegisterAccountSignerlesslyResponse);
+  rpc ClearAccount(MsgClearAccount) returns (MsgClearAccountResponse);
 }
 
 // MsgRegisterAccount is the message used to register a new AutoCCTP account.
@@ -66,3 +67,19 @@ message MsgRegisterAccountSignerlessly {
 message MsgRegisterAccountSignerlesslyResponse {
   string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
+
+// MsgClearAccount is the message used to initiate the transfer of funds from the account associated
+// with the specified address and the previously specified mint recipient.
+message MsgClearAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "noble/autocctp/ClearAccount";
+
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  bool fallback = 3;
+}
+
+message MsgClearAccountResponse {}

@@ -36,7 +36,7 @@ goimports_reviser=github.com/incu6us/goimports-reviser/v3
 gofumpt_cmd=mvdan.cc/gofumpt
 golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint
 
-PREFIXES="github.com/cosmos,cosmossdk.io,github.com/cometbft" 
+PREFIXES="github.com/cosmos,cosmossdk.io,github.com/cometbft"
 FILES := $(shell find . -name "*.go" -not -path "./simapp/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go")
 license:
 	@echo "🤖 Adding license to files..."

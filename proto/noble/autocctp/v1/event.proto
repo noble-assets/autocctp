@@ -13,3 +13,10 @@ message AccountRegistered {
   bytes destination_caller = 5;
   bool signerlessly = 6;
 }
+
+// AccountCleared is an event emitted when the AutoCCTP account associated with the
+// address is cleared.
+message AccountCleared {
+  string address = 1;
+  string receiver = 2;
+}

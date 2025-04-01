@@ -39,6 +39,7 @@ func init() {
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgRegisterAccount{}, "noble/autocctp/RegisterAccount", nil)
 	cdc.RegisterConcrete(&MsgRegisterAccountSignerlessly{}, "noble/autocctp/RegisterAccountSignerlessly", nil)
+	cdc.RegisterConcrete(&MsgClearAccount{}, "noble/autocctp/ClearAccount", nil)
 }
 
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
@@ -49,6 +50,7 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgRegisterAccount{},
 		&MsgRegisterAccountSignerlessly{},
+		&MsgClearAccount{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

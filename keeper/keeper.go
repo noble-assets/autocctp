@@ -28,9 +28,11 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/event"
 	"cosmossdk.io/core/store"
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"autocctp.dev/types"
@@ -189,4 +191,36 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 	}
 
 	return address.String(), nil
+}
+
+// clearAccount handles the clearing of an account's balance either by marking it for
+// clearing via a CCTP transfer or directly sending the funds to the fallback address.
+//
+// Returns an error if the marking or transfer fails.
+func (k Keeper) clearAccount(ctx context.Context, account *types.Account, coins sdk.Coins, isFallbackTransfer bool) error {
+	if !isFallbackTransfer {
+		if err := k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
+			return errorsmod.Wrap(err, "failed registering the address into pending transfers")
+		}
+		// No event emitted here because the pending transfer clearing can still fail.
+		return nil
+	}
+
+	fallbackRecipientBz, err := k.accountKeeper.AddressCodec().StringToBytes(account.FallbackRecipient)
+	if err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("failed to decode fallback address: %s", err)
+	}
+	addressBz, err := k.accountKeeper.AddressCodec().StringToBytes(account.Address)
+	if err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("failed to decode autocctp address: %s", err)
+	}
+
+	if err := k.bankKeeper.SendCoins(ctx, addressBz, fallbackRecipientBz, coins); err != nil {
+		return errorsmod.Wrap(err, "failed to clear balance to fallback account")
+	}
+
+	return k.eventService.EventManager(ctx).Emit(ctx, &types.AccountCleared{
+		Address:  account.Address,
+		Receiver: account.FallbackRecipient,
+	})
 }

@@ -28,6 +28,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"autocctp.dev/keeper"
@@ -277,6 +278,187 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			// ASSERT
 			assert.Error(t, err, "expected error during account registration")
 			assert.ErrorContains(t, err, "unsupported account type", "expected a different error")
+		})
+	}
+}
+
+func TestClearAccount(t *testing.T) {
+	utils.SDKConfigTest()
+
+	// ARRANGE
+	accountProperties := utils.ValidPropertiesTest(false)
+	customAddress := types.GenerateAddress(accountProperties)
+
+	invalidFalbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
+
+	testCases := []struct {
+		name        string
+		setup       func(sdk.Context, *mocks.Mocks)
+		malleateMsg func(*types.MsgClearAccount)
+		postChecks  func(sdk.Context, *mocks.BankKeeper, *keeper.Keeper)
+		errContains string
+	}{
+		// Tests for msg server validation.
+		{
+			name:  "fail when the address is not valid",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {},
+			malleateMsg: func(msg *types.MsgClearAccount) {
+				msg.Address = "invalid"
+			},
+			errContains: sdkerrors.ErrInvalidAddress.Error(),
+		},
+		{
+			name:  "fail when the bech32 prefix is not correct",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {},
+			malleateMsg: func(msg *types.MsgClearAccount) {
+				msg.Address = "osmo13cdtym9q8f8e9kmj2ugkwzf9yyldtjeww6veks"
+			},
+			errContains: sdkerrors.ErrInvalidAddress.Error(),
+		},
+		{
+			name:        "fail when the account is not registered",
+			setup:       func(ctx sdk.Context, m *mocks.Mocks) {},
+			malleateMsg: func(msg *types.MsgClearAccount) {},
+			errContains: "account does not exists",
+		},
+		{
+			name: "fail when the account is base account",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence())
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {},
+			errContains: "account is not an autocctp account",
+		},
+		{
+			name: "fail when the signer is not fallback",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {
+				msg.Signer = utils.AddressTest()
+			},
+			errContains: "unauthorized",
+		},
+		{
+			name: "fail when the account does not have funds",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {},
+			errContains: "account does not require clearing",
+		},
+		{
+			name: "fail when the account does not have correct funds",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("unobl", 1_000_000_000))
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {},
+			errContains: "account does not require clearing",
+		},
+		// Tests for state transition.
+		{
+			name: "fail when the fallback account is not chain account",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				invalidProperties := accountProperties
+				invalidProperties.FallbackRecipient = invalidFalbackRecipient
+				address := types.GenerateAddress(invalidProperties)
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, address)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()),
+					invalidProperties,
+				)
+				m.AccountKeeper.Accounts[address.String()] = account
+				m.BankKeeper.Balances[address.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {
+				invalidProperties := accountProperties
+				invalidProperties.FallbackRecipient = invalidFalbackRecipient
+				address := types.GenerateAddress(invalidProperties)
+
+				msg.Address = address.String()
+				msg.Fallback = true
+			},
+			errContains: "failed to decode fallback address",
+		},
+		{
+			name: "fails transfering funds",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
+				m.BankKeeper.Failing = true
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {
+				msg.Fallback = true
+			},
+			errContains: "failed to clear balance",
+		},
+		{
+			name: "succeds transfering funds",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {
+				msg.Fallback = true
+			},
+			postChecks: func(ctx sdk.Context, bk *mocks.BankKeeper, _ *keeper.Keeper) {
+				fallbackBalance := bk.Balances[accountProperties.FallbackRecipient]
+				require.Equal(t, int64(1_000_000_000), fallbackBalance.AmountOf("uusdc").Int64(), "expected a different final amount for the fallback account")
+			},
+			errContains: "",
+		},
+		{
+			name: "succeds adding to pending transfer",
+			setup: func(ctx sdk.Context, m *mocks.Mocks) {
+				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				m.AccountKeeper.Accounts[customAddress.String()] = account
+				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
+			},
+			malleateMsg: func(msg *types.MsgClearAccount) {},
+			postChecks: func(ctx sdk.Context, _ *mocks.BankKeeper, k *keeper.Keeper) {
+				_, err := k.PendingTransfers.Get(ctx, customAddress.String())
+				require.NoError(t, err, "expected no error getting pending transfers")
+			},
+			errContains: "",
+		},
+	}
+
+	for _, tC := range testCases {
+		mocks, k, ctx := mocks.AutoCCTPKeeper(t)
+		server := keeper.NewMsgServer(k)
+
+		tC.setup(ctx, mocks)
+
+		msg := types.MsgClearAccount{
+			Signer:  accountProperties.FallbackRecipient,
+			Address: customAddress.String(),
+		}
+		tC.malleateMsg(&msg)
+
+		resp, err := server.ClearAccount(ctx, &msg)
+
+		t.Run(tC.name, func(t *testing.T) {
+			if tC.errContains == "" {
+				require.NoError(t, err, "expected no error executing the server call")
+				tC.postChecks(ctx, mocks.BankKeeper, k)
+			} else {
+				require.Error(t, err, "expected an error executing the server call")
+				require.Nil(t, resp, "expected a nil response when error is not nil")
+			}
 		})
 	}
 }
