@@ -88,7 +88,7 @@ func TxRegisterAccount() *cobra.Command {
 func TxRegisterAccountSignerlessly() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-account-signerlessly [destination-domain] [mint-recipient] (destination-caller)",
-		Short: "Register signerlessly an AutoCCTP account for a destination domain, a mint recipient, and a fallback recipient",
+		Short: "Signerlessly register an AutoCCTP account for a destination domain, a mint recipient, and a fallback recipient",
 		Long: `Signerlessly register an AutoCCTP account for a destination domain, a mint recipient, and a fallback recipient, with an optional destination caller.
 		A signerless registration does not require an existing wallet because no signature is required.`,
 		Args: cobra.RangeArgs(3, 4),
