@@ -45,8 +45,7 @@ func SigVerificationGasConsumer(meter storetypes.GasMeter, sig signing.Signature
 
 //
 
-// SigVerificationDecorator is a custom signature verification decorator used to
-// handle signerless verification signature for custom auto cctp accounts
+// SigVerificationDecorator is a custom ante handler used to verify signerless registration messages for AutoCCTP accounts.
 type SigVerificationDecorator struct {
 	fiatTokenfactory types.FiatTokenfactoryKeeper
 	bank             types.BankKeeper
