@@ -24,6 +24,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"autocctp.dev/types"
 )
