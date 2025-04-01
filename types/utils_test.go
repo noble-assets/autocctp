@@ -25,11 +25,12 @@ import (
 	"testing"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+	"github.com/stretchr/testify/require"
+
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/types"
 	"autocctp.dev/utils"
@@ -44,27 +45,27 @@ func TestValidateMintRecipient(t *testing.T) {
 		{
 			name:        "fail when the mint recipient is nil",
 			address:     nil,
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "fail when the mint recipient is empty initialized bytes",
 			address:     make([]byte, 0),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "fail when the mint recipient is zero address",
 			address:     make([]byte, cctptypes.MintRecipientLen),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "fail when the mint recipient is less than 32 bytes",
 			address:     bytes.Repeat([]byte{0x01}, cctptypes.MintRecipientLen-1),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "fail when the mint recipient is more than 32 bytes",
 			address:     bytes.Repeat([]byte{0x01}, cctptypes.MintRecipientLen+1),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "pass when the mint recipient is valid",
@@ -95,17 +96,17 @@ func TestValidateDestinationCaller(t *testing.T) {
 		{
 			name:        "fail with zero address of 32 bytes",
 			address:     make([]byte, cctptypes.DestinationCallerLen),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "fail with address shorter than 32 bytes",
 			address:     bytes.Repeat([]byte{0x01}, cctptypes.DestinationCallerLen-1),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "fail with address longer than 32 bytes",
 			address:     bytes.Repeat([]byte{0x01}, cctptypes.DestinationCallerLen+1),
-			errContains: sdkerrors.ErrInvalidAddress.Error(),
+			errContains: errorstypes.ErrInvalidAddress.Error(),
 		},
 		{
 			name:        "pass with empty address",

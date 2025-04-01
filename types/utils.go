@@ -25,8 +25,9 @@ import (
 	"fmt"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // ValidateExistingAccount is a utility for checking if an existing account is eligible to
@@ -56,7 +57,7 @@ func ValidateExistingAccount(account sdk.AccountI, address sdk.AccAddress) error
 func ValidateMintRecipient(address []byte) error {
 	emptyByteArr := make([]byte, cctptypes.MintRecipientLen)
 	if len(address) != cctptypes.MintRecipientLen || bytes.Equal(address, emptyByteArr) {
-		return sdkerrors.ErrInvalidAddress.Wrap("must be 32 bytes different than the zero address")
+		return errorstypes.ErrInvalidAddress.Wrap("must be 32 bytes different than the zero address")
 	}
 	return nil
 }
@@ -65,7 +66,7 @@ func ValidateDestinationCaller(address []byte) error {
 	emptyByteArr := make([]byte, cctptypes.DestinationCallerLen)
 	if len(address) != 0 {
 		if len(address) != cctptypes.DestinationCallerLen || bytes.Equal(address, emptyByteArr) {
-			return sdkerrors.ErrInvalidAddress.Wrap("must be 32 bytes different than the zero address")
+			return errorstypes.ErrInvalidAddress.Wrap("must be 32 bytes different than the zero address")
 		}
 	}
 	return nil

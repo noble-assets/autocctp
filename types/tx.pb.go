@@ -75,8 +75,7 @@ func (m *MsgRegisterAccount) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRegisterAccount proto.InternalMessageInfo
 
-// MsgRegisterAccountResponse is the response message returned when a new AutoCCTP
-// account is registered.
+// MsgRegisterAccountResponse is the response of the RegisterAccount message.
 type MsgRegisterAccountResponse struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
@@ -121,41 +120,142 @@ func (m *MsgRegisterAccountResponse) GetAddress() string {
 	return ""
 }
 
+// MsgRegisterAccountSignerlessly is equal to MsgRegisterAccount. The reason to have a
+// different type is to have the possibility to distringuish the two registration approaches in the
+// ante handler.
+type MsgRegisterAccountSignerlessly struct {
+	Signer            string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	DestinationDomain uint32 `protobuf:"varint,2,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+	MintRecipient     []byte `protobuf:"bytes,3,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
+	// FallbackRecipient ia the Noble local account that can be used as the fallback for the
+	// transfer in case the CCTP transfer fails.
+	FallbackRecipient string `protobuf:"bytes,4,opt,name=fallback_recipient,json=fallbackRecipient,proto3" json:"fallback_recipient,omitempty"`
+	DestinationCaller []byte `protobuf:"bytes,5,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
+}
+
+func (m *MsgRegisterAccountSignerlessly) Reset()         { *m = MsgRegisterAccountSignerlessly{} }
+func (m *MsgRegisterAccountSignerlessly) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterAccountSignerlessly) ProtoMessage()    {}
+func (*MsgRegisterAccountSignerlessly) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7d25acbeb4cbf6b7, []int{2}
+}
+func (m *MsgRegisterAccountSignerlessly) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterAccountSignerlessly) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterAccountSignerlessly.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterAccountSignerlessly) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterAccountSignerlessly.Merge(m, src)
+}
+func (m *MsgRegisterAccountSignerlessly) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterAccountSignerlessly) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterAccountSignerlessly.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterAccountSignerlessly proto.InternalMessageInfo
+
+// MsgRegisterAccountSignerlesslyResponse is the response message returned when a new AutoCCTP
+// account is registered signerlessly.
+type MsgRegisterAccountSignerlesslyResponse struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *MsgRegisterAccountSignerlesslyResponse) Reset() {
+	*m = MsgRegisterAccountSignerlesslyResponse{}
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterAccountSignerlesslyResponse) ProtoMessage()    {}
+func (*MsgRegisterAccountSignerlesslyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7d25acbeb4cbf6b7, []int{3}
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterAccountSignerlesslyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterAccountSignerlesslyResponse.Merge(m, src)
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterAccountSignerlesslyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterAccountSignerlesslyResponse proto.InternalMessageInfo
+
+func (m *MsgRegisterAccountSignerlesslyResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*MsgRegisterAccount)(nil), "noble.autocctp.v1.MsgRegisterAccount")
 	proto.RegisterType((*MsgRegisterAccountResponse)(nil), "noble.autocctp.v1.MsgRegisterAccountResponse")
+	proto.RegisterType((*MsgRegisterAccountSignerlessly)(nil), "noble.autocctp.v1.MsgRegisterAccountSignerlessly")
+	proto.RegisterType((*MsgRegisterAccountSignerlesslyResponse)(nil), "noble.autocctp.v1.MsgRegisterAccountSignerlesslyResponse")
 }
 
 func init() { proto.RegisterFile("noble/autocctp/v1/tx.proto", fileDescriptor_7d25acbeb4cbf6b7) }
 
 var fileDescriptor_7d25acbeb4cbf6b7 = []byte{
-	// 415 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x3f, 0x8f, 0xda, 0x30,
-	0x18, 0xc6, 0x63, 0x28, 0x54, 0xb5, 0x4a, 0xab, 0x58, 0x48, 0x4d, 0x33, 0x04, 0x84, 0x84, 0x84,
-	0x50, 0x49, 0x0a, 0x95, 0x3a, 0x74, 0x83, 0x56, 0xea, 0x84, 0x54, 0xa5, 0x5b, 0x17, 0x64, 0x1c,
-	0xd7, 0xb2, 0x9a, 0xd8, 0x51, 0x6c, 0x50, 0xbb, 0x55, 0x9d, 0xaa, 0x4e, 0xfd, 0x08, 0x7c, 0x04,
-	0x86, 0x7e, 0x88, 0x0e, 0x37, 0xa0, 0x9b, 0x6e, 0x3c, 0xc1, 0xc0, 0x7d, 0x8c, 0x13, 0xf9, 0x73,
-	0x87, 0xc2, 0xc0, 0x2d, 0x51, 0xfc, 0xfc, 0x1e, 0xbf, 0x7e, 0xfc, 0xfa, 0x85, 0xb6, 0x90, 0xf3,
-	0x90, 0x7a, 0x78, 0xa1, 0x25, 0x21, 0x3a, 0xf6, 0x96, 0x43, 0x4f, 0x7f, 0x77, 0xe3, 0x44, 0x6a,
-	0x89, 0xcc, 0x94, 0xb9, 0x05, 0x73, 0x97, 0x43, 0xdb, 0xc4, 0x11, 0x17, 0xd2, 0x4b, 0xbf, 0x99,
-	0xcb, 0x7e, 0x41, 0xa4, 0x8a, 0xa4, 0xf2, 0x22, 0xc5, 0x0e, 0xbb, 0x23, 0xc5, 0x72, 0xf0, 0x32,
-	0x03, 0xb3, 0x74, 0xe5, 0x65, 0x8b, 0x1c, 0x35, 0x99, 0x64, 0x32, 0xd3, 0x0f, 0x7f, 0x99, 0xda,
-	0xb9, 0xa8, 0x40, 0x34, 0x55, 0xcc, 0xa7, 0x8c, 0x2b, 0x4d, 0x93, 0x31, 0x21, 0x72, 0x21, 0x34,
-	0x7a, 0x0d, 0xeb, 0x8a, 0x33, 0x41, 0x13, 0x0b, 0xb4, 0x41, 0xef, 0xc9, 0xc4, 0xba, 0xfc, 0x37,
-	0x68, 0xe6, 0xe5, 0xc6, 0x41, 0x90, 0x50, 0xa5, 0x3e, 0xeb, 0x84, 0x0b, 0xe6, 0xe7, 0x3e, 0x34,
-	0x80, 0x28, 0xa0, 0x4a, 0x73, 0x81, 0x35, 0x97, 0x62, 0x16, 0xc8, 0x08, 0x73, 0x61, 0x55, 0xda,
-	0xa0, 0xd7, 0xf0, 0xcd, 0x23, 0xf2, 0x21, 0x05, 0xa8, 0x0b, 0x9f, 0x45, 0x5c, 0xe8, 0x59, 0x42,
-	0x09, 0x8f, 0x39, 0x15, 0xda, 0xaa, 0xb6, 0x41, 0xef, 0xa9, 0xdf, 0x38, 0xa8, 0x7e, 0x21, 0xa2,
-	0x8f, 0x10, 0x7d, 0xc5, 0x61, 0x38, 0xc7, 0xe4, 0xdb, 0x91, 0xf5, 0xd1, 0x99, 0x4c, 0x66, 0xb1,
-	0xe7, 0xbe, 0x50, 0x29, 0x1e, 0xc1, 0x61, 0x48, 0x13, 0xab, 0x96, 0x9e, 0x79, 0x1c, 0xef, 0x7d,
-	0x0a, 0xde, 0xbd, 0xfd, 0xbd, 0x6a, 0x19, 0x37, 0xab, 0x96, 0xf1, 0x6b, 0xbf, 0xee, 0xe7, 0x57,
-	0xfc, 0xb3, 0x5f, 0xf7, 0x9d, 0xd2, 0xd3, 0x95, 0xfa, 0xd6, 0xf9, 0x04, 0xed, 0xd3, 0x6e, 0xfa,
-	0x54, 0xc5, 0x52, 0x28, 0x8a, 0x46, 0xf0, 0x31, 0xce, 0x82, 0x9e, 0x6d, 0x6b, 0x61, 0x1c, 0x2d,
-	0x60, 0x75, 0xaa, 0x18, 0x62, 0xf0, 0x79, 0xf9, 0x8d, 0xba, 0xee, 0xc9, 0xac, 0xb8, 0xa7, 0x87,
-	0xdb, 0x83, 0x07, 0xd9, 0x8a, 0x8c, 0x76, 0xed, 0xe7, 0x7e, 0xdd, 0x07, 0x93, 0x57, 0xff, 0xb7,
-	0x0e, 0xd8, 0x6c, 0x1d, 0x70, 0xbd, 0x75, 0xc0, 0xdf, 0x9d, 0x63, 0x6c, 0x76, 0x8e, 0x71, 0xb5,
-	0x73, 0x8c, 0x2f, 0xe8, 0xae, 0x50, 0x40, 0x97, 0x9e, 0xfe, 0x11, 0x53, 0x35, 0xaf, 0xa7, 0xc3,
-	0xf4, 0xe6, 0x36, 0x00, 0x00, 0xff, 0xff, 0x76, 0x60, 0x85, 0xec, 0xda, 0x02, 0x00, 0x00,
+	// 482 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x54, 0x41, 0x6b, 0xd4, 0x40,
+	0x14, 0xce, 0x6c, 0x6d, 0xc5, 0xc1, 0x2a, 0x3b, 0x14, 0x8c, 0x11, 0xd2, 0x65, 0xa1, 0xb2, 0x2c,
+	0x6e, 0xe2, 0x56, 0x10, 0xf4, 0xd6, 0x55, 0xf0, 0x54, 0x90, 0xf4, 0x26, 0xc2, 0x92, 0x9d, 0x8c,
+	0xc3, 0x60, 0x32, 0x13, 0xf2, 0xa6, 0x8b, 0xbd, 0x89, 0x5e, 0x44, 0x2f, 0xfe, 0x84, 0xfe, 0x84,
+	0x3d, 0xf8, 0x23, 0x44, 0x3c, 0x14, 0x4f, 0x1e, 0x65, 0xf7, 0xb0, 0xfe, 0x0c, 0xd9, 0x49, 0x52,
+	0xc3, 0x86, 0x6e, 0x2b, 0x7a, 0xf0, 0x12, 0x32, 0xef, 0x7b, 0xef, 0xcb, 0x97, 0xef, 0xcb, 0x0b,
+	0x76, 0xa4, 0x1a, 0xc5, 0xcc, 0x0f, 0x0f, 0xb5, 0xa2, 0x54, 0xa7, 0xfe, 0xb8, 0xef, 0xeb, 0x57,
+	0x5e, 0x9a, 0x29, 0xad, 0x48, 0xd3, 0x60, 0x5e, 0x89, 0x79, 0xe3, 0xbe, 0xd3, 0x0c, 0x13, 0x21,
+	0x95, 0x6f, 0xae, 0x79, 0x97, 0x73, 0x83, 0x2a, 0x48, 0x14, 0xf8, 0x09, 0xf0, 0xc5, 0x74, 0x02,
+	0xbc, 0x00, 0x6e, 0xe6, 0xc0, 0xd0, 0x9c, 0xfc, 0xfc, 0x50, 0x40, 0x5b, 0x5c, 0x71, 0x95, 0xd7,
+	0x17, 0x77, 0x79, 0xb5, 0xfd, 0xb5, 0x81, 0xc9, 0x3e, 0xf0, 0x80, 0x71, 0x01, 0x9a, 0x65, 0x7b,
+	0x94, 0xaa, 0x43, 0xa9, 0xc9, 0x5d, 0xbc, 0x01, 0x82, 0x4b, 0x96, 0xd9, 0xa8, 0x85, 0x3a, 0x57,
+	0x06, 0xf6, 0xb7, 0x4f, 0xbd, 0xad, 0x82, 0x6e, 0x2f, 0x8a, 0x32, 0x06, 0x70, 0xa0, 0x33, 0x21,
+	0x79, 0x50, 0xf4, 0x91, 0x1e, 0x26, 0x11, 0x03, 0x2d, 0x64, 0xa8, 0x85, 0x92, 0xc3, 0x48, 0x25,
+	0xa1, 0x90, 0x76, 0xa3, 0x85, 0x3a, 0x9b, 0x41, 0xb3, 0x82, 0x3c, 0x36, 0x00, 0xd9, 0xc1, 0xd7,
+	0x12, 0x21, 0xf5, 0x30, 0x63, 0x54, 0xa4, 0x82, 0x49, 0x6d, 0xaf, 0xb5, 0x50, 0xe7, 0x6a, 0xb0,
+	0xb9, 0xa8, 0x06, 0x65, 0x91, 0x3c, 0xc1, 0xe4, 0x45, 0x18, 0xc7, 0xa3, 0x90, 0xbe, 0xac, 0xb4,
+	0x5e, 0x3a, 0x47, 0x53, 0xb3, 0x9c, 0xf9, 0x4d, 0xb4, 0x24, 0x8f, 0x86, 0x71, 0xcc, 0x32, 0x7b,
+	0xdd, 0x3c, 0xb3, 0x2a, 0xef, 0x91, 0x01, 0x1e, 0xde, 0x7f, 0x77, 0xbc, 0x6d, 0xfd, 0x3c, 0xde,
+	0xb6, 0xde, 0xcc, 0x27, 0xdd, 0xe2, 0x15, 0xdf, 0xcf, 0x27, 0x5d, 0x77, 0x29, 0xba, 0x25, 0xdf,
+	0xda, 0x4f, 0xb1, 0x53, 0x77, 0x33, 0x60, 0x90, 0x2a, 0x09, 0x8c, 0xec, 0xe2, 0xcb, 0x61, 0x2e,
+	0xf4, 0x5c, 0x5b, 0xcb, 0xc6, 0xf6, 0x97, 0x06, 0x76, 0xeb, 0x94, 0x07, 0x46, 0x51, 0xcc, 0x00,
+	0xe2, 0xa3, 0xff, 0x26, 0xac, 0xde, 0xd9, 0x61, 0xfd, 0x83, 0x48, 0x06, 0x67, 0x44, 0xd2, 0x5d,
+	0x1d, 0x49, 0xd5, 0xa9, 0xf6, 0x73, 0x7c, 0x7b, 0xb5, 0x97, 0x7f, 0x13, 0xd5, 0xee, 0xdb, 0x06,
+	0x5e, 0xdb, 0x07, 0x4e, 0x38, 0xbe, 0xbe, 0xbc, 0x4f, 0x3b, 0x5e, 0x6d, 0xaf, 0xbd, 0xba, 0x12,
+	0xa7, 0x77, 0xa1, 0xb6, 0x53, 0x91, 0x1f, 0x10, 0xbe, 0xb5, 0xea, 0xc3, 0xe8, 0x5f, 0x88, 0xae,
+	0x3a, 0xe2, 0x3c, 0xf8, 0xe3, 0x91, 0x52, 0x8d, 0xb3, 0xfe, 0x7a, 0x3e, 0xe9, 0xa2, 0xc1, 0x9d,
+	0xcf, 0x53, 0x17, 0x9d, 0x4c, 0x5d, 0xf4, 0x63, 0xea, 0xa2, 0x8f, 0x33, 0xd7, 0x3a, 0x99, 0xb9,
+	0xd6, 0xf7, 0x99, 0x6b, 0x3d, 0x23, 0xa7, 0xa4, 0x11, 0x1b, 0xfb, 0xfa, 0x28, 0x65, 0x30, 0xda,
+	0x30, 0xbf, 0xa1, 0x7b, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x00, 0xc8, 0x2e, 0x14, 0x05,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -171,6 +271,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	RegisterAccount(ctx context.Context, in *MsgRegisterAccount, opts ...grpc.CallOption) (*MsgRegisterAccountResponse, error)
+	RegisterAccountSignerlessly(ctx context.Context, in *MsgRegisterAccountSignerlessly, opts ...grpc.CallOption) (*MsgRegisterAccountSignerlesslyResponse, error)
 }
 
 type msgClient struct {
@@ -190,9 +291,19 @@ func (c *msgClient) RegisterAccount(ctx context.Context, in *MsgRegisterAccount,
 	return out, nil
 }
 
+func (c *msgClient) RegisterAccountSignerlessly(ctx context.Context, in *MsgRegisterAccountSignerlessly, opts ...grpc.CallOption) (*MsgRegisterAccountSignerlesslyResponse, error) {
+	out := new(MsgRegisterAccountSignerlesslyResponse)
+	err := c.cc.Invoke(ctx, "/noble.autocctp.v1.Msg/RegisterAccountSignerlessly", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	RegisterAccount(context.Context, *MsgRegisterAccount) (*MsgRegisterAccountResponse, error)
+	RegisterAccountSignerlessly(context.Context, *MsgRegisterAccountSignerlessly) (*MsgRegisterAccountSignerlesslyResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -201,6 +312,9 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) RegisterAccount(ctx context.Context, req *MsgRegisterAccount) (*MsgRegisterAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccount not implemented")
+}
+func (*UnimplementedMsgServer) RegisterAccountSignerlessly(ctx context.Context, req *MsgRegisterAccountSignerlessly) (*MsgRegisterAccountSignerlesslyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccountSignerlessly not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -225,6 +339,24 @@ func _Msg_RegisterAccount_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RegisterAccountSignerlessly_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterAccountSignerlessly)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RegisterAccountSignerlessly(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/noble.autocctp.v1.Msg/RegisterAccountSignerlessly",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RegisterAccountSignerlessly(ctx, req.(*MsgRegisterAccountSignerlessly))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "noble.autocctp.v1.Msg",
@@ -233,6 +365,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAccount",
 			Handler:    _Msg_RegisterAccount_Handler,
+		},
+		{
+			MethodName: "RegisterAccountSignerlessly",
+			Handler:    _Msg_RegisterAccountSignerlessly_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -325,6 +461,92 @@ func (m *MsgRegisterAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgRegisterAccountSignerlessly) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterAccountSignerlessly) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterAccountSignerlessly) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DestinationCaller) > 0 {
+		i -= len(m.DestinationCaller)
+		copy(dAtA[i:], m.DestinationCaller)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DestinationCaller)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.FallbackRecipient) > 0 {
+		i -= len(m.FallbackRecipient)
+		copy(dAtA[i:], m.FallbackRecipient)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.FallbackRecipient)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.MintRecipient) > 0 {
+		i -= len(m.MintRecipient)
+		copy(dAtA[i:], m.MintRecipient)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MintRecipient)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.DestinationDomain != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.DestinationDomain))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Signer) > 0 {
+		i -= len(m.Signer)
+		copy(dAtA[i:], m.Signer)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRegisterAccountSignerlesslyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterAccountSignerlesslyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterAccountSignerlesslyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -365,6 +587,47 @@ func (m *MsgRegisterAccount) Size() (n int) {
 }
 
 func (m *MsgRegisterAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRegisterAccountSignerlessly) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Signer)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.DestinationDomain != 0 {
+		n += 1 + sovTx(uint64(m.DestinationDomain))
+	}
+	l = len(m.MintRecipient)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.FallbackRecipient)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DestinationCaller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRegisterAccountSignerlesslyResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -611,6 +874,289 @@ func (m *MsgRegisterAccountResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgRegisterAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterAccountSignerlessly) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterAccountSignerlessly: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterAccountSignerlessly: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
+			}
+			m.DestinationDomain = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DestinationDomain |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MintRecipient", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MintRecipient = append(m.MintRecipient[:0], dAtA[iNdEx:postIndex]...)
+			if m.MintRecipient == nil {
+				m.MintRecipient = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FallbackRecipient", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FallbackRecipient = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationCaller", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestinationCaller = append(m.DestinationCaller[:0], dAtA[iNdEx:postIndex]...)
+			if m.DestinationCaller == nil {
+				m.DestinationCaller = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterAccountSignerlesslyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterAccountSignerlesslyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterAccountSignerlesslyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

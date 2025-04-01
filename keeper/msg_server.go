@@ -23,7 +23,8 @@ package keeper
 import (
 	"context"
 
-	errorsmod "cosmossdk.io/errors"
+	sdkerrors "cosmossdk.io/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"autocctp.dev/types"
 )
@@ -49,7 +50,7 @@ func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterA
 	// State transition logic.
 	address, err := ms.registerAccount(ctx, accountProperties)
 	if err != nil {
-		return nil, errorsmod.Wrap(err, "failed to register the account")
+		return nil, sdkerrors.Wrap(err, "failed to register the account")
 	}
 
 	return &types.MsgRegisterAccountResponse{Address: address}, ms.eventService.EventManager(ctx).Emit(ctx, &types.AccountRegistered{
@@ -59,5 +60,34 @@ func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterA
 		FallbackRecipient: msg.FallbackRecipient,
 		DestinationCaller: msg.DestinationCaller,
 		Signerlessly:      false,
+	})
+}
+
+// RegisterAccountSignerlessly is the server entrypoint to register a new AutoCCTP account
+// signerlessly.
+func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.MsgRegisterAccountSignerlessly) (*types.MsgRegisterAccountSignerlesslyResponse, error) {
+	// Meesage inputs validation
+	if msg == nil {
+		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to register account signerlessly cannot be nil")
+	}
+
+	accountProperties := msg.GetAccountProperties()
+	if err := ms.ValidateAccountProperties(accountProperties); err != nil {
+		return nil, types.ErrInvalidAccountProperties.Wrap(err.Error())
+	}
+
+	// State transition logic.
+	address, err := ms.registerAccount(ctx, accountProperties)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "failed to register then account signerlessly")
+	}
+
+	return &types.MsgRegisterAccountSignerlesslyResponse{Address: address}, ms.eventService.EventManager(ctx).Emit(ctx, &types.AccountRegistered{
+		Address:           address,
+		DestinationDomain: msg.DestinationDomain,
+		MintRecipient:     msg.MintRecipient,
+		FallbackRecipient: msg.FallbackRecipient,
+		DestinationCaller: msg.DestinationCaller,
+		Signerlessly:      true,
 	})
 }

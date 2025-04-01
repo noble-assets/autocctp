@@ -24,10 +24,11 @@ import (
 	"context"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"autocctp.dev/keeper"
 	"autocctp.dev/types"
@@ -60,6 +61,25 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (string, error) {
 				msg := msgI.(types.MsgRegisterAccount)
 				resp, err := s.RegisterAccount(ctx, &msg)
+				if err != nil {
+					return "", err
+				}
+				return resp.Address, nil
+			},
+		},
+		{
+			mode: "signerless",
+			msg: func(ap types.AccountProperties) interface{} {
+				return types.MsgRegisterAccountSignerlessly{
+					Signer:            signer,
+					DestinationDomain: ap.DestinationDomain,
+					MintRecipient:     ap.MintRecipient,
+					FallbackRecipient: ap.FallbackRecipient,
+				}
+			},
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (string, error) {
+				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+				resp, err := s.RegisterAccountSignerlessly(ctx, &msg)
 				if err != nil {
 					return "", err
 				}
@@ -135,6 +155,21 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
 				msg := msgI.(types.MsgRegisterAccount)
 				return s.RegisterAccount(ctx, &msg)
+			},
+		},
+		{
+			mode: "signerless",
+			msg: func() interface{} {
+				return types.MsgRegisterAccountSignerlessly{
+					Signer:            signer,
+					DestinationDomain: accountProperties.DestinationDomain,
+					MintRecipient:     accountProperties.MintRecipient,
+					FallbackRecipient: accountProperties.FallbackRecipient,
+				}
+			},
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
+				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+				return s.RegisterAccountSignerlessly(ctx, &msg)
 			},
 		},
 	}
