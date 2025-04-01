@@ -42,7 +42,7 @@ message MsgRegisterAccountResponse {
 //
 
 // MsgRegisterAccountSignerlessly is equal to MsgRegisterAccount. The reason to have a
-// different type is to have the possibility to distringuish the two registration approaches in the
+// different type is to have the possibility to distinguish the two registration approaches in the
 // ante handler.
 message MsgRegisterAccountSignerlessly {
   option (cosmos.msg.v1.signer) = "signer";
