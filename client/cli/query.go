@@ -53,7 +53,7 @@ func QueryAddress() *cobra.Command {
 		Use:   "address [destination-domain] [mint-recipient] [fallback-recipient] (destination-caller)",
 		Short: "Query AutoCCTP address by destination domain, a mint recipient, and a fallback recipient",
 		Long: `Query AutoCCTP address by destination domain, a mint recipient, and a fallback recipient, with an optional destination caller address.
-		The command creates a 32-bytes representation of the mint recipient, and optionally of the destination caller, to 
+		The command creates a 32-byte representation of the mint recipient, and optionally of the destination caller, to 
 		get the cross-chain representation of the address.
 `,
 		Args: cobra.RangeArgs(3, 4),
