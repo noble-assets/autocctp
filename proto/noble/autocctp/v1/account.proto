@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package noble.autocctp.v1;
+
+import "cosmos/auth/v1beta1/auth.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "autocctp.dev/types";
+
+// Account is the custom AutoCCTP account type containing transfer information.
+message Account {
+  option (cosmos_proto.implements_interface) = "cosmos.auth.v1beta1.AccountI";
+
+  cosmos.auth.v1beta1.BaseAccount base_account = 1 [(gogoproto.embed) = true];
+
+  uint32 destination_domain = 2;
+  bytes mint_recipient = 3;
+  string fallback_recipient = 4;
+  bytes destination_caller = 5;
+}
+
+// PubKey is the custom AutoCCTP public key type used for custom AutoCCTP accounts.
+message PubKey {
+  option (gogoproto.goproto_stringer) = false;
+
+  bytes key = 1;
+}
