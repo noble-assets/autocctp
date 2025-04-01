@@ -21,9 +21,8 @@
 package autocctp
 
 import (
-	"github.com/spf13/cobra"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	"github.com/spf13/cobra"
 
 	autocctpv1 "autocctp.dev/api/v1"
 	"autocctp.dev/client/cli"
@@ -42,7 +41,8 @@ func (AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					to the mint recipient or the fallback account`,
 					FlagOptions: map[string]*autocliv1.FlagOptions{
 						"fallback": {
-							Usage: "Clear funds to fallback address, if exists",
+							Usage:        "Clear funds to fallback address, if exists",
+							DefaultValue: "",
 						},
 					},
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}},
