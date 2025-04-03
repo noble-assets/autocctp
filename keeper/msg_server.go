@@ -67,7 +67,7 @@ func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterA
 // RegisterAccountSignerlessly is the server entrypoint to register a new AutoCCTP account
 // signerlessly.
 func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.MsgRegisterAccountSignerlessly) (*types.MsgRegisterAccountSignerlesslyResponse, error) {
-	// Meesage inputs validation
+	// Message inputs validation
 	if msg == nil {
 		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to register account signerlessly cannot be nil")
 	}
@@ -96,7 +96,7 @@ func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.
 // ClearAccount is the server entrypoint to retry the CCTP transfer associated with an AutoCCTP
 // account or to clear the account sending funds to the fallback address.
 func (ms msgServer) ClearAccount(ctx context.Context, msg *types.MsgClearAccount) (*types.MsgClearAccountResponse, error) {
-	// Meesage inputs validation
+	// Message inputs validation
 	if msg == nil {
 		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to clear an account cannot be nil")
 	}

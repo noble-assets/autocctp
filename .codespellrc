@@ -1,0 +1,2 @@
+[codespell]
+skip = *.pulsar.go,*.pb.go,*.pb.gw.go,*.bin,*.sum,*.mod,*.git,*.json,*/assets/

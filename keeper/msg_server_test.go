@@ -390,7 +390,7 @@ func TestClearAccount(t *testing.T) {
 			errContains: "failed to decode fallback address",
 		},
 		{
-			name: "fails transfering funds",
+			name: "fails transferring funds",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
 				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
@@ -404,7 +404,7 @@ func TestClearAccount(t *testing.T) {
 			errContains: "failed to clear balance",
 		},
 		{
-			name: "succeds transfering funds",
+			name: "succeeds transferring funds",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
 				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
@@ -421,7 +421,7 @@ func TestClearAccount(t *testing.T) {
 			errContains: "",
 		},
 		{
-			name: "succeds adding to pending transfer",
+			name: "succeeds adding to pending transfer",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
 				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)

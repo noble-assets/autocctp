@@ -150,7 +150,7 @@ func TestAddress(t *testing.T) {
 			// ASSERT
 			if tC.errContains != "" {
 				require.Error(t, err, "expected an error")
-				require.ErrorContains(t, err, tC.errContains, "epxected a different error")
+				require.ErrorContains(t, err, tC.errContains, "expected a different error")
 				require.Nil(t, resp, "expected nil response when receiving an error")
 			} else {
 				require.NoError(t, err, "expected no error")

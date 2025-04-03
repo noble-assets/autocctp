@@ -62,7 +62,7 @@ func (k BankKeeper) SendCoinsFromAccountToModule(ctx context.Context, senderAddr
 // SendCoins implements types.BankKeeper.
 func (k BankKeeper) SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	if k.Failing {
-		return errors.New("errror sending coins")
+		return errors.New("error sending coins")
 	}
 
 	fromCoins, found := k.Balances[fromAddr.String()]
@@ -72,7 +72,7 @@ func (k BankKeeper) SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAd
 
 	fromFinalCoins, negativeAmt := fromCoins.SafeSub(amt...)
 	if negativeAmt {
-		return errors.New("errror during coins deduction")
+		return errors.New("error during coins deduction")
 	}
 
 	toCoins, found := k.Balances[toAddr.String()]
