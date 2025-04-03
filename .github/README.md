@@ -202,7 +202,7 @@ recipient `0xaB537dC791355d986A4f7a9a53f3D8810fd870D1`, and a fallback account
 `noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za` is registered:
 
 ```sh
-./simapp/build/simd q autocctp address 0 0xab537dc791355d986a4f7a9a53f3d8810fd870d1 noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za --home .autocctp
+./simapp/build/simd q autocctp address 0 0xab537dc791355d986a4f7a9a53f3d8810fd870d1 noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za
 ```
 
 To register a new AutoCCTP account for the same information of the previous
