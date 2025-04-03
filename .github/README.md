@@ -194,7 +194,7 @@ chmod +x ./local.sh
 To get statistics for the destination domain `0`:
 
 ```sh
-./simapp/build/simd q autocctp stats 0 --home .autocctp
+./simapp/build/simd q autocctp stats 0
 ```
 
 To check if an AutoCCTP account for the destination domain `0`, the mint
