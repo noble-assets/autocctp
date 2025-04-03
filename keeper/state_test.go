@@ -23,7 +23,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
 
@@ -37,28 +37,33 @@ func TestIncrementNumOfAccounts(t *testing.T) {
 
 	// ACT
 	_, err := k.NumOfAccounts.Get(ctx, 0)
-	assert.Error(t, err, "expected an error when the map is empty")
-	k.IncrementNumOfAccounts(ctx, 0)
+	require.Error(t, err, "expected an error when the map is empty")
+	err = k.IncrementNumOfAccounts(ctx, 0)
+	require.NoError(t, err)
 	count0, err := k.NumOfAccounts.Get(ctx, 0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, uint64(1), count0, "expected 1 account for destination 0")
+	require.Equal(t, uint64(1), count0, "expected 1 account for destination 0")
 
 	// ACT
-	k.IncrementNumOfAccounts(ctx, 1)
-	k.IncrementNumOfAccounts(ctx, 1)
+	err = k.IncrementNumOfAccounts(ctx, 1)
+	require.NoError(t, err)
+	err = k.IncrementNumOfAccounts(ctx, 1)
+	require.NoError(t, err)
 	count1, err := k.NumOfAccounts.Get(ctx, 1)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	k.IncrementNumOfAccounts(ctx, 0)
-	k.IncrementNumOfAccounts(ctx, 0)
+	err = k.IncrementNumOfAccounts(ctx, 0)
+	require.NoError(t, err)
+	err = k.IncrementNumOfAccounts(ctx, 0)
+	require.NoError(t, err)
 	count0, err = k.NumOfAccounts.Get(ctx, 0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, uint64(2), count1, "expected 2 accounts for destination 1")
-	assert.Equal(t, uint64(3), count0, "expected 3 account for destination 0")
+	require.Equal(t, uint64(2), count1, "expected 2 accounts for destination 1")
+	require.Equal(t, uint64(3), count0, "expected 3 account for destination 0")
 }
 
 func TestIncrementNumOfTransfers(t *testing.T) {
@@ -67,34 +72,39 @@ func TestIncrementNumOfTransfers(t *testing.T) {
 
 	// ACT
 	_, err := k.NumOfTransfers.Get(ctx, 0)
-	assert.Error(t, err, "expected an error when the map is empty")
-	k.IncrementNumOfTransfers(ctx, 0)
+	require.Error(t, err, "expected an error when the map is empty")
+	err = k.IncrementNumOfTransfers(ctx, 0)
+	require.NoError(t, err)
 	count0, err := k.NumOfTransfers.Get(ctx, 0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, uint64(1), count0, "expected 1 transfer for destination 0")
+	require.Equal(t, uint64(1), count0, "expected 1 transfer for destination 0")
 
 	// ACT
-	k.IncrementNumOfTransfers(ctx, 1)
-	k.IncrementNumOfTransfers(ctx, 1)
+	err = k.IncrementNumOfTransfers(ctx, 1)
+	require.NoError(t, err)
+	err = k.IncrementNumOfTransfers(ctx, 1)
+	require.NoError(t, err)
 	count1, err := k.NumOfTransfers.Get(ctx, 1)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	k.IncrementNumOfTransfers(ctx, 0)
-	k.IncrementNumOfTransfers(ctx, 0)
+	err = k.IncrementNumOfTransfers(ctx, 0)
+	require.NoError(t, err)
+	err = k.IncrementNumOfTransfers(ctx, 0)
+	require.NoError(t, err)
 	count0, err = k.NumOfTransfers.Get(ctx, 0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, uint64(3), count0, "expected 3 transfers for destination 0")
-	assert.Equal(t, uint64(2), count1, "expected 2 transfers for destination 1")
+	require.Equal(t, uint64(3), count0, "expected 3 transfers for destination 0")
+	require.Equal(t, uint64(2), count1, "expected 2 transfers for destination 1")
 
 	numPerDest, err := k.GetNumOfTransfersPerDestination(ctx)
-	assert.NoError(t, err)
-	assert.Len(t, numPerDest, 2)
-	assert.Equal(t, uint64(3), numPerDest[0], "expected a different num of transfers for destination 0")
-	assert.Equal(t, uint64(2), numPerDest[1], "expected a different num of transfers for destination 1")
+	require.NoError(t, err)
+	require.Len(t, numPerDest, 2)
+	require.Equal(t, uint64(3), numPerDest[0], "expected a different num of transfers for destination 0")
+	require.Equal(t, uint64(2), numPerDest[1], "expected a different num of transfers for destination 1")
 }
 
 func TestIncrementTotalTransferred(t *testing.T) {
@@ -103,34 +113,39 @@ func TestIncrementTotalTransferred(t *testing.T) {
 
 	// ACT
 	_, err := k.TotalTransferred.Get(ctx, 0)
-	assert.Error(t, err, "expected an error when the map is empty")
-	k.IncrementTotalTransferred(ctx, 0, math.NewInt(1_000))
+	require.Error(t, err, "expected an error when the map is empty")
+	err = k.IncrementTotalTransferred(ctx, 0, math.NewInt(1_000))
+	require.NoError(t, err)
 	count0, err := k.TotalTransferred.Get(ctx, 0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, uint64(1_000), count0, "expected a different amount transferred for destination 0")
+	require.Equal(t, uint64(1_000), count0, "expected a different amount transferred for destination 0")
 
 	// ACT
-	k.IncrementTotalTransferred(ctx, 1, math.NewInt(1_000))
-	k.IncrementTotalTransferred(ctx, 1, math.NewInt(1_000))
+	err = k.IncrementTotalTransferred(ctx, 1, math.NewInt(1_000))
+	require.NoError(t, err)
+	err = k.IncrementTotalTransferred(ctx, 1, math.NewInt(1_000))
+	require.NoError(t, err)
 	count1, err := k.TotalTransferred.Get(ctx, 1)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	k.IncrementTotalTransferred(ctx, 0, math.NewInt(1_000))
-	k.IncrementTotalTransferred(ctx, 0, math.NewInt(1_000))
+	err = k.IncrementTotalTransferred(ctx, 0, math.NewInt(1_000))
+	require.NoError(t, err)
+	err = k.IncrementTotalTransferred(ctx, 0, math.NewInt(1_000))
+	require.NoError(t, err)
 	count0, err = k.TotalTransferred.Get(ctx, 0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, uint64(3_000), count0, "expected a different amount transferred for destination 0")
-	assert.Equal(t, uint64(2_000), count1, "expected a different amount transferred for destination 1")
+	require.Equal(t, uint64(3_000), count0, "expected a different amount transferred for destination 0")
+	require.Equal(t, uint64(2_000), count1, "expected a different amount transferred for destination 1")
 
 	amtPerDest, err := k.GetTotalTransferredPerDestination(ctx)
-	assert.NoError(t, err)
-	assert.Len(t, amtPerDest, 2)
-	assert.Equal(t, uint64(3_000), amtPerDest[0], "expected a different amount transferred for destination 0")
-	assert.Equal(t, uint64(2_000), amtPerDest[1], "expected a different amount transferred for destination 1")
+	require.NoError(t, err)
+	require.Len(t, amtPerDest, 2)
+	require.Equal(t, uint64(3_000), amtPerDest[0], "expected a different amount transferred for destination 0")
+	require.Equal(t, uint64(2_000), amtPerDest[1], "expected a different amount transferred for destination 1")
 }
 
 func TestGetPendingTransfers(t *testing.T) {
@@ -139,19 +154,19 @@ func TestGetPendingTransfers(t *testing.T) {
 
 	// ACT: Get pending transfers when no transfers are present.
 	acc, err := k.GetPendingTransfers(ctx)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	// ASSERT
-	assert.Equal(t, 0, len(acc), "expected no pending transfers to be returned")
+	require.Equal(t, 0, len(acc), "expected no pending transfers to be returned")
 
 	// ARRANGE
 	_, err = utils.DummyPendingTransfersTest(ctx, k, 2, "", false)
-	assert.NoError(t, err, "expected no error in the generation of dummy transfers")
+	require.NoError(t, err, "expected no error in the generation of dummy transfers")
 
 	// ACT
 	acc, err = k.GetPendingTransfers(ctx)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	// ASSERT
-	assert.Equal(t, 2, len(acc), "expected 2 pending transfers")
+	// require
+	require.Equal(t, 2, len(acc), "expected 2 pending transfers")
 }
