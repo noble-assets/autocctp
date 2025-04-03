@@ -1,18 +1,16 @@
 package simapp
 
 import (
+	autocctp "autocctp.dev"
+	"autocctp.dev/types"
+	"cosmossdk.io/errors"
 	"github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory"
 	ftfkeeper "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/keeper"
-
-	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	autocctp "autocctp.dev"
-	"autocctp.dev/types"
 )
 
 type BankKeeper interface {
@@ -58,7 +56,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewValidateSigCountDecorator(options.AccountKeeper),
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 
-		// Custom signature verifiaction for AutoCCTP accounts.
+		// Custom signature verification for AutoCCTP accounts.
 		autocctp.NewSigVerificationDecorator(options.FTFKeeper, options.BankKeeper, options.AccountKeeper, options.SignModeHandler),
 
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
