@@ -44,7 +44,7 @@ the `x/autocctp` module.
 git clone https://github.com/noble-assets/autocctp.git
 cd autocctp
 git checkout <TAG>
-make install
+make build
 ```
 
 ## AutoCCTP Account
