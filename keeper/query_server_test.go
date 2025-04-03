@@ -23,11 +23,10 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/keeper"
 	"autocctp.dev/types"
@@ -150,7 +149,7 @@ func TestAddress(t *testing.T) {
 			// ASSERT
 			if tC.errContains != "" {
 				require.Error(t, err, "expected an error")
-				require.ErrorContains(t, err, tC.errContains, "epxected a different error")
+				require.ErrorContains(t, err, tC.errContains, "expected a different error")
 				require.Nil(t, resp, "expected nil response when receiving an error")
 			} else {
 				require.NoError(t, err, "expected no error")
