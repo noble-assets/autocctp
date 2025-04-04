@@ -3,4 +3,5 @@ go 1.22.11
 use (
 	.
 	./simapp
+    ./e2e
 )
