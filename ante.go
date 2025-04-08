@@ -62,6 +62,10 @@ func NewSigVerificationDecorator(
 	ak ante.AccountKeeper,
 	underlying sdk.AnteDecorator,
 ) SigVerificationDecorator {
+	if underlying == nil {
+		panic("underlying ante decorator cannot be nil")
+	}
+
 	return SigVerificationDecorator{
 		ftf:        fk,
 		bank:       bk,
