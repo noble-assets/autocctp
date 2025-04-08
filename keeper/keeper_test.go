@@ -23,9 +23,8 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/types"
 	"autocctp.dev/utils"
@@ -167,7 +166,7 @@ func TestSendRestrictionFn(t *testing.T) {
 			errContains:        "autocctp accounts can only receive",
 		},
 		{
-			name: "valid when coins cointains only minting denom",
+			name: "valid when coins contains only minting denom",
 			setup: func(ak *mocks.AccountKeeper) {
 				ak.Accounts[acc.GetAddress().String()] = &acc
 			},
