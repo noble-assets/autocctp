@@ -38,6 +38,8 @@ import (
 	"autocctp.dev/types"
 )
 
+// TestClearAccount_ToFallbackRecipient tests that an AutoCCTP account can be correctly cleared by
+// sending funds to the fallback account.
 func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 	t.Parallel()
 	// ARRANGE
@@ -46,45 +48,42 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 	destinationDomain := fmt.Sprintf("%d", s.destinationDomain)
 
 	// Register the AutoCCTP account.
-	_, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account", destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress())
-	require.NoError(t, err, "expected no error registering the autocctp account")
+	_ = s.RegisterAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
 
 	address, exists := GetAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
-	require.True(t, exists, "expected the new autocctp account registered")
+	require.True(t, exists, "expected the new AutoCCTP account registered")
 
 	// Pause the CCTP module to cause a failure in the clearing of the pending transfers.
 	// This way, we can manually clear the AutoCCTP account with the tested tx.
-	_, err = val.ExecTx(ctx, s.CircleRoles.Pauser.KeyName(), "cctp", "pause-burning-and-minting")
-	require.NoError(t, err, "expected no error pausing the cctp module")
-	resp := QueryCCTPBurningAndMintingPaused(t, ctx, val)
+	_ = s.PauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
+	resp := GetCCTPBurningAndMintingPaused(t, ctx, val)
 	require.True(t, resp.Paused.Paused, "expected the CCTP module to be paused")
 
 	// Transfer funds to the AutCCTP account to be able to clear to fallback address.
 	transferAmt := math.NewInt(1_000_000)
-	err = val.BankSend(ctx, s.sender.KeyName(), ibc.WalletAmount{
+	err := val.BankSend(ctx, s.sender.KeyName(), ibc.WalletAmount{
 		Address: address,
 		Denom:   "uusdc",
 		Amount:  transferAmt,
 	})
-	require.NoError(t, err, "expected no error funding the autocctp account")
+	require.NoError(t, err, "expected no error funding the AutoCCTP account")
 
 	initAmt, err := s.Chain.BankQueryBalance(ctx, s.fallbackRecipient.FormattedAddress(), "uusdc")
 	require.NoError(t, err, "expected no error getting fallback recipient initial balance")
 
 	// Restore CCTP unpaused condition.
-	_, err = val.ExecTx(ctx, s.CircleRoles.Pauser.KeyName(), "cctp", "unpause-burning-and-minting")
-	require.NoError(t, err, "expected no error unpausing the cctp module")
-	resp = QueryCCTPBurningAndMintingPaused(t, ctx, val)
+	_ = s.UnauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
+	resp = GetCCTPBurningAndMintingPaused(t, ctx, val)
 	require.False(t, resp.Paused.Paused, "expected the CCTP module to be unpaused")
 
 	// ACT
-	_, err = val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "clear-account", address, "--fallback")
+	_, err = s.ClearAutoCCTPAccount(t, ctx, val, s.sender.KeyName(), address, true)
 
 	// ASSERT
 	require.Error(t, err, "expected error when signer is not fallback")
 
 	// ACT
-	hash, err := val.ExecTx(ctx, s.fallbackRecipient.KeyName(), "autocctp", "clear-account", address, "--fallback")
+	hash, err := s.ClearAutoCCTPAccount(t, ctx, val, s.fallbackRecipient.KeyName(), address, true)
 	require.NoError(t, err, "expected no error clearing the account to fallback recipient")
 
 	// ASSERT
@@ -94,10 +93,9 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 
 	amt, err := s.Chain.BankQueryBalance(ctx, address, "uusdc")
 	require.NoError(t, err)
-	require.Equal(t, math.ZeroInt(), amt, "expected empty autocctp account after clearing")
+	require.Equal(t, math.ZeroInt(), amt, "expected empty AutoCCTP account after clearing")
 
-	tx, err := QueryTransaction(ctx, val, hash)
-	require.NoError(t, err, "expected no error querying the tx from hash")
+	tx := GetTx(t, ctx, val, hash)
 	eventFound := false
 	for _, rawEvent := range tx.Events {
 		switch rawEvent.Type {
@@ -115,8 +113,7 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 	}
 	require.True(t, eventFound, "expected account cleared event to be emitted")
 
-	blockEvents, err := QueryEvents(ctx, val, strconv.Itoa(int(tx.Height)))
-	require.NoError(t, err, "expected no error querying block events")
+	blockEvents := GetBlockResultsEvents(t, ctx, val, strconv.Itoa(int(tx.Height)))
 	eventFound = false
 	for _, event := range blockEvents {
 		switch event.Type {
@@ -127,6 +124,8 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 	require.False(t, eventFound, "expected no cctp event")
 }
 
+// TestClearAccount_ToMintRecipient tests that an AutoCCTP account can be correctly cleared
+// re-trying the CCTP transfer.
 func TestClearAccount_ToMintRecipient(t *testing.T) {
 	t.Parallel()
 
@@ -135,51 +134,47 @@ func TestClearAccount_ToMintRecipient(t *testing.T) {
 	val := s.Chain.Validators[0]
 	destinationDomain := fmt.Sprintf("%d", s.destinationDomain)
 
-	_, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account", destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress())
-	require.NoError(t, err, "expected no error registering the autocctp account")
+	_ = s.RegisterAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
 
 	address, exists := GetAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
-	require.True(t, exists, "expected the new autocctp account registered")
+	require.True(t, exists, "expected the new AutoCCTP account registered")
 
 	// Pause the CCTP module to cause a failure in the clearing of the pending transfers.
 	// This way, we can manually clear the AutoCCTP account with the tested tx.
-	_, err = val.ExecTx(ctx, s.CircleRoles.Pauser.KeyName(), "cctp", "pause-burning-and-minting")
-	require.NoError(t, err, "expected no error pausing the cctp module")
-	resp := QueryCCTPBurningAndMintingPaused(t, ctx, val)
+	_ = s.PauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
+	resp := GetCCTPBurningAndMintingPaused(t, ctx, val)
 	require.True(t, resp.Paused.Paused, "expected the CCTP module to be paused")
 
 	transferAmt := math.NewInt(1_000_000)
-	err = val.BankSend(ctx, s.sender.KeyName(), ibc.WalletAmount{
+	err := val.BankSend(ctx, s.sender.KeyName(), ibc.WalletAmount{
 		Address: address,
 		Denom:   "uusdc",
 		Amount:  transferAmt,
 	})
-	require.NoError(t, err, "expected no error funding the autocctp account")
+	require.NoError(t, err, "expected no error funding the AutoCCTP account")
 
 	initAmt, err := s.Chain.BankQueryBalance(ctx, s.fallbackRecipient.FormattedAddress(), "uusdc")
 	require.NoError(t, err, "expected no error getting fallback recipient initial balance")
 
 	// Restore CCTP unpaused condition.
-	_, err = val.ExecTx(ctx, s.CircleRoles.Pauser.KeyName(), "cctp", "unpause-burning-and-minting")
-	require.NoError(t, err, "expected no error unpausing the cctp module")
-	resp = QueryCCTPBurningAndMintingPaused(t, ctx, val)
+	_ = s.UnauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
+	resp = GetCCTPBurningAndMintingPaused(t, ctx, val)
 	require.False(t, resp.Paused.Paused, "expected the CCTP module to be unpaused")
 
 	// ACT
-	hash, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "clear-account", address)
+	hash, err := s.ClearAutoCCTPAccount(t, ctx, val, s.sender.KeyName(), address, false)
 	require.NoError(t, err, "expected no error clearing the account")
 
 	// ASSERT
 	amt, err := s.Chain.BankQueryBalance(ctx, address, "uusdc")
 	require.NoError(t, err)
-	require.Equal(t, math.ZeroInt(), amt, "expected empty autocctp account after clearing")
+	require.Equal(t, math.ZeroInt(), amt, "expected empty AutoCCTP account after clearing")
 
 	finalAmt, err := s.Chain.BankQueryBalance(ctx, s.fallbackRecipient.FormattedAddress(), "uusdc")
 	require.NoError(t, err, "expected no error getting fallback recipient final balance")
 	require.Equal(t, initAmt, finalAmt, "expected the fallback address to have same initial funds")
 
-	tx, err := QueryTransaction(ctx, val, hash)
-	require.NoError(t, err, "expected no error querying the tx from hash")
+	tx := GetTx(t, ctx, val, hash)
 	eventFound := false
 	for _, rawEvent := range tx.Events {
 		switch rawEvent.Type {
@@ -189,8 +184,7 @@ func TestClearAccount_ToMintRecipient(t *testing.T) {
 	}
 	require.False(t, eventFound, "expected account cleared event to NOT be emitted")
 
-	blockEvents, err := QueryEvents(ctx, val, strconv.Itoa(int(tx.Height)))
-	require.NoError(t, err, "expected no error querying block events")
+	blockEvents := GetBlockResultsEvents(t, ctx, val, strconv.Itoa(int(tx.Height)))
 	eventFound = false
 	for _, event := range blockEvents {
 		switch event.Type {

@@ -41,6 +41,8 @@ import (
 	"autocctp.dev/types"
 )
 
+// TestRegisterAccount tests the registration of a new AutoCCTP account and the associated
+// emitted event.
 func TestRegisterAccount(t *testing.T) {
 	t.Parallel()
 
@@ -55,15 +57,13 @@ func TestRegisterAccount(t *testing.T) {
 	require.False(t, exists, "expected no autocctp account")
 
 	// ACT
-	hash, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account", fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress())
-	require.NoError(t, err)
+	hash := s.RegisterAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
 
 	// ASSERT
 	address, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
 	require.True(t, exists, "expected the new autocctp account registered")
 
-	tx, err := QueryTransaction(ctx, val, hash)
-	require.NoError(t, err, "expected no error querying the tx from hash")
+	tx := GetTx(t, ctx, val, hash)
 	for _, rawEvent := range tx.Events {
 		switch rawEvent.Type {
 		case "noble.autocctp.v1.AccountRegistered":
@@ -84,6 +84,8 @@ func TestRegisterAccount(t *testing.T) {
 	}
 }
 
+// TestRegisterAccountSignerlessly tests the registration of an account via signerless transaction
+// and the proper emission of the associated event.
 func TestRegisterAccountSignerlessly(t *testing.T) {
 	t.Parallel()
 
@@ -103,7 +105,7 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	// ASSERT
 	require.Error(t, err, "expected an error when the autocctp account does not have funds to pay fees")
 
-	// ARRANGE: the wannabe auto CCTP account must be registered and must have funds to pay fees.
+	// ARRANGE: the wannabe AutoCCTP account must be registered and must have funds to pay fees.
 	transferAmt := math.NewInt(1_000_000)
 	err = val.BankSend(ctx, s.sender.KeyName(), ibc.WalletAmount{
 		Address: address,
@@ -113,7 +115,7 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	require.NoError(t, err, "expected no error funding the autocctp account")
 
 	_, exists = GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
-	require.False(t, exists, "expected no auto cctp account but a base account registered")
+	require.False(t, exists, "expected no AutoCCTP account but a base account registered")
 
 	// ACT
 	hash, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account-signerlessly", fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress())
@@ -123,19 +125,16 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	_, exists = GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
 	require.True(t, exists, "expected the autocctp account registered")
 
-	resp, err := QueryStats(ctx, val, fmt.Sprintf("%d", s.destinationDomain))
-	require.NoError(t, err)
+	resp := GetStats(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain))
 
 	require.Equal(t, uint64(1), resp.Accounts, "expected a different number of accounts")
 	require.Equal(t, uint64(1), resp.Transfers, "expected a different number of transfers")
 
-	fees, err := TxFee(ctx, val, hash)
-	require.NoError(t, err)
+	fees := GetTxFee(t, ctx, val, hash)
 	transferAmtNoFees := transferAmt.Sub(fees.AmountOf("uusdc"))
 	require.Equal(t, transferAmtNoFees.Uint64(), resp.TotalTransferred, "expected total transfer equal to initial amount minus fees")
 
-	tx, err := QueryTransaction(ctx, val, hash)
-	require.NoError(t, err, "expected no error querying the tx from hash")
+	tx := GetTx(t, ctx, val, hash)
 	for _, rawEvent := range tx.Events {
 		switch rawEvent.Type {
 		case "noble.autocctp.v1.AccountRegistered":
@@ -158,9 +157,12 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	stats := GetAutoCCTPStatsByDestinationDomain(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain))
 	require.Equal(t, uint64(1), stats.Accounts, "expected a different number of accounts")
 	require.Equal(t, uint64(1), stats.Transfers, "expected a different number of transfers")
-	require.Equal(t, transferAmtNoFees.Uint64(), stats.TotalTransferred, "expected a different total transferred")
+	require.Equal(t, transferAmtNoFees.Uint64(), stats.TotalTransferred, "expected a different total transferred amount")
 }
 
+// TestFlowIBC tests the registration of an AutoCCTP account and its automatic transfer
+// after receiving funds via IBC. The function tests also that the proper events are emitted
+// from the CCTP module based on the AutoCCTP account properties.
 func TestFlowIBC(t *testing.T) {
 	t.Parallel()
 
@@ -250,10 +252,8 @@ func TestFlowIBC(t *testing.T) {
 			_, exists = GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
 			require.True(t, exists, "expected the new autocctp account registered")
 
-			tx, err := QueryTransaction(ctx, val, hash)
-			require.NoError(t, err, "expected no error querying the tx from hash")
-			blockEvents, err := QueryEvents(ctx, val, strconv.Itoa(int(tx.Height)))
-			require.NoError(t, err, "expected no error querying block events")
+			tx := GetTx(t, ctx, val, hash)
+			blockEvents := GetBlockResultsEvents(t, ctx, val, strconv.Itoa(int(tx.Height)))
 			eventFound := false
 			for _, event := range blockEvents {
 				switch event.Type {
@@ -322,8 +322,7 @@ func TestFlowIBC(t *testing.T) {
 				}
 			}
 
-			blockEvents, err = QueryEvents(ctx, val, strconv.Itoa(int(height)))
-			require.NoError(t, err, "expected no error querying block events")
+			blockEvents = GetBlockResultsEvents(t, ctx, val, strconv.Itoa(int(height)))
 			eventFound = false
 			for _, event := range blockEvents {
 				switch event.Type {

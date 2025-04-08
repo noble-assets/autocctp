@@ -220,7 +220,7 @@ func createAutoCCTPChainSpec(ctx context.Context, suite *AutoCCTPSuite, isZeroFe
 			Bech32Prefix:   "noble",
 			Denom:          "uusdc",
 			GasPrices:      gasPrices,
-			GasAdjustment:  5,
+			GasAdjustment:  1.5,
 			TrustingPeriod: "504h",
 			NoHostMount:    false,
 			PreGenesis:     preGenesis(ctx, suite),

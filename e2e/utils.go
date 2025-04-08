@@ -38,7 +38,11 @@ import (
 	"autocctp.dev/types"
 )
 
+// Transactions
+
 func (s AutoCCTPSuite) RegisterAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string) string {
+	t.Helper()
+
 	var err error
 	var hash string
 	if destinationCaller == "" {
@@ -46,20 +50,56 @@ func (s AutoCCTPSuite) RegisterAutoCCTPAccount(t *testing.T, ctx context.Context
 	} else {
 		hash, err = validator.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account", destinationDomain, mintRecipient, fallbackRecipient, destinationCaller)
 	}
-	require.NoError(t, err, "expected no error registering the autocctp account")
+	require.NoError(t, err, "expected no error registering the AutoCCTP account")
+
 	return hash
 }
 
+func (s AutoCCTPSuite) ClearAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, sender, address string, isFallback bool) (string, error) {
+	t.Helper()
+
+	var err error
+	var hash string
+	if isFallback {
+		hash, err = validator.ExecTx(ctx, sender, "autocctp", "clear-account", address, "--fallback")
+	} else {
+		hash, err = validator.ExecTx(ctx, sender, "autocctp", "clear-account", address)
+	}
+
+	return hash, err
+}
+
+func (s AutoCCTPSuite) PauseBurningAndMinting(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, pauser string) string {
+	t.Helper()
+
+	hash, err := validator.ExecTx(ctx, pauser, "cctp", "pause-burning-and-minting")
+	require.NoError(t, err, "expected no error pausing burning and minting")
+
+	return hash
+}
+
+func (s AutoCCTPSuite) UnauseBurningAndMinting(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, pauser string) string {
+	t.Helper()
+
+	hash, err := validator.ExecTx(ctx, pauser, "cctp", "unpause-burning-and-minting")
+	require.NoError(t, err, "expected no error pausing burning and minting")
+
+	return hash
+}
+
+// Queries
+
 func GetAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string) (string, bool) {
+	t.Helper()
+
 	var raw []byte
 	var err error
-
 	if destinationCaller == "" {
 		raw, _, err = validator.ExecQuery(ctx, "autocctp", "address", destinationDomain, mintRecipient, fallbackRecipient)
 	} else {
 		raw, _, err = validator.ExecQuery(ctx, "autocctp", "address", destinationDomain, mintRecipient, fallbackRecipient, destinationCaller)
 	}
-	require.NoError(t, err, "expected no error querying the autocctp account")
+	require.NoError(t, err, "expected no error querying the AutoCCTP account")
 
 	var res types.QueryAddressResponse
 	require.NoError(t, json.Unmarshal(raw, &res), "expected no error parsing address response")
@@ -68,11 +108,10 @@ func GetAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.Cha
 }
 
 func GetAutoCCTPStatsByDestinationDomain(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain string) types.QueryStatsByDestinationDomainResponse {
-	var raw []byte
-	var err error
+	t.Helper()
 
-	raw, _, err = validator.ExecQuery(ctx, "autocctp", "stats", destinationDomain)
-	require.NoError(t, err, "expected no error querying the autocctp stats")
+	raw, _, err := validator.ExecQuery(ctx, "autocctp", "stats", destinationDomain)
+	require.NoError(t, err, "expected no error querying the AutoCCTP stats by destination domain")
 
 	var res types.QueryStatsByDestinationDomainResponse
 	require.NoError(t, jsonpb.Unmarshal(bytes.NewReader(raw), &res), "expected no error parsing stats response")
@@ -96,69 +135,58 @@ type TxResponse struct {
 	Tx Tx `json:"tx"`
 }
 
-func TxFee(ctx context.Context, validator *cosmos.ChainNode, hash string) (sdk.Coins, error) {
+func GetTxFee(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, hash string) sdk.Coins {
+	t.Helper()
+
 	raw, _, err := validator.ExecQuery(ctx, "tx", hash)
-	if err != nil {
-		return nil, err
-	}
+	require.NoError(t, err, "expected no error querying the tx")
 
 	var res TxResponse
-	if err := json.Unmarshal(raw, &res); err != nil {
-		return nil, err
-	}
+	require.NoError(t, json.Unmarshal(raw, &res), "expected no error parsing the tx response for fees")
 
-	return res.Tx.AuthInfo.Fee.Amount, nil
+	return res.Tx.AuthInfo.Fee.Amount
 }
 
-func QueryEvents(ctx context.Context, validator *cosmos.ChainNode, height string) ([]abci.Event, error) {
-	raw, _, err := validator.ExecQuery(ctx, "block-results", height)
-	if err != nil {
-		return nil, err
-	}
+func GetTx(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, hash string) *sdk.TxResponse {
+	t.Helper()
 
-	var res coretypes.ResultBlockResults
-	if err := json.Unmarshal(raw, &res); err != nil {
-		return nil, err
-	}
-
-	return res.FinalizeBlockEvents, nil
-}
-
-func QueryTransaction(ctx context.Context, validator *cosmos.ChainNode, hash string) (*sdk.TxResponse, error) {
 	raw, _, err := validator.ExecQuery(ctx, "tx", hash)
-	if err != nil {
-		return nil, err
-	}
+	require.NoError(t, err, "expected no error querying the tx")
 
 	var res sdk.TxResponse
-	err = jsonpb.Unmarshal(bytes.NewReader(raw), &res)
-	if err != nil {
-		return nil, err
-	}
+	require.NoError(t, jsonpb.Unmarshal(bytes.NewReader(raw), &res), "expected no error parsing the tx response")
 
-	return &res, nil
+	return &res
 }
 
-func QueryStats(ctx context.Context, validator *cosmos.ChainNode, destinationDomain string) (*types.QueryStatsByDestinationDomainResponse, error) {
+func GetBlockResultsEvents(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, height string) []abci.Event {
+	t.Helper()
+
+	raw, _, err := validator.ExecQuery(ctx, "block-results", height)
+	require.NoError(t, err, "expected no error querying block results")
+
+	var res coretypes.ResultBlockResults
+	require.NoError(t, json.Unmarshal(raw, &res), "expected no error parsing block results")
+
+	return res.FinalizeBlockEvents
+}
+
+func GetStats(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain string) *types.QueryStatsByDestinationDomainResponse {
+	t.Helper()
+
 	raw, _, err := validator.ExecQuery(ctx, "autocctp", "stats", destinationDomain)
-	if err != nil {
-		return nil, err
-	}
+	require.NoError(t, err, "expected no error querying stats")
 
 	var res types.QueryStatsByDestinationDomainResponse
-	err = jsonpb.Unmarshal(bytes.NewReader(raw), &res)
-	if err != nil {
-		return nil, err
-	}
+	require.NoError(t, jsonpb.Unmarshal(bytes.NewReader(raw), &res), "expected no error parsing stats response")
 
-	return &res, nil
+	return &res
 }
 
-func QueryCCTPBurningAndMintingPaused(t *testing.T, ctx context.Context, validator *cosmos.ChainNode) *cctptypes.QueryGetBurningAndMintingPausedResponse {
-	var raw []byte
-	var err error
-	raw, _, err = validator.ExecQuery(ctx, "cctp", "show-burning-and-minting-paused")
+func GetCCTPBurningAndMintingPaused(t *testing.T, ctx context.Context, validator *cosmos.ChainNode) *cctptypes.QueryGetBurningAndMintingPausedResponse {
+	t.Helper()
 
+	raw, _, err := validator.ExecQuery(ctx, "cctp", "show-burning-and-minting-paused")
 	require.NoError(t, err, "expected no error querying cctp burning and minting paused")
 
 	var res cctptypes.QueryGetBurningAndMintingPausedResponse
