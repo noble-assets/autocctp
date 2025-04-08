@@ -1,16 +1,18 @@
 package simapp
 
 import (
-	autocctp "autocctp.dev"
-	"autocctp.dev/types"
-	"cosmossdk.io/errors"
 	"github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory"
 	ftfkeeper "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/keeper"
+
+	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	autocctp "autocctp.dev"
+	"autocctp.dev/types"
 )
 
 type BankKeeper interface {
@@ -42,6 +44,13 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		return nil, errors.Wrap(errorstypes.ErrLogic, "sign mode handler is required for ante builder")
 	}
 
+	sigVerificationDecorator := autocctp.NewSigVerificationDecorator(
+		options.FTFKeeper,
+		options.BankKeeper,
+		options.AccountKeeper,
+		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
+	)
+
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
@@ -57,7 +66,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 
 		// Custom signature verification for AutoCCTP accounts.
-		autocctp.NewSigVerificationDecorator(options.FTFKeeper, options.BankKeeper, options.AccountKeeper, options.SignModeHandler),
+		sigVerificationDecorator,
 
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
 	}
