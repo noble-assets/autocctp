@@ -1,16 +1,18 @@
 package simapp
 
 import (
-	autocctp "autocctp.dev"
-	"autocctp.dev/types"
-	"cosmossdk.io/errors"
 	"github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory"
 	ftfkeeper "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/keeper"
+
+	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	autocctp "autocctp.dev"
+	"autocctp.dev/types"
 )
 
 type BankKeeper interface {
