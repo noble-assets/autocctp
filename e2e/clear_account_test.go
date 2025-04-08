@@ -27,15 +27,13 @@ import (
 	"strconv"
 	"testing"
 
+	"autocctp.dev/client/cli"
+	"autocctp.dev/types"
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
 	"github.com/stretchr/testify/require"
-
-	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"autocctp.dev/client/cli"
-	"autocctp.dev/types"
 )
 
 // TestClearAccount_ToFallbackRecipient tests that an AutoCCTP account can be correctly cleared by
@@ -72,7 +70,7 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 	require.NoError(t, err, "expected no error getting fallback recipient initial balance")
 
 	// Restore CCTP unpaused condition.
-	_ = s.UnauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
+	_ = s.UpnauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
 	resp = GetCCTPBurningAndMintingPaused(t, ctx, val)
 	require.False(t, resp.Paused.Paused, "expected the CCTP module to be unpaused")
 
@@ -157,7 +155,7 @@ func TestClearAccount_ToMintRecipient(t *testing.T) {
 	require.NoError(t, err, "expected no error getting fallback recipient initial balance")
 
 	// Restore CCTP unpaused condition.
-	_ = s.UnauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
+	_ = s.UpnauseBurningAndMinting(t, ctx, val, s.CircleRoles.Pauser.KeyName())
 	resp = GetCCTPBurningAndMintingPaused(t, ctx, val)
 	require.False(t, resp.Paused.Paused, "expected the CCTP module to be unpaused")
 

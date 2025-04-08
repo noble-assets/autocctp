@@ -26,16 +26,14 @@ import (
 	"encoding/json"
 	"testing"
 
+	"autocctp.dev/types"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
-	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
-	"github.com/stretchr/testify/require"
-
 	abci "github.com/cometbft/cometbft/abci/types"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/jsonpb"
-
-	"autocctp.dev/types"
+	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
+	"github.com/stretchr/testify/require"
 )
 
 // Transactions
@@ -78,11 +76,11 @@ func (s AutoCCTPSuite) PauseBurningAndMinting(t *testing.T, ctx context.Context,
 	return hash
 }
 
-func (s AutoCCTPSuite) UnauseBurningAndMinting(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, pauser string) string {
+func (s AutoCCTPSuite) UpnauseBurningAndMinting(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, pauser string) string {
 	t.Helper()
 
 	hash, err := validator.ExecTx(ctx, pauser, "cctp", "unpause-burning-and-minting")
-	require.NoError(t, err, "expected no error pausing burning and minting")
+	require.NoError(t, err, "expected no error unpausing burning and minting")
 
 	return hash
 }
