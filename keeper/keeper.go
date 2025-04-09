@@ -140,7 +140,7 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	}
 
 	if err = k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
-		k.logger.Error(`'while setting account for pending transfers in send restriction`,
+		k.logger.Error(`unable to set account for pending transfer`,
 			"account", account.Address,
 			"amount", coins.AmountOf(mintingDenom).String(),
 			"error", err,
