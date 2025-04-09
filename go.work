@@ -1,7 +1,9 @@
-go 1.22.11
+go 1.23.0
+
+toolchain go1.24.1
 
 use (
 	.
+	./e2e
 	./simapp
-    ./e2e
 )
