@@ -135,11 +135,19 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	}
 
 	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
-	if coins.AmountOf(mintingDenom).IsPositive() {
-		err = k.PendingTransfers.Set(ctx, account.Address, *account)
+	if len(coins) != 1 || !coins.AmountOf(mintingDenom).IsPositive() {
+		return toAddr, fmt.Errorf("autocctp accounts can only receive %s coins", mintingDenom)
 	}
 
-	return toAddr, err
+	if err = k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
+		k.logger.Error(`unable to set account for pending transfer`,
+			"account", account.Address,
+			"amount", coins.AmountOf(mintingDenom).String(),
+			"error", err,
+		)
+	}
+
+	return toAddr, nil
 }
 
 // registerAccount handles the AutoCCTP account registration given certain properties.

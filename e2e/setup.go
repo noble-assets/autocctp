@@ -95,6 +95,7 @@ func NewAutoCCTPSuite(t *testing.T, isZeroFees bool, isIBC bool) (context.Contex
 				Version: "v8.5.1",
 				ChainConfig: ibc.ChainConfig{
 					ChainID: "ibc-1",
+					Denom:   "uibc",
 				},
 				NumValidators: &numValidators,
 				NumFullNodes:  &numFullNodes,

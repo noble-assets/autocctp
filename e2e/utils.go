@@ -26,14 +26,16 @@ import (
 	"encoding/json"
 	"testing"
 
-	"autocctp.dev/types"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
+	"github.com/stretchr/testify/require"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/jsonpb"
-	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
-	"github.com/stretchr/testify/require"
+
+	"autocctp.dev/types"
 )
 
 // Transactions

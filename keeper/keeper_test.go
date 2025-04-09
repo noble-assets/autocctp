@@ -23,7 +23,6 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -112,71 +111,97 @@ func TestValidateAccountProperties(t *testing.T) {
 }
 
 func TestSendRestrictionFn(t *testing.T) {
-	// ARRANGE
-	mocks, k, ctx := mocks.AutoCCTPKeeper(t)
-	ak := mocks.AccountKeeper
-
 	acc := utils.DummyAccountTest(false)
 
-	// ACT
-	toAddr, err := k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), sdk.Coins{})
+	testCases := []struct {
+		name               string
+		setup              func(*mocks.AccountKeeper)
+		coins              sdk.Coins
+		expPendingTransfer bool
+		errContains        string
+	}{
+		{
+			name:               "valid when the account does not exist",
+			setup:              func(_ *mocks.AccountKeeper) {},
+			coins:              sdk.Coins{},
+			expPendingTransfer: false,
+			errContains:        "",
+		},
+		{
+			name: "valid when the account is base account",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = acc.BaseAccount
+			},
+			coins:              sdk.Coins{},
+			expPendingTransfer: false,
+			errContains:        "",
+		},
+		{
+			name: "invalid when coins is empty",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins:              sdk.Coins{},
+			expPendingTransfer: false,
+			errContains:        "autocctp accounts can only receive",
+		},
+		{
+			name: "invalid when coin is not minting denom",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("unobl", 1)),
+			expPendingTransfer: false,
+			errContains:        "autocctp accounts can only receive",
+		},
+		{
+			name: "invalid when coins contains more than one coin",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins: sdk.NewCoins(
+				sdk.NewInt64Coin("unobl", 1),
+				sdk.NewInt64Coin("uusdc", 1),
+			),
+			expPendingTransfer: false,
+			errContains:        "autocctp accounts can only receive",
+		},
+		{
+			name: "valid when coins contains only minting denom",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1)),
+			expPendingTransfer: true,
+			errContains:        "",
+		},
+	}
 
-	// ASSERT
-	assert.NoError(t, err)
-	assert.Equal(t, acc.GetAddress(), toAddr, "expected the returned address unaltered")
+	for _, tC := range testCases {
+		t.Run(tC.name, func(t *testing.T) {
+			// ARRANGE
+			mocks, k, ctx := mocks.AutoCCTPKeeper(t)
+			ak := mocks.AccountKeeper
 
-	_, err = k.PendingTransfers.Get(ctx, acc.GetAddress().String())
-	assert.Error(t, err, "expected no registered pending transfers when receiver is not a stored account")
+			tC.setup(ak)
 
-	// ARRANGE
-	ak.Accounts[acc.GetAddress().String()] = acc.BaseAccount
+			// ACT
+			toAddr, err := k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), tC.coins)
+			require.Equal(t, acc.GetAddress(), toAddr, "expected the returned address unaltered")
 
-	// ACT
-	toAddr, err = k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), sdk.Coins{})
+			if tC.errContains == "" {
+				require.NoError(t, err, "expected no error calling the send restriction function")
+			} else {
+				require.Error(t, err, "expected an error calling the send restriction function")
+				require.ErrorContains(t, err, tC.errContains, "expected a different error")
+			}
 
-	// ASSERT
-	assert.NoError(t, err)
-	assert.Equal(t, acc.GetAddress(), toAddr, "expected the returned address unaltered")
-
-	_, err = k.PendingTransfers.Get(ctx, acc.GetAddress().String())
-	assert.Error(t, err, "expected no registered pending transfers when receiver is not autocctp account")
-
-	// ARRANGE
-	ak.Accounts[acc.GetAddress().String()] = &acc
-
-	// ACT: Call function with an nil account
-	toAddr, err = k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), sdk.Coins{})
-
-	// ASSERT
-	assert.NoError(t, err)
-	assert.Equal(t, acc.GetAddress(), toAddr, "expected the returned address unaltered")
-
-	_, err = k.PendingTransfers.Get(ctx, acc.GetAddress().String())
-	assert.Error(t, err, "expected no registered pending transfers when coins is empty")
-
-	// ARRANGE
-	coins := sdk.NewCoins(sdk.NewInt64Coin("unobl", 1))
-
-	// ACT
-	toAddr, err = k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), coins)
-
-	// ASSERT
-	assert.NoError(t, err)
-	assert.Equal(t, acc.GetAddress(), toAddr, "expected the returned address unaltered")
-
-	_, err = k.PendingTransfers.Get(ctx, acc.GetAddress().String())
-	assert.Error(t, err, "expected no registered pending transfers when coins does not contain minting denom")
-
-	// ARRANGE
-	coins = coins.Add(sdk.NewInt64Coin("uusdc", 1))
-
-	// ACT
-	toAddr, err = k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), coins)
-
-	// ASSERT
-	assert.NoError(t, err)
-	assert.Equal(t, acc.GetAddress(), toAddr, "expected the returned address unaltered")
-
-	_, err = k.PendingTransfers.Get(ctx, acc.GetAddress().String())
-	assert.NoError(t, err, "expected one pending transfer associated with the address")
+			_, err = k.PendingTransfers.Get(ctx, acc.GetAddress().String())
+			if tC.expPendingTransfer {
+				require.NoError(t, err, "expected no error retrieving pending transfer")
+			} else {
+				require.Error(t, err, "expected no registered pending transfer")
+			}
+		})
+	}
 }

@@ -368,3 +368,52 @@ func TestFlowIBC(t *testing.T) {
 		})
 	}
 }
+
+func TestIBCSendRestrictionFn(t *testing.T) {
+	t.Parallel()
+
+	ctx, s := NewAutoCCTPSuite(t, true, true)
+	val := s.Chain.Validators[0]
+
+	destinationCaller := ""
+	_ = s.RegisterAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
+	address, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
+	require.True(t, exists, "expected the new autocctp account registered")
+
+	amt, err := s.Chain.BankQueryAllBalances(ctx, address)
+	require.NoError(t, err)
+	require.Len(t, amt, 0, "expected the autocctp account to have no initial balance")
+
+	// IBC info
+	counterpartyToAutocctpChannelInfo, err := s.IBC.Relayer.GetChannels(ctx, s.IBC.RelayerReporter, s.IBC.CounterpartyChain.Config().ChainID)
+	require.NoError(t, err)
+	counterpartyToAutocctpChannelID := counterpartyToAutocctpChannelInfo[0].ChannelID
+
+	counterpartyWalletBalInit, err := s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), "uibc")
+	require.NoError(t, err)
+
+	// ACT: try to send unsupported token to autocctp account
+	ibcAmt := math.NewInt(1_000_000)
+	transfer := ibc.WalletAmount{
+		Address: address,
+		Denom:   "uibc",
+		Amount:  ibcAmt,
+	}
+	_, err = s.IBC.CounterpartyChain.SendIBCTransfer(ctx, counterpartyToAutocctpChannelID, s.IBC.Account.KeyName(), transfer, ibc.TransferOptions{})
+	require.NoError(t, err)
+
+	counterpartyWalletBal, err := s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), "uibc")
+	require.NoError(t, err)
+	require.Equal(t, counterpartyWalletBalInit.Sub(ibcAmt), counterpartyWalletBal, "expected tokens to be in escrow account")
+
+	require.NoError(t, s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID), "expected no error relaying MsgRecvPacket & MsgAcknowledgement")
+
+	// ASSERT
+	counterpartyWalletBalFinal, err := s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), "uibc")
+	require.NoError(t, err)
+	require.Equal(t, counterpartyWalletBalInit.String(), counterpartyWalletBalFinal.String(), "expected refund on counterparty chain")
+
+	amt, err = s.Chain.BankQueryAllBalances(ctx, address)
+	require.NoError(t, err)
+	require.Len(t, amt, 0, "expected the autocctp account to have no balance")
+}
