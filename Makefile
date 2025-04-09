@@ -55,7 +55,7 @@ license:
 
 format:
 	@echo "🤖 Running formatters..."
-	@go run $(goimports_reviser) -company-prefixes $(PREFIXES) -excludes 'utils/tools.go' -rm-unused -set-alias ./...
+	@go run $(goimports_reviser) -company-prefixes $(PREFIXES) -excludes 'tools/tools.go' -rm-unused -set-alias ./...
 	@go run $(gofumpt_cmd) -l -w .
 	@echo "✅ Completed formatting!"
 
