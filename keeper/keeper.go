@@ -147,7 +147,7 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 		)
 	}
 
-	return toAddr, err
+	return toAddr, nil
 }
 
 // registerAccount handles the AutoCCTP account registration given certain properties.
