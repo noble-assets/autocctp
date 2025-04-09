@@ -189,7 +189,7 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 	}
 
 	base := k.accountKeeper.NewAccountWithAddress(ctx, address)
-	baseAccount := authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence())
+	baseAccount := authtypes.NewBaseAccount(base.GetAddress(), &types.PubKey{Key: address.Bytes()}, base.GetAccountNumber(), base.GetSequence())
 
 	account := types.NewAccount(baseAccount, accountProperties)
 

@@ -128,11 +128,12 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 			// Create an empty signature with the custom PubKey to allow non existent
 			// account to send `MsgRegisterAccountSignerlessly` messages.
 			err = builder.SetSignatures(signingtypes.SignatureV2{
-				PubKey: &types.PubKey{Key: address},
+				PubKey: &types.PubKey{Key: address.Bytes()},
 				Data: &signingtypes.SingleSignatureData{
 					SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
 					Signature: []byte(""),
 				},
+				Sequence: 0,
 			})
 			if err != nil {
 				return nil
