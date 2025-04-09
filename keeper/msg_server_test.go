@@ -32,14 +32,15 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"autocctp.dev/keeper"
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
 )
 
 func TestRegisterAccount_NewAccount(t *testing.T) {
-	signer := utils.AddressTest()
-	accountProperties := utils.ValidPropertiesTest(false)
+	// ARRANGE
+	signer := testutil.NobleAddress()
+	accountProperties := testutil.ValidProperties(false)
 	customAddress := types.GenerateAddress(accountProperties)
 
 	invalidFallbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
@@ -133,9 +134,10 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 }
 
 func TestRegisterAccount_ExistingAccount(t *testing.T) {
-	signer := utils.AddressTest()
+	// ARRANGE
+	signer := testutil.NobleAddress()
 
-	accountProperties := utils.ValidPropertiesTest(false)
+	accountProperties := testutil.ValidProperties(false)
 	customAddress := types.GenerateAddress(accountProperties)
 
 	testCases := []struct {
@@ -283,10 +285,8 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 }
 
 func TestClearAccount(t *testing.T) {
-	utils.SDKConfigTest()
-
 	// ARRANGE
-	accountProperties := utils.ValidPropertiesTest(false)
+	accountProperties := testutil.ValidProperties(false)
 	customAddress := types.GenerateAddress(accountProperties)
 
 	invalidFalbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
@@ -339,7 +339,7 @@ func TestClearAccount(t *testing.T) {
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 			},
 			malleateMsg: func(msg *types.MsgClearAccount) {
-				msg.Signer = utils.AddressTest()
+				msg.Signer = testutil.NobleAddress()
 			},
 			errContains: "unauthorized",
 		},

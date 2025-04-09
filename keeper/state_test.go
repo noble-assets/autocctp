@@ -23,12 +23,13 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
 
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 )
 
 func TestIncrementNumOfAccounts(t *testing.T) {
@@ -160,8 +161,8 @@ func TestGetPendingTransfers(t *testing.T) {
 	require.Equal(t, 0, len(acc), "expected no pending transfers to be returned")
 
 	// ARRANGE
-	_, err = utils.DummyPendingTransfersTest(ctx, k, 2, "", false)
-	require.NoError(t, err, "expected no error in the generation of dummy transfers")
+	_, err = testutil.PendingTransfers(ctx, k, 2, "", false)
+	assert.NoError(t, err, "expected no error in the generation of dummy transfers")
 
 	// ACT
 	acc, err = k.GetPendingTransfers(ctx)

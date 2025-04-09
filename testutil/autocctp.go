@@ -18,7 +18,7 @@
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND
 // TITLE.
 
-package utils
+package testutil
 
 import (
 	"context"
@@ -29,7 +29,7 @@ import (
 	"autocctp.dev/keeper"
 )
 
-func randomBytesTest(n int) []byte {
+func randomBytes(n int) []byte {
 	b := make([]byte, n)
 	_, err := crand.Read(b)
 	if err != nil {
@@ -38,21 +38,21 @@ func randomBytesTest(n int) []byte {
 	return b
 }
 
-func randomDestinationDomainTest() uint32 {
+func randomDestinationDomain() uint32 {
 	return rand.Uint32() % 10
 }
 
-// DummyPendingTransfersTest generates a specified number of dummy pending transfers
+// PendingTransfers generates a specified number of dummy pending transfers
 // and adds them to the state. The parameters `num` controls the number of dummy accounts to
 // create and `withCaller` whether the generated AutoCCTP accounts should have an
 // associated destination caller.
 //
 // It returns a slice containing the addresses of the inserted accounts or an error if
 // the insertion fails.
-func DummyPendingTransfersTest(ctx context.Context, k *keeper.Keeper, num int, destinationDomain string, withCaller bool) ([]string, error) {
+func PendingTransfers(ctx context.Context, k *keeper.Keeper, num int, destinationDomain string, withCaller bool) ([]string, error) {
 	var addresses []string
 	for range num {
-		acc := DummyAccountTest(withCaller)
+		acc := AutoCCTPAccount(withCaller)
 		if destinationDomain != "" {
 			d, err := strconv.ParseUint(destinationDomain, 10, 32)
 			if err != nil {

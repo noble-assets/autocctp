@@ -27,15 +27,15 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
 )
 
 func TestValidateAccountProperties(t *testing.T) {
 	_, k, _ := mocks.AutoCCTPKeeper(t)
-	validProperties := utils.ValidPropertiesTest(false)
-	validPropertiesWithCaller := utils.ValidPropertiesTest(true)
+	validProperties := testutil.ValidProperties(false)
+	validPropertiesWithCaller := testutil.ValidProperties(true)
 
 	invalidFallbackRecipient := "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m"
 
@@ -111,7 +111,7 @@ func TestValidateAccountProperties(t *testing.T) {
 }
 
 func TestSendRestrictionFn(t *testing.T) {
-	acc := utils.DummyAccountTest(false)
+	acc := testutil.AutoCCTPAccount(false)
 
 	testCases := []struct {
 		name               string

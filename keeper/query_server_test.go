@@ -30,18 +30,16 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"autocctp.dev/keeper"
+	"autocctp.dev/testutil"
+	"autocctp.dev/testutil/mocks"
 	"autocctp.dev/types"
-	"autocctp.dev/utils"
-	"autocctp.dev/utils/mocks"
 )
 
 func TestAddress(t *testing.T) {
-	utils.SDKConfigTest()
-
-	validProperties := utils.ValidPropertiesTest(false)
+	validProperties := testutil.ValidProperties(false)
 	address := types.GenerateAddress(validProperties)
 
-	validPropertiesWithCaller := utils.ValidPropertiesTest(true)
+	validPropertiesWithCaller := testutil.ValidProperties(true)
 	addressWithCaller := types.GenerateAddress(validPropertiesWithCaller)
 
 	testCases := []struct {

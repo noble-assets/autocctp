@@ -27,7 +27,7 @@ import (
 
 	"cosmossdk.io/math"
 
-	"autocctp.dev/utils/mocks"
+	"autocctp.dev/testutil/mocks"
 )
 
 func TestExportGenesis(t *testing.T) {

@@ -39,7 +39,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"autocctp.dev/utils"
+	"autocctp.dev/testutil"
 )
 
 var (
@@ -156,9 +156,9 @@ func NewAutoCCTPSuite(t *testing.T, isZeroFees bool, isIBC bool) (context.Contex
 
 	suite.destinationDomain = 0
 
-	addr := utils.AddressBytesTest()
+	addr := testutil.AddressBytes()
 	suite.mintRecipient = common.BytesToAddress(addr).String()
-	addr = utils.AddressBytesTest()
+	addr = testutil.AddressBytes()
 	suite.destinationCaller = common.BytesToAddress(addr).String()
 
 	if isIBC {
