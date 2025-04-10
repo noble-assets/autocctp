@@ -122,7 +122,7 @@ func TestAddress(t *testing.T) {
 			name: "valid request with complete data",
 			req: &types.QueryAddress{
 				DestinationDomain: validPropertiesWithCaller.DestinationDomain,
-				MintRecipient:     validPropertiesWithCallerhMintRecipient.String(),
+				MintRecipient:     validPropertiesWithCallerMintRecipient.String(),
 				FallbackRecipient: validPropertiesWithCaller.FallbackRecipient,
 				DestinationCaller: validPropertiesWithCallerDestinationCaller.String(),
 			},
