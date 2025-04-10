@@ -20,11 +20,9 @@
 
 package types
 
-import "strconv"
-
 func (q QueryAddress) GetAccountProperties() (AccountProperties, error) {
 	accountProperties, err := ValidateAndParseAccountFields(
-		strconv.FormatUint(uint64(q.DestinationDomain), 10),
+		q.DestinationDomain,
 		q.MintRecipient,
 		q.FallbackRecipient,
 		q.DestinationCaller,

@@ -24,11 +24,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/spf13/cobra"
 
 	"autocctp.dev/types"
 )
@@ -65,7 +64,12 @@ func QueryAddress() *cobra.Command {
 				args = append(args, "")
 			}
 
-			accountProperties, err := types.ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
+			destinationDomain, err := types.ParseDestinationDomain(args[0])
+			if err != nil {
+				return types.ErrInvalidInputs.Wrap(err.Error())
+			}
+
+			accountProperties, err := types.ValidateAndParseAccountFields(destinationDomain, args[1], args[2], args[3])
 			if err != nil {
 				return types.ErrInvalidInputs.Wrap(err.Error())
 			}
@@ -102,7 +106,13 @@ func QueryStats() *cobra.Command {
 			var res proto.Message
 			var err error
 			if len(args) == 1 {
-				destinationDomain, valError := types.ValidateDestinationDomain(args[0])
+
+				dD, err := types.ParseDestinationDomain(args[0])
+				if err != nil {
+					return types.ErrInvalidInputs.Wrap(err.Error())
+				}
+
+				destinationDomain, valError := types.ValidateDestinationDomain(dD)
 				if valError != nil {
 					return types.ErrInvalidInputs.Wrap(valError.Error())
 				}

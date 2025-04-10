@@ -25,12 +25,11 @@ import (
 	"testing"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
-	"github.com/stretchr/testify/require"
-
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/testutil"
 	"autocctp.dev/types"
@@ -201,7 +200,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 
 	testCases := []struct {
 		name              string
-		destinationDomain string
+		destinationDomain uint32
 		mintRecipient     string
 		fallbackRecipient string
 		destinationCaller string
@@ -209,49 +208,44 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 		postChecks        func(*types.AccountProperties)
 	}{
 		{
-			name:              "fail when the destination domain is not a number",
-			destinationDomain: "",
-			errContains:       "invalid destination domain",
-		},
-		{
 			name:              "fail when the destination domain is not supported",
-			destinationDomain: "11",
+			destinationDomain: 11,
 			errContains:       "not supported",
 		},
 		{
 			name:              "fail when the destination domain is noble",
-			destinationDomain: "4",
+			destinationDomain: 4,
 			errContains:       "cannot be source domain",
 		},
 		{
 			name:              "fail when the mint recipient is empty",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "",
 			errContains:       "cannot be empty",
 		},
 		{
 			name:              "fail when destination chain is ethereum and mint recipient is a solana address",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "2WjnnBcYf4ff9xyDoH8yevnKF3yhH98DCcdy6PSmjNDa",
 			errContains:       "address not in hex format",
 		},
 		{
 			name:              "fail when fallback recipient is empty",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
 			fallbackRecipient: "",
 			errContains:       "invalid fallback recipient",
 		},
 		{
 			name:              "fail when fallback recipient is not chain address",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
 			fallbackRecipient: "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m",
 			errContains:       "invalid Bech32 prefix",
 		},
 		{
 			name:              "fail when destination caller is not empty and not valid",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
 			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 			destinationCaller: "invalid",
@@ -259,7 +253,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 		},
 		{
 			name:              "fail when destination caller is not a destination address",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
 			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 			destinationCaller: "2WjnnBcYf4ff9xyDoH8yevnKF3yhH98DCcdy6PSmjNDa",
@@ -267,7 +261,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 		},
 		{
 			name:              "success when mint recipient is an ethereum address",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
 			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 			errContains:       "",
@@ -278,7 +272,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 		},
 		{
 			name:              "success when addresses are ethereum address",
-			destinationDomain: "0",
+			destinationDomain: 0,
 			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
 			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 			destinationCaller: "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
@@ -290,7 +284,7 @@ func TestValidateAndParseDomainFields(t *testing.T) {
 		},
 		{
 			name:              "success when mint recipient is an aptos address",
-			destinationDomain: "9",
+			destinationDomain: 9,
 			mintRecipient:     "0xeeff357ea5c1a4e7bc11b2b17ff2dc2dcca69750bfef1e1ebcaccf8c8018175b",
 			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 			errContains:       "",

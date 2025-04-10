@@ -23,12 +23,11 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/spf13/cobra"
 
 	"autocctp.dev/types"
 )
@@ -63,7 +62,13 @@ func TxRegisterAccount() *cobra.Command {
 			if len(args) != 4 {
 				args = append(args, "")
 			}
-			accountProperties, err := types.ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
+
+			destinationDomain, err := types.ParseDestinationDomain(args[0])
+			if err != nil {
+				return types.ErrInvalidInputs.Wrap(err.Error())
+			}
+
+			accountProperties, err := types.ValidateAndParseAccountFields(destinationDomain, args[1], args[2], args[3])
 			if err != nil {
 				return types.ErrInvalidInputs.Wrap(err.Error())
 			}
@@ -101,7 +106,13 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 			if len(args) != 4 {
 				args = append(args, "")
 			}
-			accountProperties, err := types.ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
+
+			destinationDomain, err := types.ParseDestinationDomain(args[0])
+			if err != nil {
+				return types.ErrInvalidInputs.Wrap(err.Error())
+			}
+
+			accountProperties, err := types.ValidateAndParseAccountFields(destinationDomain, args[1], args[2], args[3])
 			if err != nil {
 				return types.ErrInvalidInputs.Wrap(err.Error())
 			}

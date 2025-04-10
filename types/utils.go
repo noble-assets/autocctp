@@ -27,7 +27,6 @@ import (
 	"strconv"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -74,16 +73,20 @@ func ValidateDestinationCaller(address []byte) error {
 	return nil
 }
 
-// ValidateDestinationDomain returns a Domain type or an error if the domain is Noble or invalid.
-func ValidateDestinationDomain(destinationDomain string) (Domain, error) {
+func ParseDestinationDomain(destinationDomain string) (uint32, error) {
 	dD, err := strconv.ParseUint(destinationDomain, cctptypes.BaseTen, cctptypes.DomainBitLen)
 	if err != nil {
 		return 0, fmt.Errorf("invalid destination domain: %w", err)
 	}
 
-	domain, supported := supportedDomains[uint32(dD)]
+	return uint32(dD), nil
+}
+
+// ValidateDestinationDomain returns a Domain type or an error if the domain is Noble or invalid.
+func ValidateDestinationDomain(destinationDomain uint32) (Domain, error) {
+	domain, supported := supportedDomains[destinationDomain]
 	if !supported {
-		return 0, fmt.Errorf("destination domain %s is not supported", destinationDomain)
+		return 0, fmt.Errorf("destination domain %d is not supported", destinationDomain)
 	}
 	if domain == NOBLE {
 		return 0, errors.New("destination domain cannot be source domain")
@@ -112,7 +115,8 @@ func LeftPadBytes(bz []byte) ([]byte, error) {
 }
 
 func ValidateAndParseAccountFields(
-	destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string,
+	destinationDomain uint32,
+	mintRecipient, fallbackRecipient, destinationCaller string,
 ) (*AccountProperties, error) {
 	domain, err := ValidateDestinationDomain(destinationDomain)
 	if err != nil {

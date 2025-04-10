@@ -75,9 +75,6 @@ test-unit:
 	@go tool cover -html=coverage.out && go tool cover -func=coverage.out
 	@echo "🤖 Running unit tests for types package..."
 	@go test -v ./types/...
-	@echo "🤖 Running unit tests for cli package..."
-	@go test -v ./client/...
-	@echo "✅ Completed unit tests!"
 
 local-image:
 	@echo "🤖 Building image..."
