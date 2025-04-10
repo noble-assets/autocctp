@@ -43,7 +43,7 @@ func TestAddress(t *testing.T) {
 	address := types.GenerateAddress(validProperties)
 
 	validPropertiesWithCaller := testutil.ValidProperties(true)
-	validPropertiesWithCallerhMintRecipient := common.BytesToAddress(validPropertiesWithCaller.MintRecipient)
+	validPropertiesWithCallerMintRecipient := common.BytesToAddress(validPropertiesWithCaller.MintRecipient)
 	validPropertiesWithCallerDestinationCaller := common.BytesToAddress(validPropertiesWithCaller.DestinationCaller)
 
 	addressWithCaller := types.GenerateAddress(validPropertiesWithCaller)
