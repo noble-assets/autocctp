@@ -22,7 +22,9 @@ package types
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"strconv"
 
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 
@@ -70,4 +72,77 @@ func ValidateDestinationCaller(address []byte) error {
 		}
 	}
 	return nil
+}
+
+// ValidateDestinationDomain returns a Domain type or an error if the domain is Noble or invalid.
+func ValidateDestinationDomain(destinationDomain string) (Domain, error) {
+	dD, err := strconv.ParseUint(destinationDomain, cctptypes.BaseTen, cctptypes.DomainBitLen)
+	if err != nil {
+		return 0, fmt.Errorf("invalid destination domain: %w", err)
+	}
+
+	domain, supported := supportedDomains[uint32(dD)]
+	if !supported {
+		return 0, fmt.Errorf("destination domain %s is not supported", destinationDomain)
+	}
+	if domain == NOBLE {
+		return 0, errors.New("destination domain cannot be source domain")
+	}
+
+	return domain, nil
+}
+
+// isHex returns true if str begins with '0x' or '0X', and false otherwise.
+func isHex(str string) bool {
+	return len(str) >= 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X')
+}
+
+// LeftPadBytes left pads a byte array to be length 32.
+func LeftPadBytes(bz []byte) ([]byte, error) {
+	if len(bz) > 32 {
+		return nil, fmt.Errorf("padding error, expected less than 32 bytes, got %d", len(bz))
+	}
+	if len(bz) == 32 {
+		return bz, nil
+	}
+
+	res := make([]byte, 32)
+	copy(res[32-len(bz):], bz)
+	return res, nil
+}
+
+func ValidateAndParseAccountFields(
+	destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string,
+) (*AccountProperties, error) {
+	domain, err := ValidateDestinationDomain(destinationDomain)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(mintRecipient) == 0 {
+		return nil, errors.New("invalid mint recipient: cannot be empty")
+	}
+	recipient, err := domain.parseAddress(mintRecipient)
+	if err != nil {
+		return nil, fmt.Errorf("invalid mint recipient %s: %w", mintRecipient, err)
+	}
+
+	if _, err := sdk.AccAddressFromBech32(fallbackRecipient); err != nil {
+		return nil, fmt.Errorf("invalid fallback recipient %s: %w", fallbackRecipient, err)
+	}
+
+	caller := []byte{}
+	if len(destinationCaller) != 0 {
+		caller, err = domain.parseAddress(destinationCaller)
+		if err != nil {
+			return nil, fmt.Errorf("invalid destination caller %s: %w", destinationCaller, err)
+		}
+	}
+
+	return &AccountProperties{
+		DestinationDomain: uint32(domain),
+		MintRecipient:     recipient,
+		FallbackRecipient: fallbackRecipient,
+		DestinationCaller: caller,
+	}, nil
 }

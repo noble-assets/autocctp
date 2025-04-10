@@ -33,9 +33,9 @@ message QueryAddress {
   option (gogoproto.goproto_getters) = false;
 
   uint32 destination_domain = 1;
-  bytes mint_recipient = 2;
+  string mint_recipient = 2;
   string fallback_recipient = 3;
-  bytes destination_caller = 4;
+  string destination_caller = 4;
 }
 
 message QueryAddressResponse {

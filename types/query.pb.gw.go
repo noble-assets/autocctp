@@ -64,7 +64,7 @@ func request_Query_Address_0(ctx context.Context, marshaler runtime.Marshaler, c
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "mint_recipient")
 	}
 
-	protoReq.MintRecipient, err = runtime.Bytes(val)
+	protoReq.MintRecipient, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "mint_recipient", err)
@@ -120,7 +120,7 @@ func local_request_Query_Address_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "mint_recipient")
 	}
 
-	protoReq.MintRecipient, err = runtime.Bytes(val)
+	protoReq.MintRecipient, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "mint_recipient", err)
@@ -176,7 +176,7 @@ func request_Query_Address_1(ctx context.Context, marshaler runtime.Marshaler, c
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "mint_recipient")
 	}
 
-	protoReq.MintRecipient, err = runtime.Bytes(val)
+	protoReq.MintRecipient, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "mint_recipient", err)
@@ -198,7 +198,7 @@ func request_Query_Address_1(ctx context.Context, marshaler runtime.Marshaler, c
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_caller")
 	}
 
-	protoReq.DestinationCaller, err = runtime.Bytes(val)
+	protoReq.DestinationCaller, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_caller", err)
@@ -236,7 +236,7 @@ func local_request_Query_Address_1(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "mint_recipient")
 	}
 
-	protoReq.MintRecipient, err = runtime.Bytes(val)
+	protoReq.MintRecipient, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "mint_recipient", err)
@@ -258,7 +258,7 @@ func local_request_Query_Address_1(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_caller")
 	}
 
-	protoReq.DestinationCaller, err = runtime.Bytes(val)
+	protoReq.DestinationCaller, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_caller", err)

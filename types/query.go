@@ -20,6 +20,23 @@
 
 package types
 
-func (q QueryAddress) GetAccountProperties() AccountProperties {
-	return AccountProperties(q)
+import "strconv"
+
+func (q QueryAddress) GetAccountProperties() (AccountProperties, error) {
+	accountProperties, err := ValidateAndParseAccountFields(
+		strconv.FormatUint(uint64(q.DestinationDomain), 10),
+		q.MintRecipient,
+		q.FallbackRecipient,
+		q.DestinationCaller,
+	)
+	if err != nil {
+		return AccountProperties{}, err
+	}
+
+	return AccountProperties{
+		DestinationDomain: q.DestinationDomain,
+		MintRecipient:     accountProperties.MintRecipient,
+		FallbackRecipient: q.FallbackRecipient,
+		DestinationCaller: accountProperties.DestinationCaller,
+	}, nil
 }

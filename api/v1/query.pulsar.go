@@ -106,8 +106,8 @@ func (x *fastReflection_QueryAddress) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.MintRecipient) != 0 {
-		value := protoreflect.ValueOfBytes(x.MintRecipient)
+	if x.MintRecipient != "" {
+		value := protoreflect.ValueOfString(x.MintRecipient)
 		if !f(fd_QueryAddress_mint_recipient, value) {
 			return
 		}
@@ -118,8 +118,8 @@ func (x *fastReflection_QueryAddress) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.DestinationCaller) != 0 {
-		value := protoreflect.ValueOfBytes(x.DestinationCaller)
+	if x.DestinationCaller != "" {
+		value := protoreflect.ValueOfString(x.DestinationCaller)
 		if !f(fd_QueryAddress_destination_caller, value) {
 			return
 		}
@@ -142,11 +142,11 @@ func (x *fastReflection_QueryAddress) Has(fd protoreflect.FieldDescriptor) bool 
 	case "noble.autocctp.v1.QueryAddress.destination_domain":
 		return x.DestinationDomain != uint32(0)
 	case "noble.autocctp.v1.QueryAddress.mint_recipient":
-		return len(x.MintRecipient) != 0
+		return x.MintRecipient != ""
 	case "noble.autocctp.v1.QueryAddress.fallback_recipient":
 		return x.FallbackRecipient != ""
 	case "noble.autocctp.v1.QueryAddress.destination_caller":
-		return len(x.DestinationCaller) != 0
+		return x.DestinationCaller != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryAddress"))
@@ -166,11 +166,11 @@ func (x *fastReflection_QueryAddress) Clear(fd protoreflect.FieldDescriptor) {
 	case "noble.autocctp.v1.QueryAddress.destination_domain":
 		x.DestinationDomain = uint32(0)
 	case "noble.autocctp.v1.QueryAddress.mint_recipient":
-		x.MintRecipient = nil
+		x.MintRecipient = ""
 	case "noble.autocctp.v1.QueryAddress.fallback_recipient":
 		x.FallbackRecipient = ""
 	case "noble.autocctp.v1.QueryAddress.destination_caller":
-		x.DestinationCaller = nil
+		x.DestinationCaller = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryAddress"))
@@ -192,13 +192,13 @@ func (x *fastReflection_QueryAddress) Get(descriptor protoreflect.FieldDescripto
 		return protoreflect.ValueOfUint32(value)
 	case "noble.autocctp.v1.QueryAddress.mint_recipient":
 		value := x.MintRecipient
-		return protoreflect.ValueOfBytes(value)
+		return protoreflect.ValueOfString(value)
 	case "noble.autocctp.v1.QueryAddress.fallback_recipient":
 		value := x.FallbackRecipient
 		return protoreflect.ValueOfString(value)
 	case "noble.autocctp.v1.QueryAddress.destination_caller":
 		value := x.DestinationCaller
-		return protoreflect.ValueOfBytes(value)
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryAddress"))
@@ -222,11 +222,11 @@ func (x *fastReflection_QueryAddress) Set(fd protoreflect.FieldDescriptor, value
 	case "noble.autocctp.v1.QueryAddress.destination_domain":
 		x.DestinationDomain = uint32(value.Uint())
 	case "noble.autocctp.v1.QueryAddress.mint_recipient":
-		x.MintRecipient = value.Bytes()
+		x.MintRecipient = value.Interface().(string)
 	case "noble.autocctp.v1.QueryAddress.fallback_recipient":
 		x.FallbackRecipient = value.Interface().(string)
 	case "noble.autocctp.v1.QueryAddress.destination_caller":
-		x.DestinationCaller = value.Bytes()
+		x.DestinationCaller = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryAddress"))
@@ -271,11 +271,11 @@ func (x *fastReflection_QueryAddress) NewField(fd protoreflect.FieldDescriptor) 
 	case "noble.autocctp.v1.QueryAddress.destination_domain":
 		return protoreflect.ValueOfUint32(uint32(0))
 	case "noble.autocctp.v1.QueryAddress.mint_recipient":
-		return protoreflect.ValueOfBytes(nil)
+		return protoreflect.ValueOfString("")
 	case "noble.autocctp.v1.QueryAddress.fallback_recipient":
 		return protoreflect.ValueOfString("")
 	case "noble.autocctp.v1.QueryAddress.destination_caller":
-		return protoreflect.ValueOfBytes(nil)
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryAddress"))
@@ -487,7 +487,7 @@ func (x *fastReflection_QueryAddress) ProtoMethods() *protoiface.Methods {
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MintRecipient", wireType)
 				}
-				var byteLen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -497,25 +497,23 @@ func (x *fastReflection_QueryAddress) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.MintRecipient = append(x.MintRecipient[:0], dAtA[iNdEx:postIndex]...)
-				if x.MintRecipient == nil {
-					x.MintRecipient = []byte{}
-				}
+				x.MintRecipient = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
@@ -553,7 +551,7 @@ func (x *fastReflection_QueryAddress) ProtoMethods() *protoiface.Methods {
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DestinationCaller", wireType)
 				}
-				var byteLen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -563,25 +561,23 @@ func (x *fastReflection_QueryAddress) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.DestinationCaller = append(x.DestinationCaller[:0], dAtA[iNdEx:postIndex]...)
-				if x.DestinationCaller == nil {
-					x.DestinationCaller = []byte{}
-				}
+				x.DestinationCaller = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -3539,9 +3535,9 @@ type QueryAddress struct {
 	unknownFields protoimpl.UnknownFields
 
 	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-	MintRecipient     []byte `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
+	MintRecipient     string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
 	FallbackRecipient string `protobuf:"bytes,3,opt,name=fallback_recipient,json=fallbackRecipient,proto3" json:"fallback_recipient,omitempty"`
-	DestinationCaller []byte `protobuf:"bytes,4,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
+	DestinationCaller string `protobuf:"bytes,4,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
 }
 
 func (x *QueryAddress) Reset() {
@@ -3571,11 +3567,11 @@ func (x *QueryAddress) GetDestinationDomain() uint32 {
 	return 0
 }
 
-func (x *QueryAddress) GetMintRecipient() []byte {
+func (x *QueryAddress) GetMintRecipient() string {
 	if x != nil {
 		return x.MintRecipient
 	}
-	return nil
+	return ""
 }
 
 func (x *QueryAddress) GetFallbackRecipient() string {
@@ -3585,11 +3581,11 @@ func (x *QueryAddress) GetFallbackRecipient() string {
 	return ""
 }
 
-func (x *QueryAddress) GetDestinationCaller() []byte {
+func (x *QueryAddress) GetDestinationCaller() string {
 	if x != nil {
 		return x.DestinationCaller
 	}
-	return nil
+	return ""
 }
 
 type QueryAddressResponse struct {
@@ -3852,13 +3848,13 @@ var file_noble_autocctp_v1_query_proto_rawDesc = []byte{
 	0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x11,
 	0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69,
 	0x6e, 0x12, 0x25, 0x0a, 0x0e, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69,
-	0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0d, 0x6d, 0x69, 0x6e, 0x74, 0x52,
+	0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x6d, 0x69, 0x6e, 0x74, 0x52,
 	0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x2d, 0x0a, 0x12, 0x66, 0x61, 0x6c, 0x6c,
 	0x62, 0x61, 0x63, 0x6b, 0x5f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x03,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x52, 0x65,
 	0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x2d, 0x0a, 0x12, 0x64, 0x65, 0x73, 0x74, 0x69,
 	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0c, 0x52, 0x11, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x01, 0x28, 0x09, 0x52, 0x11, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
 	0x43, 0x61, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x00,
 	0x22, 0x69, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
 	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x32, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72,

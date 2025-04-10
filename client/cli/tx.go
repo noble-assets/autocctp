@@ -63,7 +63,7 @@ func TxRegisterAccount() *cobra.Command {
 			if len(args) != 4 {
 				args = append(args, "")
 			}
-			accountProperties, err := ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
+			accountProperties, err := types.ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
 			if err != nil {
 				return types.ErrInvalidInputs.Wrap(err.Error())
 			}
@@ -101,7 +101,7 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 			if len(args) != 4 {
 				args = append(args, "")
 			}
-			accountProperties, err := ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
+			accountProperties, err := types.ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
 			if err != nil {
 				return types.ErrInvalidInputs.Wrap(err.Error())
 			}
