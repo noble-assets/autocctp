@@ -144,7 +144,7 @@ func ValidateAndParseAccountFields(
 	}
 
 	return &AccountProperties{
-		DestinationDomain: uint32(domain),
+		DestinationDomain: destinationDomain,
 		MintRecipient:     recipient,
 		FallbackRecipient: fallbackRecipient,
 		DestinationCaller: caller,
