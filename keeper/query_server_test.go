@@ -104,7 +104,7 @@ func TestAddress(t *testing.T) {
 			name: "valid request with complete data but address is not associated with autocctp account",
 			req: &types.QueryAddress{
 				DestinationDomain: validPropertiesWithCaller.DestinationDomain,
-				MintRecipient:     validPropertiesWithCallerhMintRecipient.String(),
+				MintRecipient:     validPropertiesWithCallerMintRecipient.String(),
 				FallbackRecipient: validPropertiesWithCaller.FallbackRecipient,
 				DestinationCaller: validPropertiesWithCallerDestinationCaller.String(),
 			},
