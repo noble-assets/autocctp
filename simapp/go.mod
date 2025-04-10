@@ -2,9 +2,8 @@ module autocctp.dev/simapp
 
 go 1.24
 
-toolchain go1.24.1
-
 require (
+	autocctp.dev v0.0.0-00010101000000-000000000000
 	cosmossdk.io/client/v2 v2.0.0-beta.8
 	cosmossdk.io/core v0.11.1
 	cosmossdk.io/depinject v1.1.0
@@ -77,7 +76,7 @@ require (
 	github.com/dvsekhvalnov/jose2go v1.6.0 // indirect
 	github.com/emicklei/dot v1.6.2 // indirect
 	github.com/ethereum/go-ethereum v1.14.13 // indirect
-	github.com/fatih/color v1.18.0 // indirect
+	github.com/fatih/color v1.17.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/getsentry/sentry-go v0.27.0 // indirect
@@ -145,6 +144,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
 	github.com/oklog/run v1.1.0 // indirect
+	github.com/onsi/gomega v1.34.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/petermattis/goid v0.0.0-20240813172612-4fcff4a6cae7 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
