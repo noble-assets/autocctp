@@ -1,8 +1,6 @@
 module autocctp.dev/e2e
 
-go 1.23.0
-
-toolchain go1.24.1
+go 1.24
 
 require (
 	autocctp.dev v0.0.0-00010101000000-000000000000
