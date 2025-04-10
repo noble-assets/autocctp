@@ -31,10 +31,5 @@ func (q QueryAddress) GetAccountProperties() (AccountProperties, error) {
 		return AccountProperties{}, err
 	}
 
-	return AccountProperties{
-		DestinationDomain: q.DestinationDomain,
-		MintRecipient:     accountProperties.MintRecipient,
-		FallbackRecipient: q.FallbackRecipient,
-		DestinationCaller: accountProperties.DestinationCaller,
-	}, nil
+	return *accountProperties, nil
 }
