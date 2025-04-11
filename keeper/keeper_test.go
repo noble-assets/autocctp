@@ -23,9 +23,8 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 
 	"autocctp.dev/testutil"
 	"autocctp.dev/testutil/mocks"
@@ -167,11 +166,20 @@ func TestSendRestrictionFn(t *testing.T) {
 			errContains:        "autocctp accounts can only receive",
 		},
 		{
-			name: "valid when coins contains only minting denom",
+			name: "invalid when coins contains only minting denom but lower than minimum",
 			setup: func(ak *mocks.AccountKeeper) {
 				ak.Accounts[acc.GetAddress().String()] = &acc
 			},
-			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1)),
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64()-1)),
+			expPendingTransfer: false,
+			errContains:        "autocctp accounts can only receive",
+		},
+		{
+			name: "valid when correct denom and amount",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64())),
 			expPendingTransfer: true,
 			errContains:        "",
 		},

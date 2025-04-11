@@ -134,9 +134,16 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 		return toAddr, nil
 	}
 
+	// NOTE: Here we are limiting the minimum amount an AutoCCTP account can receive. We are
+	// intentionally not checking if the coins sent plus the current balance are higher
+	// than the minimum amount to transfer to always force the minimum amount.
 	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
-	if len(coins) != 1 || !coins.AmountOf(mintingDenom).IsPositive() {
-		return toAddr, fmt.Errorf("autocctp accounts can only receive %s coins", mintingDenom)
+	if len(coins) != 1 || coins.AmountOf(mintingDenom).LT(types.GetMinimumTransferAmount()) {
+		return toAddr, fmt.Errorf(
+			"autocctp accounts can only receive %s coins, and not lower than %s",
+			mintingDenom,
+			types.GetMinimumTransferAmount(),
+		)
 	}
 
 	if err = k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
@@ -178,7 +185,8 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 		}
 
 		mintingToken := k.ftfKeeper.GetMintingDenom(ctx)
-		if !k.bankKeeper.GetBalance(ctx, address, mintingToken.Denom).IsZero() {
+		accountBalance := k.bankKeeper.GetBalance(ctx, address, mintingToken.Denom)
+		if accountBalance.Amount.GTE(types.GetMinimumTransferAmount()) {
 			account, _ := rawAccount.(*types.Account)
 			if err := k.PendingTransfers.Set(ctx, address.String(), *account); err != nil {
 				k.logger.Error("error registering pending transfer for address %s", address.String())
