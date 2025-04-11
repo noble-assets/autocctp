@@ -45,7 +45,10 @@ func (q queryServer) Address(ctx context.Context, req *types.QueryAddress) (*typ
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("cannot be nil")
 	}
 
-	accountProperties := req.GetAccountProperties()
+	accountProperties, err := req.GetAccountProperties()
+	if err != nil {
+		return nil, types.ErrInvalidInputs.Wrap(err.Error())
+	}
 	if err := q.ValidateAccountProperties(accountProperties); err != nil {
 		return nil, types.ErrInvalidAccountProperties.Wrap(err.Error())
 	}

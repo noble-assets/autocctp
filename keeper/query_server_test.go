@@ -23,6 +23,7 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,9 +38,14 @@ import (
 
 func TestAddress(t *testing.T) {
 	validProperties := testutil.ValidProperties(false)
+	validPropertiesMintRecipient := common.BytesToAddress(validProperties.MintRecipient)
+
 	address := types.GenerateAddress(validProperties)
 
 	validPropertiesWithCaller := testutil.ValidProperties(true)
+	validPropertiesWithCallerMintRecipient := common.BytesToAddress(validPropertiesWithCaller.MintRecipient)
+	validPropertiesWithCallerDestinationCaller := common.BytesToAddress(validPropertiesWithCaller.DestinationCaller)
+
 	addressWithCaller := types.GenerateAddress(validPropertiesWithCaller)
 
 	testCases := []struct {
@@ -56,16 +62,16 @@ func TestAddress(t *testing.T) {
 			errContains: sdkerrors.ErrInvalidRequest.Error(),
 		},
 		{
-			name:        "fail when valid properties fails",
+			name:        "fail when properties validation fails",
 			req:         &types.QueryAddress{},
 			setup:       func(*mocks.AccountKeeper, sdk.Context) {},
-			errContains: types.ErrInvalidAccountProperties.Error(),
+			errContains: types.ErrInvalidInputs.Error(),
 		},
 		{
 			name: "valid request but account does not exists",
 			req: &types.QueryAddress{
 				DestinationDomain: validProperties.DestinationDomain,
-				MintRecipient:     validProperties.MintRecipient,
+				MintRecipient:     validPropertiesMintRecipient.String(),
 				FallbackRecipient: validProperties.FallbackRecipient,
 			},
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {},
@@ -78,7 +84,7 @@ func TestAddress(t *testing.T) {
 			name: "valid request with nil destination caller",
 			req: &types.QueryAddress{
 				DestinationDomain: validProperties.DestinationDomain,
-				MintRecipient:     validProperties.MintRecipient,
+				MintRecipient:     validPropertiesMintRecipient.String(),
 				FallbackRecipient: validProperties.FallbackRecipient,
 			},
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {
@@ -98,9 +104,9 @@ func TestAddress(t *testing.T) {
 			name: "valid request with complete data but address is not associated with autocctp account",
 			req: &types.QueryAddress{
 				DestinationDomain: validPropertiesWithCaller.DestinationDomain,
-				MintRecipient:     validPropertiesWithCaller.MintRecipient,
+				MintRecipient:     validPropertiesWithCallerMintRecipient.String(),
 				FallbackRecipient: validPropertiesWithCaller.FallbackRecipient,
-				DestinationCaller: validPropertiesWithCaller.DestinationCaller,
+				DestinationCaller: validPropertiesWithCallerDestinationCaller.String(),
 			},
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {
 				base := ak.NewAccountWithAddress(ctx, addressWithCaller)
@@ -116,9 +122,9 @@ func TestAddress(t *testing.T) {
 			name: "valid request with complete data",
 			req: &types.QueryAddress{
 				DestinationDomain: validPropertiesWithCaller.DestinationDomain,
-				MintRecipient:     validPropertiesWithCaller.MintRecipient,
+				MintRecipient:     validPropertiesWithCallerMintRecipient.String(),
 				FallbackRecipient: validPropertiesWithCaller.FallbackRecipient,
-				DestinationCaller: validPropertiesWithCaller.DestinationCaller,
+				DestinationCaller: validPropertiesWithCallerDestinationCaller.String(),
 			},
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {
 				base := ak.NewAccountWithAddress(ctx, addressWithCaller)

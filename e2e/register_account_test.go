@@ -37,7 +37,6 @@ import (
 	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	clienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
 
-	"autocctp.dev/client/cli"
 	"autocctp.dev/types"
 )
 
@@ -270,7 +269,7 @@ func TestFlowIBC(t *testing.T) {
 							expectedBase64 := ""
 							if tC.destinationCaller {
 								bz := common.FromHex(destinationCaller)
-								bz, err := cli.LeftPadBytes(bz)
+								bz, err := types.LeftPadBytes(bz)
 								require.NoError(t, err, "expected no error padding destination caller address")
 								expectedBase64 = base64.StdEncoding.EncodeToString(bz)
 							}
@@ -279,7 +278,7 @@ func TestFlowIBC(t *testing.T) {
 							require.Equal(t, expectedBase64, actual, "expected a different destination caller in cctp event")
 						case "mint_recipient":
 							bz := common.FromHex(s.mintRecipient)
-							bz, err := cli.LeftPadBytes(bz)
+							bz, err := types.LeftPadBytes(bz)
 							require.NoError(t, err, "expected no error padding mint recipient address")
 							expectedBase64 := base64.StdEncoding.EncodeToString(bz)
 							var actual string
@@ -339,7 +338,7 @@ func TestFlowIBC(t *testing.T) {
 							expectedBase64 := ""
 							if tC.destinationCaller {
 								bz := common.FromHex(destinationCaller)
-								bz, err := cli.LeftPadBytes(bz)
+								bz, err := types.LeftPadBytes(bz)
 								require.NoError(t, err, "expected no error padding destination caller address")
 								expectedBase64 = base64.StdEncoding.EncodeToString(bz)
 							}
@@ -348,7 +347,7 @@ func TestFlowIBC(t *testing.T) {
 							require.Equal(t, expectedBase64, actual, "expected a different destination caller in cctp event")
 						case "mint_recipient":
 							bz := common.FromHex(s.mintRecipient)
-							bz, err := cli.LeftPadBytes(bz)
+							bz, err := types.LeftPadBytes(bz)
 							require.NoError(t, err, "expected no error padding mint recipient address")
 							expectedBase64 := base64.StdEncoding.EncodeToString(bz)
 							var actual string

@@ -34,7 +34,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"autocctp.dev/client/cli"
 	"autocctp.dev/types"
 )
 
@@ -206,7 +205,7 @@ func TestClearAccount_ToMintRecipient(t *testing.T) {
 					require.Equal(t, "", actual, "expected a different destination caller in cctp event")
 				case "mint_recipient":
 					bz := common.FromHex(s.mintRecipient)
-					bz, err := cli.LeftPadBytes(bz)
+					bz, err := types.LeftPadBytes(bz)
 					require.NoError(t, err, "expected no error padding mint recipient address")
 					expectedBase64 := base64.StdEncoding.EncodeToString(bz)
 					var actual string
