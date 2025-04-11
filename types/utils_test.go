@@ -194,3 +194,125 @@ func TestValidateExistingAccount(t *testing.T) {
 	require.Error(t, err, "expecting an error when the pub key type is wrong")
 	require.ErrorContains(t, err, "attempting to register an existing user")
 }
+
+func TestValidateAndParseDomainFields(t *testing.T) {
+	// ARRANGE
+	testutil.SetSDKConfig()
+
+	testCases := []struct {
+		name              string
+		destinationDomain uint32
+		mintRecipient     string
+		fallbackRecipient string
+		destinationCaller string
+		errContains       string
+		postChecks        func(*types.AccountProperties)
+	}{
+		{
+			name:              "fail when the destination domain is not supported",
+			destinationDomain: 11,
+			errContains:       "not supported",
+		},
+		{
+			name:              "fail when the destination domain is noble",
+			destinationDomain: 4,
+			errContains:       "cannot be source domain",
+		},
+		{
+			name:              "fail when the mint recipient is empty",
+			destinationDomain: 0,
+			mintRecipient:     "",
+			errContains:       "cannot be empty",
+		},
+		{
+			name:              "fail when destination chain is ethereum and mint recipient is a solana address",
+			destinationDomain: 0,
+			mintRecipient:     "2WjnnBcYf4ff9xyDoH8yevnKF3yhH98DCcdy6PSmjNDa",
+			errContains:       "address not in hex format",
+		},
+		{
+			name:              "fail when fallback recipient is empty",
+			destinationDomain: 0,
+			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			fallbackRecipient: "",
+			errContains:       "invalid fallback recipient",
+		},
+		{
+			name:              "fail when fallback recipient is not chain address",
+			destinationDomain: 0,
+			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			fallbackRecipient: "cosmos1y5azhw4a99s4tm4kwzfwus52tjlvsaywuq3q3m",
+			errContains:       "invalid Bech32 prefix",
+		},
+		{
+			name:              "fail when destination caller is not empty and not valid",
+			destinationDomain: 0,
+			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
+			destinationCaller: "invalid",
+			errContains:       "invalid destination caller",
+		},
+		{
+			name:              "fail when destination caller is not a destination address",
+			destinationDomain: 0,
+			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
+			destinationCaller: "2WjnnBcYf4ff9xyDoH8yevnKF3yhH98DCcdy6PSmjNDa",
+			errContains:       "invalid destination caller",
+		},
+		{
+			name:              "success when mint recipient is an ethereum address",
+			destinationDomain: 0,
+			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
+			errContains:       "",
+			postChecks: func(aP *types.AccountProperties) {
+				require.Equal(t, 32, len(aP.MintRecipient), "expected mint recipient 32 bytes")
+				require.Equal(t, 0, len(aP.DestinationCaller), "expected empty destination caller")
+			},
+		},
+		{
+			name:              "success when addresses are ethereum address",
+			destinationDomain: 0,
+			mintRecipient:     "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
+			destinationCaller: "0xaB537dC791355d986A4f7a9a53f3D8810fd870D1",
+			errContains:       "",
+			postChecks: func(aP *types.AccountProperties) {
+				require.Equal(t, 32, len(aP.MintRecipient), "expected mint recipient 32 bytes")
+				require.Equal(t, 32, len(aP.DestinationCaller), "expected destination caller 32 bytes")
+			},
+		},
+		{
+			name:              "success when mint recipient is an aptos address",
+			destinationDomain: 9,
+			mintRecipient:     "0xeeff357ea5c1a4e7bc11b2b17ff2dc2dcca69750bfef1e1ebcaccf8c8018175b",
+			fallbackRecipient: "noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
+			errContains:       "",
+			postChecks: func(aP *types.AccountProperties) {
+				require.Equal(t, 32, len(aP.MintRecipient), "expected mint recipient 32 bytes")
+				require.Equal(t, 0, len(aP.DestinationCaller), "expected empty destination caller")
+			},
+		},
+	}
+
+	for _, tC := range testCases {
+		t.Run(tC.name, func(t *testing.T) {
+			accountProperties, err := types.ValidateAndParseAccountFields(
+				tC.destinationDomain,
+				tC.mintRecipient,
+				tC.fallbackRecipient,
+				tC.destinationCaller,
+			)
+
+			if tC.errContains != "" {
+				require.Error(t, err, "expected an error")
+				require.ErrorContains(t, err, tC.errContains, "expected a different error")
+				require.Nil(t, accountProperties, "expected nil response when receiving an error")
+			} else {
+				require.NoError(t, err, "expected no error")
+				tC.postChecks(accountProperties)
+			}
+		})
+	}
+}

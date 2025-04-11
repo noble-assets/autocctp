@@ -20,6 +20,16 @@
 
 package types
 
-func (q QueryAddress) GetAccountProperties() AccountProperties {
-	return AccountProperties(q)
+func (q QueryAddress) GetAccountProperties() (AccountProperties, error) {
+	accountProperties, err := ValidateAndParseAccountFields(
+		q.DestinationDomain,
+		q.MintRecipient,
+		q.FallbackRecipient,
+		q.DestinationCaller,
+	)
+	if err != nil {
+		return AccountProperties{}, err
+	}
+
+	return *accountProperties, nil
 }
