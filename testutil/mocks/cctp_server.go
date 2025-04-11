@@ -24,8 +24,9 @@ import (
 	"context"
 	"errors"
 
-	"cosmossdk.io/math"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+
+	"cosmossdk.io/math"
 
 	"autocctp.dev/types"
 )

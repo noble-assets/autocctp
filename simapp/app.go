@@ -6,18 +6,17 @@ import (
 	"os"
 	"path/filepath"
 
-	autocctp "autocctp.dev"
-	autocctpkeeper "autocctp.dev/keeper"
+	_ "github.com/circlefin/noble-cctp/x/cctp"
+	cctpkeeper "github.com/circlefin/noble-cctp/x/cctp/keeper"
+	_ "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory"
+	ftfkeeper "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/keeper"
+
 	"cosmossdk.io/core/appconfig"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	_ "cosmossdk.io/x/upgrade"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
-	_ "github.com/circlefin/noble-cctp/x/cctp"
-	cctpkeeper "github.com/circlefin/noble-cctp/x/cctp/keeper"
-	_ "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory"
-	ftfkeeper "github.com/circlefin/noble-fiattokenfactory/x/fiattokenfactory/keeper"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -44,6 +43,9 @@ import (
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	transferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+
+	autocctp "autocctp.dev"
+	autocctpkeeper "autocctp.dev/keeper"
 )
 
 var DefaultNodeHome string
