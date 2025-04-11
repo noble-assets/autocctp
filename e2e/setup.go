@@ -211,7 +211,7 @@ func createAutoCCTPChainSpec(ctx context.Context, suite *AutoCCTPSuite, isZeroFe
 				{
 					Repository: "noble-autocctp-simd",
 					Version:    "local",
-					UidGid:     "1025:1025",
+					UIDGID:     "1025:1025",
 				},
 			},
 			Type:           "cosmos",
