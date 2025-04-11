@@ -64,8 +64,9 @@ func AutoCCTPKeeper(t testing.TB) (*Mocks, *keeper.Keeper, sdk.Context) {
 		Balances: make(map[string]sdk.Coins),
 	}
 	cctps := CCTPServer{
-		MockCounter: &MockCounter{},
-		Failing:     false,
+		Failing:           false,
+		MaxTransferAmount: 1_000_000_000,
+		MockCounter:       &MockCounter{},
 	}
 
 	mocks := Mocks{

@@ -24,11 +24,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/spf13/cobra"
 
 	"autocctp.dev/types"
 )
@@ -108,9 +107,9 @@ func QueryStats() *cobra.Command {
 			var err error
 			if len(args) == 1 {
 
-				dD, err := types.ParseDestinationDomain(args[0])
-				if err != nil {
-					return types.ErrInvalidInputs.Wrap(err.Error())
+				dD, parseErr := types.ParseDestinationDomain(args[0])
+				if parseErr != nil {
+					return types.ErrInvalidInputs.Wrap(parseErr.Error())
 				}
 
 				destinationDomain, valError := types.ValidateDestinationDomain(dD)

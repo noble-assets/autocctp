@@ -167,11 +167,29 @@ func TestSendRestrictionFn(t *testing.T) {
 			errContains:        "autocctp accounts can only receive",
 		},
 		{
-			name: "valid when coins contains only minting denom",
+			name: "invalid when coins contains only minting denom but lower than minimum",
 			setup: func(ak *mocks.AccountKeeper) {
 				ak.Accounts[acc.GetAddress().String()] = &acc
 			},
-			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1)),
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64()-1)),
+			expPendingTransfer: false,
+			errContains:        "transfer amount to autocctp account should be",
+		},
+		{
+			name: "invalid when coins contains only minting denom but higher than maximum",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000+1)),
+			expPendingTransfer: false,
+			errContains:        "transfer amount to autocctp account should be",
+		},
+		{
+			name: "valid when correct denom and amount",
+			setup: func(ak *mocks.AccountKeeper) {
+				ak.Accounts[acc.GetAddress().String()] = &acc
+			},
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64())),
 			expPendingTransfer: true,
 			errContains:        "",
 		},

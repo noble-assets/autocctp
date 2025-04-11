@@ -88,7 +88,7 @@ func (d SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 		// attacks of AutoCCTP accounts.
 		mintToken := d.ftf.GetMintingDenom(ctx)
 		balance := d.bank.GetBalance(ctx, address, mintToken.Denom)
-		if balance.IsZero() || msg.Signer != address.String() {
+		if balance.Amount.LT(types.GetMinimumTransferAmount()) || msg.Signer != address.String() {
 			return d.underlying.AnteHandle(ctx, tx, simulate, next)
 		}
 

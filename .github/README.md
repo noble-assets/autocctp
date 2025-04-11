@@ -154,7 +154,8 @@ seamless transfer of $USDC:
 
 - `x/fiat-tokenfactory`: required to handle $USDC on Noble.
 
-- `x/cctp`: required to initiate transfers via CCTP.
+- `x/cctp`: required to initiate transfers via CCTP and to query module
+  parameters.
 
 ## Tests
 

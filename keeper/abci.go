@@ -45,7 +45,7 @@ func (k *Keeper) ExecuteTransfers(ctx context.Context) {
 
 		var err error
 		if len(transfer.DestinationCaller) == 0 {
-			_, err = k.cctpServer.DepositForBurn(ctx, &cctptypes.MsgDepositForBurn{
+			_, err = k.cctpService.DepositForBurn(ctx, &cctptypes.MsgDepositForBurn{
 				From:              transfer.Address,
 				Amount:            balance.Amount,
 				DestinationDomain: transfer.DestinationDomain,
@@ -53,7 +53,7 @@ func (k *Keeper) ExecuteTransfers(ctx context.Context) {
 				BurnToken:         balance.Denom,
 			})
 		} else {
-			_, err = k.cctpServer.DepositForBurnWithCaller(ctx, &cctptypes.MsgDepositForBurnWithCaller{
+			_, err = k.cctpService.DepositForBurnWithCaller(ctx, &cctptypes.MsgDepositForBurnWithCaller{
 				From:              transfer.Address,
 				Amount:            balance.Amount,
 				DestinationDomain: transfer.DestinationDomain,
