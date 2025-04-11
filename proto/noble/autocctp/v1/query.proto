@@ -13,7 +13,10 @@ option go_package = "autocctp.dev/types";
 service Query {
   rpc Address(QueryAddress) returns (QueryAddressResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
-    option (google.api.http).get = "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}/{destination_caller}";
+    option (google.api.http) = {
+      get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}"
+      additional_bindings: {get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}/{destination_caller}"}
+    };
   }
   rpc Stats(QueryStats) returns (QueryStatsResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
@@ -30,9 +33,9 @@ message QueryAddress {
   option (gogoproto.goproto_getters) = false;
 
   uint32 destination_domain = 1;
-  bytes mint_recipient = 2;
+  string mint_recipient = 2;
   string fallback_recipient = 3;
-  bytes destination_caller = 4;
+  string destination_caller = 4;
 }
 
 message QueryAddressResponse {

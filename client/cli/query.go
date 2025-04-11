@@ -65,16 +65,21 @@ func QueryAddress() *cobra.Command {
 				args = append(args, "")
 			}
 
-			accountProperties, err := ValidateAndParseAccountFields(args[0], args[1], args[2], args[3])
+			destinationDomain, err := types.ParseDestinationDomain(args[0])
+			if err != nil {
+				return types.ErrInvalidInputs.Wrap(err.Error())
+			}
+
+			accountProperties, err := types.ValidateAndParseAccountFields(destinationDomain, args[1], args[2], args[3])
 			if err != nil {
 				return types.ErrInvalidInputs.Wrap(err.Error())
 			}
 
 			res, err := queryClient.Address(context.Background(), &types.QueryAddress{
 				DestinationDomain: accountProperties.DestinationDomain,
-				MintRecipient:     accountProperties.MintRecipient,
+				MintRecipient:     args[1],
 				FallbackRecipient: accountProperties.FallbackRecipient,
-				DestinationCaller: accountProperties.DestinationCaller,
+				DestinationCaller: args[3],
 			})
 			if err != nil {
 				return fmt.Errorf("error executing the query: %w", err)
@@ -102,7 +107,13 @@ func QueryStats() *cobra.Command {
 			var res proto.Message
 			var err error
 			if len(args) == 1 {
-				destinationDomain, valError := ValidateDestinationDomain(args[0])
+
+				dD, err := types.ParseDestinationDomain(args[0])
+				if err != nil {
+					return types.ErrInvalidInputs.Wrap(err.Error())
+				}
+
+				destinationDomain, valError := types.ValidateDestinationDomain(dD)
 				if valError != nil {
 					return types.ErrInvalidInputs.Wrap(valError.Error())
 				}
