@@ -30,6 +30,8 @@ import (
 	"cosmossdk.io/core/store"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
+	"cosmossdk.io/math"
+	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -46,7 +48,7 @@ type Keeper struct {
 	bankKeeper    types.BankKeeper
 	ftfKeeper     types.FiatTokenfactoryKeeper
 
-	cctpServer types.CCTPServer
+	cctpService types.CCTPService
 
 	// NumOfAccounts keeps track of the number of accounts registered per destination domain.
 	NumOfAccounts collections.Map[uint32, uint64]
@@ -68,7 +70,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	ftfKeeper types.FiatTokenfactoryKeeper,
-	cctpServer types.CCTPServer,
+	cctpService types.CCTPService,
 ) *Keeper {
 	builder := collections.NewSchemaBuilder(storeService)
 	transientBuilder := collections.NewSchemaBuilderFromAccessor(transientService.OpenTransientStore)
@@ -81,7 +83,7 @@ func NewKeeper(
 		bankKeeper:    bankKeeper,
 		ftfKeeper:     ftfKeeper,
 
-		cctpServer: cctpServer,
+		cctpService: cctpService,
 
 		NumOfAccounts:    collections.NewMap(builder, types.NumOfAccountsPrefix, "num_of_accounts", collections.Uint32Key, collections.Uint64Value),
 		NumOfTransfers:   collections.NewMap(builder, types.NumOfTransfersPrefix, "num_of_transfers", collections.Uint32Key, collections.Uint64Value),
@@ -97,10 +99,10 @@ func NewKeeper(
 	return keeper
 }
 
-// SetCCTPServer allows us to override the CCTP server inside the keeper.
+// SetCCTPService allows us to override the CCTP server inside the keeper.
 // This is required because servers can't be injected via depinject.
-func (k *Keeper) SetCCTPServer(cctpServer types.CCTPServer) {
-	k.cctpServer = cctpServer
+func (k *Keeper) SetCCTPService(cctpMsgServer types.CCTPMsgServer, cctpQueryServer types.CCTPQueryServer) {
+	k.cctpService = types.NewCCTPServer(cctpMsgServer, cctpQueryServer)
 }
 
 // ValidateAccountProperties returns an error if any account properties is not valid.
@@ -121,6 +123,17 @@ func (k *Keeper) ValidateAccountProperties(accountProperties types.AccountProper
 	return nil
 }
 
+func (k *Keeper) getMaxTransferAmount(ctx context.Context, denom string) (math.Int, error) {
+	resp, err := k.cctpService.PerMessageBurnLimit(ctx, &cctptypes.QueryGetPerMessageBurnLimitRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		return math.Int{}, err
+	}
+
+	return resp.BurnLimit.Amount, nil
+}
+
 // SendRestrictionFn checks every transfer executed on the Noble chain to see if
 // the recipient is an AutoCCTP account, allowing us to mark them for clearing.
 func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress, coins sdk.Coins) (newToAddr sdk.AccAddress, err error) {
@@ -134,15 +147,31 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 		return toAddr, nil
 	}
 
+	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
+	if len(coins) != 1 || coins[0].Denom != mintingDenom {
+		return toAddr, fmt.Errorf(
+			"autocctp accounts can only receive %s coins",
+			mintingDenom,
+		)
+	}
+
+	mintingDenomAmount := coins[0].Amount
+	maxTransferAmount, err := k.getMaxTransferAmount(ctx, mintingDenom)
+	if err != nil {
+		return toAddr, fmt.Errorf(
+			"error retrieving the max transfer amount: %w",
+			err,
+		)
+	}
+
 	// NOTE: Here we are limiting the minimum amount an AutoCCTP account can receive. We are
 	// intentionally not checking if the coins sent plus the current balance are higher
 	// than the minimum amount to transfer to always force the minimum amount.
-	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
-	if len(coins) != 1 || coins.AmountOf(mintingDenom).LT(types.GetMinimumTransferAmount()) {
+	if mintingDenomAmount.LT(types.GetMinimumTransferAmount()) || mintingDenomAmount.GT(maxTransferAmount) {
 		return toAddr, fmt.Errorf(
-			"autocctp accounts can only receive %s coins, and not lower than %s",
-			mintingDenom,
-			types.GetMinimumTransferAmount(),
+			"transfer amount to autocctp account should be %s < x < %s",
+			types.GetMinimumTransferAmount().String(),
+			maxTransferAmount.String(),
 		)
 	}
 

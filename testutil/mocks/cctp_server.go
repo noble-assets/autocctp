@@ -24,12 +24,13 @@ import (
 	"context"
 	"errors"
 
+	"cosmossdk.io/math"
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 
 	"autocctp.dev/types"
 )
 
-var _ types.CCTPServer = CCTPServer{}
+var _ types.CCTPService = CCTPServer{}
 
 type MockCounter struct {
 	// NumDepositForBurn keep track of the number of times the associated method is called.
@@ -40,12 +41,12 @@ type MockCounter struct {
 
 type CCTPServer struct {
 	// Failing defines if calls to the CCTPServer return an error response.
-	Failing bool
+	Failing           bool
+	MaxTransferAmount int64
 	// MockCounter is used to check if the proper method has been called.
 	MockCounter *MockCounter
 }
 
-// DepositForBurn implements types.CCTPServer.
 func (c CCTPServer) DepositForBurn(_ context.Context, msg *cctptypes.MsgDepositForBurn) (*cctptypes.MsgDepositForBurnResponse, error) {
 	if c.Failing {
 		return nil, errors.New("error calling deposit for burn api")
@@ -56,7 +57,6 @@ func (c CCTPServer) DepositForBurn(_ context.Context, msg *cctptypes.MsgDepositF
 	return nil, nil
 }
 
-// DepositForBurnWithCaller implements types.CCTPServer.
 func (c CCTPServer) DepositForBurnWithCaller(_ context.Context, msg *cctptypes.MsgDepositForBurnWithCaller) (*cctptypes.MsgDepositForBurnWithCallerResponse, error) {
 	if c.Failing {
 		return nil, errors.New("error calling deposit for burn with caller api")
@@ -65,4 +65,13 @@ func (c CCTPServer) DepositForBurnWithCaller(_ context.Context, msg *cctptypes.M
 	c.MockCounter.NumDepositForBurnWithCaller += 1
 
 	return nil, nil
+}
+
+func (c CCTPServer) PerMessageBurnLimit(context.Context, *cctptypes.QueryGetPerMessageBurnLimitRequest) (*cctptypes.QueryGetPerMessageBurnLimitResponse, error) {
+	return &cctptypes.QueryGetPerMessageBurnLimitResponse{
+		BurnLimit: cctptypes.PerMessageBurnLimit{
+			Denom:  "uusdc",
+			Amount: math.NewInt(c.MaxTransferAmount),
+		},
+	}, nil
 }

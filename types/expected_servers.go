@@ -26,7 +26,18 @@ import (
 	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 )
 
-type CCTPServer interface {
+type CCTPService interface {
+	CCTPMsgServer
+	CCTPQueryServer
+}
+
+// CCTPMsgServer defines the methods required from the CCTP module for state transitions.
+type CCTPMsgServer interface {
 	DepositForBurn(context.Context, *cctptypes.MsgDepositForBurn) (*cctptypes.MsgDepositForBurnResponse, error)
 	DepositForBurnWithCaller(context.Context, *cctptypes.MsgDepositForBurnWithCaller) (*cctptypes.MsgDepositForBurnWithCallerResponse, error)
+}
+
+// CCTPQueryServer defines the methods required from the CCTP module for state retrieval.
+type CCTPQueryServer interface {
+	PerMessageBurnLimit(context.Context, *cctptypes.QueryGetPerMessageBurnLimitRequest) (*cctptypes.QueryGetPerMessageBurnLimitResponse, error)
 }

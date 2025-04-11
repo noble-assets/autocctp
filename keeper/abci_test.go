@@ -24,9 +24,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/assert"
 
 	"autocctp.dev/testutil"
 	"autocctp.dev/testutil/mocks"
