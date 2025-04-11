@@ -26,9 +26,8 @@ import (
 	"fmt"
 
 	"github.com/circlefin/noble-cctp/x/cctp/types"
-	"github.com/ethereum/go-ethereum/common"
-
 	"github.com/cosmos/btcutil/base58"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // Domain represents a destination domain supported by CCTP.
@@ -97,7 +96,7 @@ func NewCCTPServer(msgServer CCTPMsgServer, queryServer CCTPQueryServer) CCTPSer
 	}
 
 	return &CCTPServer{
-		MsgSever:    msgServer,
+		MsgServer:   msgServer,
 		QueryServer: queryServer,
 	}
 }
@@ -105,18 +104,18 @@ func NewCCTPServer(msgServer CCTPMsgServer, queryServer CCTPQueryServer) CCTPSer
 var _ CCTPService = CCTPServer{}
 
 type CCTPServer struct {
-	MsgSever    CCTPMsgServer
+	MsgServer   CCTPMsgServer
 	QueryServer CCTPQueryServer
 }
 
 // DepositForBurn implements CCTPService.
 func (c CCTPServer) DepositForBurn(ctx context.Context, msg *types.MsgDepositForBurn) (*types.MsgDepositForBurnResponse, error) {
-	return c.MsgSever.DepositForBurn(ctx, msg)
+	return c.MsgServer.DepositForBurn(ctx, msg)
 }
 
 // DepositForBurnWithCaller implements CCTPService.
 func (c CCTPServer) DepositForBurnWithCaller(ctx context.Context, msg *types.MsgDepositForBurnWithCaller) (*types.MsgDepositForBurnWithCallerResponse, error) {
-	return c.MsgSever.DepositForBurnWithCaller(ctx, msg)
+	return c.MsgServer.DepositForBurnWithCaller(ctx, msg)
 }
 
 // PerMessageBurnLimit implements CCTPService.

@@ -25,14 +25,13 @@ import (
 	"errors"
 	"fmt"
 
-	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
-
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/event"
 	"cosmossdk.io/core/store"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -170,7 +169,7 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	// than the minimum amount to transfer to always force the minimum amount.
 	if mintingDenomAmount.LT(types.GetMinimumTransferAmount()) || mintingDenomAmount.GT(maxTransferAmount) {
 		return toAddr, fmt.Errorf(
-			"transfer amount to autocctp account should be %s < x < %s",
+			"transfer amount to autocctp account should be %s <= x <= %s",
 			types.GetMinimumTransferAmount().String(),
 			maxTransferAmount.String(),
 		)
