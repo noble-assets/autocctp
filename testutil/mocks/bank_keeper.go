@@ -55,12 +55,22 @@ func (k BankKeeper) GetBalance(ctx context.Context, addr sdk.AccAddress, denom s
 }
 
 // SendCoinsFromAccountToModule implements types.BankKeeper.
-func (k BankKeeper) SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error {
+func (k BankKeeper) SendCoinsFromAccountToModule(
+	ctx context.Context,
+	senderAddr sdk.AccAddress,
+	recipientModule string,
+	amt sdk.Coins,
+) error {
 	return nil
 }
 
 // SendCoins implements types.BankKeeper.
-func (k BankKeeper) SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
+func (k BankKeeper) SendCoins(
+	ctx context.Context,
+	fromAddr sdk.AccAddress,
+	toAddr sdk.AccAddress,
+	amt sdk.Coins,
+) error {
 	if k.Failing {
 		return errors.New("error sending coins")
 	}

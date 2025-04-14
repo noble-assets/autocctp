@@ -41,7 +41,10 @@ func NewMsgServer(keeper *Keeper) types.MsgServer {
 }
 
 // RegisterAccount is the server entrypoint to register a new AutoCCTP account.
-func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterAccount) (*types.MsgRegisterAccountResponse, error) {
+func (ms msgServer) RegisterAccount(
+	ctx context.Context,
+	msg *types.MsgRegisterAccount,
+) (*types.MsgRegisterAccountResponse, error) {
 	// Message inputs validation.
 	accountProperties := msg.GetAccountProperties()
 	if err := ms.ValidateAccountProperties(accountProperties); err != nil {
@@ -54,19 +57,25 @@ func (ms msgServer) RegisterAccount(ctx context.Context, msg *types.MsgRegisterA
 		return nil, sdkerrors.Wrap(err, "failed to register the account")
 	}
 
-	return &types.MsgRegisterAccountResponse{Address: address}, ms.eventService.EventManager(ctx).Emit(ctx, &types.AccountRegistered{
-		Address:           address,
-		DestinationDomain: msg.DestinationDomain,
-		MintRecipient:     msg.MintRecipient,
-		FallbackRecipient: msg.FallbackRecipient,
-		DestinationCaller: msg.DestinationCaller,
-		Signerlessly:      false,
-	})
+	return &types.MsgRegisterAccountResponse{
+			Address: address,
+		}, ms.eventService.EventManager(ctx).
+			Emit(ctx, &types.AccountRegistered{
+				Address:           address,
+				DestinationDomain: msg.DestinationDomain,
+				MintRecipient:     msg.MintRecipient,
+				FallbackRecipient: msg.FallbackRecipient,
+				DestinationCaller: msg.DestinationCaller,
+				Signerlessly:      false,
+			})
 }
 
 // RegisterAccountSignerlessly is the server entrypoint to register a new AutoCCTP account
 // signerlessly.
-func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.MsgRegisterAccountSignerlessly) (*types.MsgRegisterAccountSignerlesslyResponse, error) {
+func (ms msgServer) RegisterAccountSignerlessly(
+	ctx context.Context,
+	msg *types.MsgRegisterAccountSignerlessly,
+) (*types.MsgRegisterAccountSignerlesslyResponse, error) {
 	// Message inputs validation
 	if msg == nil {
 		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to register account signerlessly cannot be nil")
@@ -83,19 +92,25 @@ func (ms msgServer) RegisterAccountSignerlessly(ctx context.Context, msg *types.
 		return nil, sdkerrors.Wrap(err, "failed to register then account signerlessly")
 	}
 
-	return &types.MsgRegisterAccountSignerlesslyResponse{Address: address}, ms.eventService.EventManager(ctx).Emit(ctx, &types.AccountRegistered{
-		Address:           address,
-		DestinationDomain: msg.DestinationDomain,
-		MintRecipient:     msg.MintRecipient,
-		FallbackRecipient: msg.FallbackRecipient,
-		DestinationCaller: msg.DestinationCaller,
-		Signerlessly:      true,
-	})
+	return &types.MsgRegisterAccountSignerlesslyResponse{
+			Address: address,
+		}, ms.eventService.EventManager(ctx).
+			Emit(ctx, &types.AccountRegistered{
+				Address:           address,
+				DestinationDomain: msg.DestinationDomain,
+				MintRecipient:     msg.MintRecipient,
+				FallbackRecipient: msg.FallbackRecipient,
+				DestinationCaller: msg.DestinationCaller,
+				Signerlessly:      true,
+			})
 }
 
 // ClearAccount is the server entrypoint to retry the CCTP transfer associated with an AutoCCTP
 // account or to clear the account sending funds to the fallback address.
-func (ms msgServer) ClearAccount(ctx context.Context, msg *types.MsgClearAccount) (*types.MsgClearAccountResponse, error) {
+func (ms msgServer) ClearAccount(
+	ctx context.Context,
+	msg *types.MsgClearAccount,
+) (*types.MsgClearAccountResponse, error) {
 	// Message inputs validation
 	if msg == nil {
 		return nil, errorstypes.ErrInvalidRequest.Wrapf("msg to clear an account cannot be nil")
@@ -116,7 +131,11 @@ func (ms msgServer) ClearAccount(ctx context.Context, msg *types.MsgClearAccount
 	}
 
 	if msg.Fallback && msg.Signer != account.FallbackRecipient {
-		return nil, errorstypes.ErrUnauthorized.Wrapf("msg sender must be fallback account: %s != %s", msg.Signer, account.FallbackRecipient)
+		return nil, errorstypes.ErrUnauthorized.Wrapf(
+			"msg sender must be fallback account: %s != %s",
+			msg.Signer,
+			account.FallbackRecipient,
+		)
 	}
 
 	mintingToken := ms.ftfKeeper.GetMintingDenom(ctx)

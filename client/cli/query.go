@@ -118,9 +118,12 @@ func QueryStats() *cobra.Command {
 					return types.ErrInvalidInputs.Wrap(valError.Error())
 				}
 
-				res, err = queryClient.StatsByDestinationDomain(context.Background(), &types.QueryStatsByDestinationDomain{
-					DestinationDomain: uint32(destinationDomain),
-				})
+				res, err = queryClient.StatsByDestinationDomain(
+					context.Background(),
+					&types.QueryStatsByDestinationDomain{
+						DestinationDomain: uint32(destinationDomain),
+					},
+				)
 			} else {
 				res, err = queryClient.Stats(context.Background(), &types.QueryStats{})
 			}

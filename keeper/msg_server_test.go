@@ -22,6 +22,7 @@ package keeper_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -47,12 +48,12 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 
 	testCases := []struct {
 		mode       string
-		msg        func(types.AccountProperties) interface{}
-		serverCall func(types.MsgServer, context.Context, interface{}) (string, error)
+		msg        func(types.AccountProperties) any
+		serverCall func(types.MsgServer, context.Context, any) (string, error)
 	}{
 		{
 			mode: "standard",
-			msg: func(ap types.AccountProperties) interface{} {
+			msg: func(ap types.AccountProperties) any {
 				return types.MsgRegisterAccount{
 					Signer:            signer,
 					DestinationDomain: ap.DestinationDomain,
@@ -60,8 +61,11 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 					FallbackRecipient: ap.FallbackRecipient,
 				}
 			},
-			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (string, error) {
-				msg := msgI.(types.MsgRegisterAccount)
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI any) (string, error) {
+				msg, ok := msgI.(types.MsgRegisterAccount)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				resp, err := s.RegisterAccount(ctx, &msg)
 				if err != nil {
 					return "", err
@@ -71,7 +75,7 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 		},
 		{
 			mode: "signerless",
-			msg: func(ap types.AccountProperties) interface{} {
+			msg: func(ap types.AccountProperties) any {
 				return types.MsgRegisterAccountSignerlessly{
 					Signer:            signer,
 					DestinationDomain: ap.DestinationDomain,
@@ -79,8 +83,11 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 					FallbackRecipient: ap.FallbackRecipient,
 				}
 			},
-			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (string, error) {
-				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI any) (string, error) {
+				msg, ok := msgI.(types.MsgRegisterAccountSignerlessly)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				resp, err := s.RegisterAccountSignerlessly(ctx, &msg)
 				if err != nil {
 					return "", err
@@ -142,12 +149,12 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 
 	testCases := []struct {
 		mode       string
-		msg        func() interface{}
-		serverCall func(types.MsgServer, context.Context, interface{}) (interface{}, error)
+		msg        func() any
+		serverCall func(types.MsgServer, context.Context, any) (any, error)
 	}{
 		{
 			mode: "standard",
-			msg: func() interface{} {
+			msg: func() any {
 				return types.MsgRegisterAccount{
 					Signer:            signer,
 					DestinationDomain: accountProperties.DestinationDomain,
@@ -155,14 +162,17 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 					FallbackRecipient: accountProperties.FallbackRecipient,
 				}
 			},
-			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
-				msg := msgI.(types.MsgRegisterAccount)
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI any) (any, error) {
+				msg, ok := msgI.(types.MsgRegisterAccount)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				return s.RegisterAccount(ctx, &msg)
 			},
 		},
 		{
 			mode: "signerless",
-			msg: func() interface{} {
+			msg: func() any {
 				return types.MsgRegisterAccountSignerlessly{
 					Signer:            signer,
 					DestinationDomain: accountProperties.DestinationDomain,
@@ -170,8 +180,11 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 					FallbackRecipient: accountProperties.FallbackRecipient,
 				}
 			},
-			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
-				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+			serverCall: func(s types.MsgServer, ctx context.Context, msgI any) (any, error) {
+				msg, ok := msgI.(types.MsgRegisterAccountSignerlessly)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				return s.RegisterAccountSignerlessly(ctx, &msg)
 			},
 		},
@@ -325,7 +338,12 @@ func TestClearAccount(t *testing.T) {
 			name: "fail when the account is base account",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence())
+				account := authtypes.NewBaseAccount(
+					base.GetAddress(),
+					base.GetPubKey(),
+					base.GetAccountNumber(),
+					base.GetSequence(),
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 			},
 			malleateMsg: func(msg *types.MsgClearAccount) {},
@@ -335,7 +353,15 @@ func TestClearAccount(t *testing.T) {
 			name: "fail when the signer is not fallback",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
+					accountProperties,
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 			},
 			malleateMsg: func(msg *types.MsgClearAccount) {
@@ -347,7 +373,15 @@ func TestClearAccount(t *testing.T) {
 			name: "fail when the account does not have funds",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
+					accountProperties,
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 			},
 			malleateMsg: func(msg *types.MsgClearAccount) {},
@@ -357,7 +391,15 @@ func TestClearAccount(t *testing.T) {
 			name: "fail when the account does not have correct funds",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
+					accountProperties,
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("unobl", 1_000_000_000))
 			},
@@ -373,7 +415,12 @@ func TestClearAccount(t *testing.T) {
 				address := types.GenerateAddress(invalidProperties)
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, address)
 				account := types.NewAccount(
-					authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()),
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
 					invalidProperties,
 				)
 				m.AccountKeeper.Accounts[address.String()] = account
@@ -393,7 +440,15 @@ func TestClearAccount(t *testing.T) {
 			name: "fails transferring funds",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
+					accountProperties,
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
 				m.BankKeeper.Failing = true
@@ -407,7 +462,15 @@ func TestClearAccount(t *testing.T) {
 			name: "succeeds transferring funds",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
+					accountProperties,
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
 			},
@@ -416,7 +479,12 @@ func TestClearAccount(t *testing.T) {
 			},
 			postChecks: func(ctx sdk.Context, bk *mocks.BankKeeper, _ *keeper.Keeper) {
 				fallbackBalance := bk.Balances[accountProperties.FallbackRecipient]
-				require.Equal(t, int64(1_000_000_000), fallbackBalance.AmountOf("uusdc").Int64(), "expected a different final amount for the fallback account")
+				require.Equal(
+					t,
+					int64(1_000_000_000),
+					fallbackBalance.AmountOf("uusdc").Int64(),
+					"expected a different final amount for the fallback account",
+				)
 			},
 			errContains: "",
 		},
@@ -424,7 +492,15 @@ func TestClearAccount(t *testing.T) {
 			name: "succeeds adding to pending transfer",
 			setup: func(ctx sdk.Context, m *mocks.Mocks) {
 				base := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
-				account := types.NewAccount(authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()), accountProperties)
+				account := types.NewAccount(
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
+					accountProperties,
+				)
 				m.AccountKeeper.Accounts[customAddress.String()] = account
 				m.BankKeeper.Balances[customAddress.String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000))
 			},

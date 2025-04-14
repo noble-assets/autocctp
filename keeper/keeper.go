@@ -83,11 +83,35 @@ func NewKeeper(
 
 		cctpServer: cctpServer,
 
-		NumOfAccounts:    collections.NewMap(builder, types.NumOfAccountsPrefix, "num_of_accounts", collections.Uint32Key, collections.Uint64Value),
-		NumOfTransfers:   collections.NewMap(builder, types.NumOfTransfersPrefix, "num_of_transfers", collections.Uint32Key, collections.Uint64Value),
-		TotalTransferred: collections.NewMap(builder, types.TotalTransferredPrefix, "total_transferred", collections.Uint32Key, collections.Uint64Value),
+		NumOfAccounts: collections.NewMap(
+			builder,
+			types.NumOfAccountsPrefix,
+			"num_of_accounts",
+			collections.Uint32Key,
+			collections.Uint64Value,
+		),
+		NumOfTransfers: collections.NewMap(
+			builder,
+			types.NumOfTransfersPrefix,
+			"num_of_transfers",
+			collections.Uint32Key,
+			collections.Uint64Value,
+		),
+		TotalTransferred: collections.NewMap(
+			builder,
+			types.TotalTransferredPrefix,
+			"total_transferred",
+			collections.Uint32Key,
+			collections.Uint64Value,
+		),
 
-		PendingTransfers: collections.NewMap(transientBuilder, types.PendingTransfersPrefix, "pending_transfers", collections.StringKey, codec.CollValue[types.Account](cdc)),
+		PendingTransfers: collections.NewMap(
+			transientBuilder,
+			types.PendingTransfersPrefix,
+			"pending_transfers",
+			collections.StringKey,
+			codec.CollValue[types.Account](cdc),
+		),
 	}
 
 	if _, err := builder.Build(); err != nil {
@@ -123,7 +147,11 @@ func (k *Keeper) ValidateAccountProperties(accountProperties types.AccountProper
 
 // SendRestrictionFn checks every transfer executed on the Noble chain to see if
 // the recipient is an AutoCCTP account, allowing us to mark them for clearing.
-func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress, coins sdk.Coins) (newToAddr sdk.AccAddress, err error) {
+func (k *Keeper) SendRestrictionFn(
+	ctx context.Context,
+	_, toAddr sdk.AccAddress,
+	coins sdk.Coins,
+) (newToAddr sdk.AccAddress, err error) {
 	rawAccount := k.accountKeeper.GetAccount(ctx, toAddr)
 	if rawAccount == nil {
 		return toAddr, nil
@@ -189,7 +217,12 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 	}
 
 	base := k.accountKeeper.NewAccountWithAddress(ctx, address)
-	baseAccount := authtypes.NewBaseAccount(base.GetAddress(), &types.PubKey{Key: address.Bytes()}, base.GetAccountNumber(), base.GetSequence())
+	baseAccount := authtypes.NewBaseAccount(
+		base.GetAddress(),
+		&types.PubKey{Key: address.Bytes()},
+		base.GetAccountNumber(),
+		base.GetSequence(),
+	)
 
 	account := types.NewAccount(baseAccount, accountProperties)
 
@@ -205,7 +238,12 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 // clearing via a CCTP transfer or directly sending the funds to the fallback address.
 //
 // Returns an error if the marking or transfer fails.
-func (k Keeper) clearAccount(ctx context.Context, account *types.Account, coins sdk.Coins, isFallbackTransfer bool) error {
+func (k Keeper) clearAccount(
+	ctx context.Context,
+	account *types.Account,
+	coins sdk.Coins,
+	isFallbackTransfer bool,
+) error {
 	if !isFallbackTransfer {
 		if err := k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
 			return errorsmod.Wrap(err, "failed registering the address into pending transfers")

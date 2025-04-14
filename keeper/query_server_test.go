@@ -90,7 +90,12 @@ func TestAddress(t *testing.T) {
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {
 				base := ak.NewAccountWithAddress(ctx, address)
 				account := types.NewAccount(
-					authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()),
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
 					validProperties,
 				)
 				ak.Accounts[address.String()] = account
@@ -110,7 +115,12 @@ func TestAddress(t *testing.T) {
 			},
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {
 				base := ak.NewAccountWithAddress(ctx, addressWithCaller)
-				account := authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence())
+				account := authtypes.NewBaseAccount(
+					base.GetAddress(),
+					base.GetPubKey(),
+					base.GetAccountNumber(),
+					base.GetSequence(),
+				)
 				ak.Accounts[address.String()] = account
 			},
 			expResponse: &types.QueryAddressResponse{
@@ -129,7 +139,12 @@ func TestAddress(t *testing.T) {
 			setup: func(ak *mocks.AccountKeeper, ctx sdk.Context) {
 				base := ak.NewAccountWithAddress(ctx, addressWithCaller)
 				account := types.NewAccount(
-					authtypes.NewBaseAccount(base.GetAddress(), base.GetPubKey(), base.GetAccountNumber(), base.GetSequence()),
+					authtypes.NewBaseAccount(
+						base.GetAddress(),
+						base.GetPubKey(),
+						base.GetAccountNumber(),
+						base.GetSequence(),
+					),
 					validPropertiesWithCaller,
 				)
 				ak.Accounts[addressWithCaller.String()] = account

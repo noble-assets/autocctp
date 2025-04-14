@@ -1,7 +1,8 @@
-go 1.24
+go 1.24.2
 
 use (
 	.
 	./e2e
 	./simapp
+	./tools
 )

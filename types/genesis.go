@@ -78,17 +78,26 @@ func (gs *GenesisState) Validate() error {
 
 		num, found := gs.NumOfTransfers[keyTotalTransferred]
 		if !found {
-			return fmt.Errorf("destination domain %d is present in total transferred but not in num of transfers", keyTotalTransferred)
+			return fmt.Errorf(
+				"destination domain %d is present in total transferred but not in num of transfers",
+				keyTotalTransferred,
+			)
 		}
 		// If we have amount transferred to one destination domain, we also must have at least
 		// one transfer registered.
 		if num == 0 {
-			return fmt.Errorf("trying to register total transferred without transfers for destination domain %d", keysTotalTransferred)
+			return fmt.Errorf(
+				"trying to register total transferred without transfers for destination domain %d",
+				keysTotalTransferred,
+			)
 		}
 
 		acc, found := gs.NumOfAccounts[keyTotalTransferred]
 		if !found || acc == 0 {
-			return fmt.Errorf("cannot have transfers for destination domain %d without registered accounts", keyTotalTransferred)
+			return fmt.Errorf(
+				"cannot have transfers for destination domain %d without registered accounts",
+				keyTotalTransferred,
+			)
 		}
 	}
 

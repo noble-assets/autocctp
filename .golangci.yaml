@@ -1,0 +1,40 @@
+version: '2'
+linters:
+  # Default set of linters.
+  # The value can be: `standard`, `all`, `none`, or `fast`.
+  # Default: standa
+  default: standard
+  enable:
+    - gosec
+    - godot
+    - misspell
+    - forcetypeassert
+    - exhaustive
+    - dogsled
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - golines
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/cosmos/,cosmossdk.io/,github.com/cometbft/)
+        - blank
+        - dot
+        - localmodule
+      custom-order: true
+      no-inline-comments: true
+      no-prefix-comments: true
+    gofmt:
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
+    golines:
+      max-len: 120
+      tab-len: 4
+      shorten-comments: true
+      chain-split-dots: true

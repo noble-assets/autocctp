@@ -28,5 +28,8 @@ import (
 
 type CCTPServer interface {
 	DepositForBurn(context.Context, *cctptypes.MsgDepositForBurn) (*cctptypes.MsgDepositForBurnResponse, error)
-	DepositForBurnWithCaller(context.Context, *cctptypes.MsgDepositForBurnWithCaller) (*cctptypes.MsgDepositForBurnWithCallerResponse, error)
+	DepositForBurnWithCaller(
+		context.Context,
+		*cctptypes.MsgDepositForBurnWithCaller,
+	) (*cctptypes.MsgDepositForBurnWithCallerResponse, error)
 }

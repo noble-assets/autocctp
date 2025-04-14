@@ -46,7 +46,10 @@ type CCTPServer struct {
 }
 
 // DepositForBurn implements types.CCTPServer.
-func (c CCTPServer) DepositForBurn(_ context.Context, msg *cctptypes.MsgDepositForBurn) (*cctptypes.MsgDepositForBurnResponse, error) {
+func (c CCTPServer) DepositForBurn(
+	_ context.Context,
+	msg *cctptypes.MsgDepositForBurn,
+) (*cctptypes.MsgDepositForBurnResponse, error) {
 	if c.Failing {
 		return nil, errors.New("error calling deposit for burn api")
 	}
@@ -57,7 +60,10 @@ func (c CCTPServer) DepositForBurn(_ context.Context, msg *cctptypes.MsgDepositF
 }
 
 // DepositForBurnWithCaller implements types.CCTPServer.
-func (c CCTPServer) DepositForBurnWithCaller(_ context.Context, msg *cctptypes.MsgDepositForBurnWithCaller) (*cctptypes.MsgDepositForBurnWithCallerResponse, error) {
+func (c CCTPServer) DepositForBurnWithCaller(
+	_ context.Context,
+	msg *cctptypes.MsgDepositForBurnWithCaller,
+) (*cctptypes.MsgDepositForBurnWithCallerResponse, error) {
 	if c.Failing {
 		return nil, errors.New("error calling deposit for burn with caller api")
 	}

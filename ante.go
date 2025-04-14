@@ -46,7 +46,8 @@ func SigVerificationGasConsumer(meter storetypes.GasMeter, sig signing.Signature
 
 var _ sdk.AnteDecorator = SigVerificationDecorator{}
 
-// SigVerificationDecorator is a custom ante handler used to verify signerless registration messages for AutoCCTP accounts.
+// SigVerificationDecorator is a custom ante handler used to verify signerless registration messages for AutoCCTP
+// accounts.
 type SigVerificationDecorator struct {
 	ftf        types.FiatTokenfactoryKeeper
 	bank       types.BankKeeper
@@ -75,7 +76,12 @@ func NewSigVerificationDecorator(
 
 // AnteHandle check if the transaction contains a single message of type `MsgRegisterAccountSignerlessly` and
 // if the signature verification has to be skipped.
-func (d SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (d SigVerificationDecorator) AnteHandle(
+	ctx sdk.Context,
+	tx sdk.Tx,
+	simulate bool,
+	next sdk.AnteHandler,
+) (newCtx sdk.Context, err error) {
 	if msgs := tx.GetMsgs(); len(msgs) == 1 {
 		msg, ok := msgs[0].(*types.MsgRegisterAccountSignerlessly)
 		if !ok {
