@@ -200,7 +200,7 @@ func TestFlowIBC(t *testing.T) {
 			require.NoError(t, err)
 			counterpartyToAutocctpChannelID := counterpartyToAutocctpChannelInfo[0].ChannelID
 
-			amountToSend := math.NewInt(1_000)
+			amountToSend := math.NewInt(100_000)
 			transfer := ibc.WalletAmount{
 				Address: s.IBC.Account.FormattedAddress(),
 				Denom:   "uusdc",
@@ -225,7 +225,7 @@ func TestFlowIBC(t *testing.T) {
 			require.Equal(t, amt, math.ZeroInt(), "expected no initial balance in the autocctp account")
 
 			// ACT
-			ibcAmt1 := math.NewInt(100)
+			ibcAmt1 := math.NewInt(10_000)
 			transfer = ibc.WalletAmount{
 				Address: address,
 				Denom:   dstIbcDenom,
@@ -299,7 +299,7 @@ func TestFlowIBC(t *testing.T) {
 			require.NoError(t, err)
 
 			// ACT
-			ibcAmt2 := math.NewInt(300)
+			ibcAmt2 := math.NewInt(30_000)
 			transfer = ibc.WalletAmount{
 				Address: address,
 				Denom:   dstIbcDenom,

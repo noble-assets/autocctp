@@ -20,24 +20,15 @@
 
 package types
 
-import (
-	"context"
+import "cosmossdk.io/math"
 
-	cctptypes "github.com/circlefin/noble-cctp/x/cctp/types"
+const (
+	// minimumTransferAmount defines the minimum amount that can be transferred via AutoCCTP.
+	minimumTransferAmount = 10_000 // 1 cent
 )
 
-type CCTPService interface {
-	CCTPMsgServer
-	CCTPQueryServer
-}
-
-// CCTPMsgServer defines the methods required from the CCTP module for state transitions.
-type CCTPMsgServer interface {
-	DepositForBurn(context.Context, *cctptypes.MsgDepositForBurn) (*cctptypes.MsgDepositForBurnResponse, error)
-	DepositForBurnWithCaller(context.Context, *cctptypes.MsgDepositForBurnWithCaller) (*cctptypes.MsgDepositForBurnWithCallerResponse, error)
-}
-
-// CCTPQueryServer defines the methods required from the CCTP module for state retrieval.
-type CCTPQueryServer interface {
-	PerMessageBurnLimit(context.Context, *cctptypes.QueryGetPerMessageBurnLimitRequest) (*cctptypes.QueryGetPerMessageBurnLimitResponse, error)
+// GetMinimumTransferAmount returns the minimum amount of the minting denom that can be
+// transferred to an AutoCCTP account.
+func GetMinimumTransferAmount() math.Int {
+	return math.NewInt(minimumTransferAmount)
 }

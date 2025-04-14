@@ -183,14 +183,17 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			m, k, ctx := mocks.AutoCCTPKeeper(t)
 			server := keeper.NewMsgServer(k)
 
-			// Simulate an account that has been registered after receiving funds via x/bank with
-			// an invalid sequence. If the account has only received funds, the sequence should be 0.
+			// ACT: Simulate an account that has been registered after receiving funds via
+			// x/bank with an invalid sequence. If the account has only received
+			// funds, the sequence should be 0.
 			registeredAcc := m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
 			err := registeredAcc.SetSequence(1)
 			require.NoError(t, err, "expected no error setting the sequence")
 
 			m.AccountKeeper.Accounts[registeredAcc.GetAddress().String()] = registeredAcc
-			m.BankKeeper.Balances[registeredAcc.GetAddress().String()] = sdk.Coins{sdk.NewInt64Coin("uusdc", 1)}
+			m.BankKeeper.Balances[registeredAcc.GetAddress().String()] = sdk.Coins{
+				sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64()),
+			}
 
 			// ACT
 			_, err = tC.serverCall(server, ctx, msg)
@@ -229,7 +232,8 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			_, ok = acc.(*types.Account)
 			assert.True(t, ok, "expected the account to be of custom type")
 
-			// ARRANGE: Simulate previous account has been cleared and we are in a new block
+			// ARRANGE: Simulate previous account has been cleared and we are in a new block. It
+			// should not be possible to register again the account.
 			err = k.PendingTransfers.Clear(ctx, nil)
 			assert.NoError(t, err)
 
@@ -246,7 +250,8 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			_, err = k.PendingTransfers.Get(ctx, customAddress.String())
 			assert.Error(t, err, "no account should have been added to pending transfers")
 
-			// ARRANGE: Create a new account but without funding it.
+			// ARRANGE: Create a new account but without funding it. It is possible to create the
+			// AutoCCTP account but it should not be added to the pending transfers.
 			mocks.ResetTest(t, ctx, k, m)
 
 			customAddress = types.GenerateAddress(accountProperties)
@@ -256,7 +261,8 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			// ACT
 			_, err = tC.serverCall(server, ctx, msg)
 
-			// ASSERT: One account has been added but no pending transfers because the balance was empty.
+			// ASSERT: One account has been added but no pending transfers because the
+			// balance was empty.
 			assert.NoError(t, err, "expected no error during account registration")
 
 			nAccount, _ = k.NumOfAccounts.Get(ctx, accountProperties.DestinationDomain)
@@ -265,7 +271,33 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 			_, err = k.PendingTransfers.Get(ctx, customAddress.String())
 			assert.Error(t, err, "expected no pending transfers")
 
-			// ARRANGE: Create a new account with unsupported type.
+			// ARRANGE: Create a new account with not enough funds. It is possible to create the
+			// AutoCCTP account but it should not be added to the pending transfers.
+			mocks.ResetTest(t, ctx, k, m)
+
+			customAddress = types.GenerateAddress(accountProperties)
+			registeredAcc = m.AccountKeeper.NewAccountWithAddress(ctx, customAddress)
+			m.AccountKeeper.Accounts[registeredAcc.GetAddress().String()] = registeredAcc
+
+			m.BankKeeper.Balances[registeredAcc.GetAddress().String()] = sdk.Coins{
+				sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64()-1),
+			}
+
+			// ACT
+			_, err = tC.serverCall(server, ctx, msg)
+
+			// ASSERT: One account has been added but no pending transfers because the
+			// balance was empty.
+			assert.NoError(t, err, "expected no error during account registration")
+
+			nAccount, _ = k.NumOfAccounts.Get(ctx, accountProperties.DestinationDomain)
+			assert.Equal(t, uint64(1), nAccount, "expected only one account registered")
+
+			_, err = k.PendingTransfers.Get(ctx, customAddress.String())
+			assert.Error(t, err, "expected no pending transfers")
+
+			// ARRANGE: Trying to register as AutoCCTP account an account which type is not the
+			// base one, fails.
 			mocks.ResetTest(t, ctx, k, m)
 
 			customAddress = types.GenerateAddress(accountProperties)

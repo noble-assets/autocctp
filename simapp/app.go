@@ -231,7 +231,7 @@ func (app *SimApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 // RegisterCCTPServer is a method used to register the CCTP server into the AutoCCTP keeper after
 // building the app.
 func (app *SimApp) RegisterCCTPServer() {
-	cctpServer := cctpkeeper.NewMsgServerImpl(app.CCTPKeeper)
+	cctpMsgServer := cctpkeeper.NewMsgServerImpl(app.CCTPKeeper)
 
-	app.AutoCCTPKeeper.SetCCTPServer(cctpServer)
+	app.AutoCCTPKeeper.SetCCTPService(cctpMsgServer, app.CCTPKeeper)
 }
