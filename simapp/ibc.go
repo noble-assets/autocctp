@@ -46,10 +46,15 @@ func (app *SimApp) RegisterIBCModules() error {
 		return err
 	}
 
-	app.ParamsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(clienttypes.ParamKeyTable().RegisterParamSet(&connectiontypes.Params{}))
+	app.ParamsKeeper.Subspace(ibcexported.ModuleName).
+		WithKeyTable(clienttypes.ParamKeyTable().RegisterParamSet(&connectiontypes.Params{}))
 	app.ParamsKeeper.Subspace(transfertypes.ModuleName).WithKeyTable(transfertypes.ParamKeyTable())
 
-	app.CapabilityKeeper = capabilitykeeper.NewKeeper(app.appCodec, app.GetKey(capabilitytypes.StoreKey), app.GetMemKey(capabilitytypes.MemStoreKey))
+	app.CapabilityKeeper = capabilitykeeper.NewKeeper(
+		app.appCodec,
+		app.GetKey(capabilitytypes.StoreKey),
+		app.GetMemKey(capabilitytypes.MemStoreKey),
+	)
 
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
 	app.IBCKeeper = ibckeeper.NewKeeper(
@@ -59,7 +64,8 @@ func (app *SimApp) RegisterIBCModules() error {
 		app.StakingKeeper,
 		app.UpgradeKeeper,
 		scopedIBCKeeper,
-		// exchange flash debris claw calm shine laundry february cousin glad name miss jar neglect reflect blanket orbit clever educate rent inject lounge pupil plastic
+		// exchange flash debris claw calm shine laundry february cousin glad name miss jar neglect reflect blanket
+		// orbit clever educate rent inject lounge pupil plastic
 		"noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 	)
 
@@ -74,7 +80,8 @@ func (app *SimApp) RegisterIBCModules() error {
 		app.AccountKeeper,
 		app.BankKeeper,
 		scopedTransferKeeper,
-		// exchange flash debris claw calm shine laundry february cousin glad name miss jar neglect reflect blanket orbit clever educate rent inject lounge pupil plastic
+		// exchange flash debris claw calm shine laundry february cousin glad name miss jar neglect reflect blanket
+		// orbit clever educate rent inject lounge pupil plastic
 		"noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za",
 	)
 

@@ -149,7 +149,14 @@ func NewAutoCCTPSuite(t *testing.T, isZeroFees bool, isIBC bool) (context.Contex
 		_ = interchain.Close()
 	})
 
-	wallets := interchaintest.GetAndFundTestUsers(t, ctx, "wallet", math.NewInt(1_000_000_000), suite.Chain, suite.Chain)
+	wallets := interchaintest.GetAndFundTestUsers(
+		t,
+		ctx,
+		"wallet",
+		math.NewInt(1_000_000_000),
+		suite.Chain,
+		suite.Chain,
+	)
 
 	suite.sender = wallets[0]
 	suite.fallbackRecipient = wallets[1]
@@ -162,7 +169,13 @@ func NewAutoCCTPSuite(t *testing.T, isZeroFees bool, isIBC bool) (context.Contex
 	suite.destinationCaller = common.BytesToAddress(addr).String()
 
 	if isIBC {
-		wallets := interchaintest.GetAndFundTestUsers(t, ctx, "wallet", math.NewInt(1_000_000_000), suite.IBC.CounterpartyChain)
+		wallets := interchaintest.GetAndFundTestUsers(
+			t,
+			ctx,
+			"wallet",
+			math.NewInt(1_000_000_000),
+			suite.IBC.CounterpartyChain,
+		)
 		suite.IBC.Account = wallets[0]
 	}
 
@@ -252,7 +265,11 @@ func preGenesis(ctx context.Context, suite *AutoCCTPSuite) func(ibc.Chain) error
 			Denom:   "uusdc",
 			Amount:  math.NewIntFromUint64(1_000_000_000),
 		}
-		err = val.AddGenesisAccount(ctx, genesisWallet.Address, []sdk.Coin{sdk.NewCoin(genesisWallet.Denom, genesisWallet.Amount)})
+		err = val.AddGenesisAccount(
+			ctx,
+			genesisWallet.Address,
+			[]sdk.Coin{sdk.NewCoin(genesisWallet.Denom, genesisWallet.Amount)},
+		)
 		if err != nil {
 			return err
 		}
@@ -280,7 +297,10 @@ func modifyGenesis(suite *AutoCCTPSuite) func(cc ibc.ChainConfig, b []byte) ([]b
 				Paused: &fiattokenfactorytypes.Paused{Paused: false},
 				Pauser: &fiattokenfactorytypes.Pauser{Address: suite.CircleRoles.Pauser.FormattedAddress()},
 				MintersList: []fiattokenfactorytypes.Minters{
-					{Address: "noble12l2w4ugfz4m6dd73yysz477jszqnfughxvkss5", Allowance: sdk.Coin{Denom: DenomMetadataUsdc.Base, Amount: math.NewInt(1_000_000_000)}},
+					{
+						Address:   "noble12l2w4ugfz4m6dd73yysz477jszqnfughxvkss5",
+						Allowance: sdk.Coin{Denom: DenomMetadataUsdc.Base, Amount: math.NewInt(1_000_000_000)},
+					},
 				},
 				MintingDenom: &fiattokenfactorytypes.MintingDenom{Denom: DenomMetadataUsdc.Base},
 			}),

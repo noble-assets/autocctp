@@ -40,13 +40,26 @@ import (
 
 // Transactions
 
-func (s AutoCCTPSuite) RegisterAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string) string {
+func (s AutoCCTPSuite) RegisterAutoCCTPAccount(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string,
+) string {
 	t.Helper()
 
 	var err error
 	var hash string
 	if destinationCaller == "" {
-		hash, err = validator.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account", destinationDomain, mintRecipient, fallbackRecipient)
+		hash, err = validator.ExecTx(
+			ctx,
+			s.sender.KeyName(),
+			"autocctp",
+			"register-account",
+			destinationDomain,
+			mintRecipient,
+			fallbackRecipient,
+		)
 	} else {
 		hash, err = validator.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account", destinationDomain, mintRecipient, fallbackRecipient, destinationCaller)
 	}
@@ -55,7 +68,13 @@ func (s AutoCCTPSuite) RegisterAutoCCTPAccount(t *testing.T, ctx context.Context
 	return hash
 }
 
-func (s AutoCCTPSuite) ClearAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, sender, address string, isFallback bool) (string, error) {
+func (s AutoCCTPSuite) ClearAutoCCTPAccount(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	sender, address string,
+	isFallback bool,
+) (string, error) {
 	t.Helper()
 
 	var err error
@@ -69,7 +88,12 @@ func (s AutoCCTPSuite) ClearAutoCCTPAccount(t *testing.T, ctx context.Context, v
 	return hash, err
 }
 
-func (s AutoCCTPSuite) PauseBurningAndMinting(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, pauser string) string {
+func (s AutoCCTPSuite) PauseBurningAndMinting(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	pauser string,
+) string {
 	t.Helper()
 
 	hash, err := validator.ExecTx(ctx, pauser, "cctp", "pause-burning-and-minting")
@@ -78,7 +102,12 @@ func (s AutoCCTPSuite) PauseBurningAndMinting(t *testing.T, ctx context.Context,
 	return hash
 }
 
-func (s AutoCCTPSuite) UpnauseBurningAndMinting(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, pauser string) string {
+func (s AutoCCTPSuite) UpnauseBurningAndMinting(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	pauser string,
+) string {
 	t.Helper()
 
 	hash, err := validator.ExecTx(ctx, pauser, "cctp", "unpause-burning-and-minting")
@@ -89,13 +118,25 @@ func (s AutoCCTPSuite) UpnauseBurningAndMinting(t *testing.T, ctx context.Contex
 
 // Queries
 
-func GetAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string) (string, bool) {
+func GetAutoCCTPAccount(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	destinationDomain, mintRecipient, fallbackRecipient, destinationCaller string,
+) (string, bool) {
 	t.Helper()
 
 	var raw []byte
 	var err error
 	if destinationCaller == "" {
-		raw, _, err = validator.ExecQuery(ctx, "autocctp", "address", destinationDomain, mintRecipient, fallbackRecipient)
+		raw, _, err = validator.ExecQuery(
+			ctx,
+			"autocctp",
+			"address",
+			destinationDomain,
+			mintRecipient,
+			fallbackRecipient,
+		)
 	} else {
 		raw, _, err = validator.ExecQuery(ctx, "autocctp", "address", destinationDomain, mintRecipient, fallbackRecipient, destinationCaller)
 	}
@@ -107,7 +148,12 @@ func GetAutoCCTPAccount(t *testing.T, ctx context.Context, validator *cosmos.Cha
 	return res.Address, res.Exists
 }
 
-func GetAutoCCTPStatsByDestinationDomain(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain string) types.QueryStatsByDestinationDomainResponse {
+func GetAutoCCTPStatsByDestinationDomain(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	destinationDomain string,
+) types.QueryStatsByDestinationDomainResponse {
 	t.Helper()
 
 	raw, _, err := validator.ExecQuery(ctx, "autocctp", "stats", destinationDomain)
@@ -171,7 +217,12 @@ func GetBlockResultsEvents(t *testing.T, ctx context.Context, validator *cosmos.
 	return res.FinalizeBlockEvents
 }
 
-func GetStats(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, destinationDomain string) *types.QueryStatsByDestinationDomainResponse {
+func GetStats(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+	destinationDomain string,
+) *types.QueryStatsByDestinationDomainResponse {
 	t.Helper()
 
 	raw, _, err := validator.ExecQuery(ctx, "autocctp", "stats", destinationDomain)
@@ -183,7 +234,11 @@ func GetStats(t *testing.T, ctx context.Context, validator *cosmos.ChainNode, de
 	return &res
 }
 
-func GetCCTPBurningAndMintingPaused(t *testing.T, ctx context.Context, validator *cosmos.ChainNode) *cctptypes.QueryGetBurningAndMintingPausedResponse {
+func GetCCTPBurningAndMintingPaused(
+	t *testing.T,
+	ctx context.Context,
+	validator *cosmos.ChainNode,
+) *cctptypes.QueryGetBurningAndMintingPausedResponse {
 	t.Helper()
 
 	raw, _, err := validator.ExecQuery(ctx, "cctp", "show-burning-and-minting-paused")

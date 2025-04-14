@@ -85,12 +85,24 @@ func (q queryServer) Stats(ctx context.Context, req *types.QueryStats) (*types.Q
 		// compared to no information.
 		numOfTransfers, err := q.NumOfTransfers.Get(ctx, destinationDomain)
 		if err != nil {
-			q.logger.Error("unable to get number of transfers", "destination domain", strconv.Itoa(int(destinationDomain)), "err", err)
+			q.logger.Error(
+				"unable to get number of transfers",
+				"destination domain",
+				strconv.Itoa(int(destinationDomain)),
+				"err",
+				err,
+			)
 		}
 
 		totalTransferred, err := q.TotalTransferred.Get(ctx, destinationDomain)
 		if err != nil {
-			q.logger.Error("unable to get total transferred", "destination domain", strconv.Itoa(int(destinationDomain)), "err", err)
+			q.logger.Error(
+				"unable to get total transferred",
+				"destination domain",
+				strconv.Itoa(int(destinationDomain)),
+				"err",
+				err,
+			)
 		}
 
 		stats[destinationDomain] = types.DomainStats{
@@ -104,22 +116,43 @@ func (q queryServer) Stats(ctx context.Context, req *types.QueryStats) (*types.Q
 }
 
 // StatsByDestinationDomain implements types.QueryServer.
-func (q queryServer) StatsByDestinationDomain(ctx context.Context, req *types.QueryStatsByDestinationDomain) (*types.QueryStatsByDestinationDomainResponse, error) {
+func (q queryServer) StatsByDestinationDomain(
+	ctx context.Context,
+	req *types.QueryStatsByDestinationDomain,
+) (*types.QueryStatsByDestinationDomainResponse, error) {
 	if req == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("cannot be nil")
 	}
 
 	numOfAccount, err := q.NumOfAccounts.Get(ctx, req.DestinationDomain)
 	if err != nil {
-		q.logger.Error("unable to get num of accounts", "destination domain", strconv.Itoa(int(req.DestinationDomain)), "err", err)
+		q.logger.Error(
+			"unable to get num of accounts",
+			"destination domain",
+			strconv.Itoa(int(req.DestinationDomain)),
+			"err",
+			err,
+		)
 	}
 	numOfTransfers, err := q.NumOfTransfers.Get(ctx, req.DestinationDomain)
 	if err != nil {
-		q.logger.Error("unable to get num of transfers", "destination domain", strconv.Itoa(int(req.DestinationDomain)), "err", err)
+		q.logger.Error(
+			"unable to get num of transfers",
+			"destination domain",
+			strconv.Itoa(int(req.DestinationDomain)),
+			"err",
+			err,
+		)
 	}
 	totalTransferred, err := q.TotalTransferred.Get(ctx, req.DestinationDomain)
 	if err != nil {
-		q.logger.Error("unable to get total transferred", "destination domain", strconv.Itoa(int(req.DestinationDomain)), "err", err)
+		q.logger.Error(
+			"unable to get total transferred",
+			"destination domain",
+			strconv.Itoa(int(req.DestinationDomain)),
+			"err",
+			err,
+		)
 	}
 
 	return &types.QueryStatsByDestinationDomainResponse{

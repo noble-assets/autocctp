@@ -79,10 +79,17 @@ func NewRootCmd() *cobra.Command {
 
 			// sign mode textual is only available in online mode
 			if !clientCtx.Offline {
-				// This needs to go after ReadFromClientConfig, as that function ets the RPC client needed for SIGN_MODE_TEXTUAL.
-				txConfigOpts.EnabledSignModes = append(txConfigOpts.EnabledSignModes, signing.SignMode_SIGN_MODE_TEXTUAL)
+				// This needs to go after ReadFromClientConfig, as that function ets the RPC client needed for
+				// SIGN_MODE_TEXTUAL.
+				txConfigOpts.EnabledSignModes = append(
+					txConfigOpts.EnabledSignModes,
+					signing.SignMode_SIGN_MODE_TEXTUAL,
+				)
 				txConfigOpts.TextualCoinMetadataQueryFn = txmodule.NewGRPCCoinMetadataQueryFn(clientCtx)
-				txConfigWithTextual, err := tx.NewTxConfigWithOptions(codec.NewProtoCodec(clientCtx.InterfaceRegistry), txConfigOpts)
+				txConfigWithTextual, err := tx.NewTxConfigWithOptions(
+					codec.NewProtoCodec(clientCtx.InterfaceRegistry),
+					txConfigOpts,
+				)
 				if err != nil {
 					return err
 				}
@@ -99,7 +106,12 @@ func NewRootCmd() *cobra.Command {
 			srvCfg.MinGasPrices = "0uusdc"
 			srvCfg.API.Enable = true
 
-			return server.InterceptConfigsPreRunHandler(cmd, serverconfig.DefaultConfigTemplate, srvCfg, cmtcfg.DefaultConfig())
+			return server.InterceptConfigsPreRunHandler(
+				cmd,
+				serverconfig.DefaultConfigTemplate,
+				srvCfg,
+				cmtcfg.DefaultConfig(),
+			)
 		},
 	}
 

@@ -49,7 +49,13 @@ func randomDestinationDomain() uint32 {
 //
 // It returns a slice containing the addresses of the inserted accounts or an error if
 // the insertion fails.
-func PendingTransfers(ctx context.Context, k *keeper.Keeper, num int, destinationDomain string, withCaller bool) ([]string, error) {
+func PendingTransfers(
+	ctx context.Context,
+	k *keeper.Keeper,
+	num int,
+	destinationDomain string,
+	withCaller bool,
+) ([]string, error) {
 	var addresses []string
 	for range num {
 		acc := AutoCCTPAccount(withCaller)

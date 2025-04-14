@@ -50,16 +50,40 @@ func TestRegisterAccount(t *testing.T) {
 	val := s.Chain.Validators[0]
 
 	// ACT
-	_, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	_, exists := GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 
 	// ASSERT
 	require.False(t, exists, "expected no autocctp account")
 
 	// ACT
-	hash := s.RegisterAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	hash := s.RegisterAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 
 	// ASSERT
-	address, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	address, exists := GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 	require.True(t, exists, "expected the new autocctp account registered")
 
 	tx := GetTx(t, ctx, val, hash)
@@ -93,13 +117,29 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	val := s.Chain.Validators[0]
 
 	// ACT
-	address, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	address, exists := GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 
 	// ASSERT
 	require.False(t, exists, "expected no autocctp account")
 
 	// ACT
-	_, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account-signerlessly", fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress())
+	_, err := val.ExecTx(
+		ctx,
+		s.sender.KeyName(),
+		"autocctp",
+		"register-account-signerlessly",
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+	)
 
 	// ASSERT
 	require.Error(t, err, "expected an error when the autocctp account does not have funds to pay fees")
@@ -113,15 +153,39 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	})
 	require.NoError(t, err, "expected no error funding the autocctp account")
 
-	_, exists = GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	_, exists = GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 	require.False(t, exists, "expected no AutoCCTP account but a base account registered")
 
 	// ACT
-	hash, err := val.ExecTx(ctx, s.sender.KeyName(), "autocctp", "register-account-signerlessly", fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress())
+	hash, err := val.ExecTx(
+		ctx,
+		s.sender.KeyName(),
+		"autocctp",
+		"register-account-signerlessly",
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+	)
 	require.NoError(t, err)
 
 	// ASSERT
-	_, exists = GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	_, exists = GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 	require.True(t, exists, "expected the autocctp account registered")
 
 	resp := GetStats(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain))
@@ -131,7 +195,12 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 
 	fees := GetTxFee(t, ctx, val, hash)
 	transferAmtNoFees := transferAmt.Sub(fees.AmountOf("uusdc"))
-	require.Equal(t, transferAmtNoFees.Uint64(), resp.TotalTransferred, "expected total transfer equal to initial amount minus fees")
+	require.Equal(
+		t,
+		transferAmtNoFees.Uint64(),
+		resp.TotalTransferred,
+		"expected total transfer equal to initial amount minus fees",
+	)
 
 	tx := GetTx(t, ctx, val, hash)
 	for _, rawEvent := range tx.Events {
@@ -156,7 +225,12 @@ func TestRegisterAccountSignerlessly(t *testing.T) {
 	stats := GetAutoCCTPStatsByDestinationDomain(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain))
 	require.Equal(t, uint64(1), stats.Accounts, "expected a different number of accounts")
 	require.Equal(t, uint64(1), stats.Transfers, "expected a different number of transfers")
-	require.Equal(t, transferAmtNoFees.Uint64(), stats.TotalTransferred, "expected a different total transferred amount")
+	require.Equal(
+		t,
+		transferAmtNoFees.Uint64(),
+		stats.TotalTransferred,
+		"expected a different total transferred amount",
+	)
 }
 
 // TestFlowIBC tests the registration of an AutoCCTP account and its automatic transfer
@@ -192,11 +266,19 @@ func TestFlowIBC(t *testing.T) {
 
 			// Transfer funds to the counterparty chain to have an account with USDC balance that can
 			// send funds to the AutoCCTP account.
-			autocctpToCounterpartyChannelInfo, err := s.IBC.Relayer.GetChannels(ctx, s.IBC.RelayerReporter, s.Chain.Config().ChainID)
+			autocctpToCounterpartyChannelInfo, err := s.IBC.Relayer.GetChannels(
+				ctx,
+				s.IBC.RelayerReporter,
+				s.Chain.Config().ChainID,
+			)
 			require.NoError(t, err)
 			autocctpToCounterpartyChannelID := autocctpToCounterpartyChannelInfo[0].ChannelID
 
-			counterpartyToAutocctpChannelInfo, err := s.IBC.Relayer.GetChannels(ctx, s.IBC.RelayerReporter, s.IBC.CounterpartyChain.Config().ChainID)
+			counterpartyToAutocctpChannelInfo, err := s.IBC.Relayer.GetChannels(
+				ctx,
+				s.IBC.RelayerReporter,
+				s.IBC.CounterpartyChain.Config().ChainID,
+			)
 			require.NoError(t, err)
 			counterpartyToAutocctpChannelID := counterpartyToAutocctpChannelInfo[0].ChannelID
 
@@ -206,18 +288,42 @@ func TestFlowIBC(t *testing.T) {
 				Denom:   "uusdc",
 				Amount:  amountToSend,
 			}
-			_, err = s.Chain.SendIBCTransfer(ctx, autocctpToCounterpartyChannelID, s.sender.KeyName(), transfer, ibc.TransferOptions{})
+			_, err = s.Chain.SendIBCTransfer(
+				ctx,
+				autocctpToCounterpartyChannelID,
+				s.sender.KeyName(),
+				transfer,
+				ibc.TransferOptions{},
+			)
 			require.NoError(t, err)
-			require.NoError(t, s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, autocctpToCounterpartyChannelID), "expected no error relaying MsgRecvPacket & MsgAcknowledgement")
+			require.NoError(
+				t,
+				s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, autocctpToCounterpartyChannelID),
+				"expected no error relaying MsgRecvPacket & MsgAcknowledgement",
+			)
 
-			srcDenomTrace := transfertypes.ParseDenomTrace(transfertypes.GetPrefixedDenom("transfer", counterpartyToAutocctpChannelID, "uusdc"))
+			srcDenomTrace := transfertypes.ParseDenomTrace(
+				transfertypes.GetPrefixedDenom("transfer", counterpartyToAutocctpChannelID, "uusdc"),
+			)
 			dstIbcDenom := srcDenomTrace.IBCDenom()
 
-			counterpartyWalletBal, err := s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), dstIbcDenom)
+			counterpartyWalletBal, err := s.IBC.CounterpartyChain.GetBalance(
+				ctx,
+				s.IBC.Account.FormattedAddress(),
+				dstIbcDenom,
+			)
 			require.NoError(t, err)
 			require.Equal(t, transfer.Amount, counterpartyWalletBal)
 
-			address, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
+			address, exists := GetAutoCCTPAccount(
+				t,
+				ctx,
+				val,
+				fmt.Sprintf("%d", s.destinationDomain),
+				s.mintRecipient,
+				s.fallbackRecipient.FormattedAddress(),
+				destinationCaller,
+			)
 			require.False(t, exists, "expected no autocctp account")
 
 			amt, err := s.Chain.BankQueryBalance(ctx, address, "uusdc")
@@ -231,12 +337,26 @@ func TestFlowIBC(t *testing.T) {
 				Denom:   dstIbcDenom,
 				Amount:  ibcAmt1,
 			}
-			_, err = s.IBC.CounterpartyChain.SendIBCTransfer(ctx, counterpartyToAutocctpChannelID, s.IBC.Account.KeyName(), transfer, ibc.TransferOptions{})
+			_, err = s.IBC.CounterpartyChain.SendIBCTransfer(
+				ctx,
+				counterpartyToAutocctpChannelID,
+				s.IBC.Account.KeyName(),
+				transfer,
+				ibc.TransferOptions{},
+			)
 			require.NoError(t, err)
-			require.NoError(t, s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID), "expected no error relaying MsgRecvPacket & MsgAcknowledgement")
+			require.NoError(
+				t,
+				s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID),
+				"expected no error relaying MsgRecvPacket & MsgAcknowledgement",
+			)
 
 			// ASSERT
-			counterpartyWalletBal, err = s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), dstIbcDenom)
+			counterpartyWalletBal, err = s.IBC.CounterpartyChain.GetBalance(
+				ctx,
+				s.IBC.Account.FormattedAddress(),
+				dstIbcDenom,
+			)
 			require.NoError(t, err)
 			require.Equal(t, amountToSend.Sub(ibcAmt1), counterpartyWalletBal)
 
@@ -245,10 +365,26 @@ func TestFlowIBC(t *testing.T) {
 			require.Equal(t, amt, ibcAmt1, "expected the account to have received funds via IBC")
 
 			// ACT
-			hash := s.RegisterAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
+			hash := s.RegisterAutoCCTPAccount(
+				t,
+				ctx,
+				val,
+				fmt.Sprintf("%d", s.destinationDomain),
+				s.mintRecipient,
+				s.fallbackRecipient.FormattedAddress(),
+				destinationCaller,
+			)
 
 			// ASSERT
-			_, exists = GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
+			_, exists = GetAutoCCTPAccount(
+				t,
+				ctx,
+				val,
+				fmt.Sprintf("%d", s.destinationDomain),
+				s.mintRecipient,
+				s.fallbackRecipient.FormattedAddress(),
+				destinationCaller,
+			)
 			require.True(t, exists, "expected the new autocctp account registered")
 
 			tx := GetTx(t, ctx, val, hash)
@@ -262,9 +398,19 @@ func TestFlowIBC(t *testing.T) {
 						case "amount":
 							var actual string
 							require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-							require.Equal(t, strconv.Itoa(int(ibcAmt1.Int64())), actual, "expected a different amount in cctp event")
+							require.Equal(
+								t,
+								strconv.Itoa(int(ibcAmt1.Int64())),
+								actual,
+								"expected a different amount in cctp event",
+							)
 						case "destination_domain":
-							require.Equal(t, fmt.Sprintf("%d", s.destinationDomain), attribute.Value, "expected a different destination domain in cctp event")
+							require.Equal(
+								t,
+								fmt.Sprintf("%d", s.destinationDomain),
+								attribute.Value,
+								"expected a different destination domain in cctp event",
+							)
 						case "destination_caller":
 							expectedBase64 := ""
 							if tC.destinationCaller {
@@ -275,7 +421,12 @@ func TestFlowIBC(t *testing.T) {
 							}
 							var actual string
 							require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-							require.Equal(t, expectedBase64, actual, "expected a different destination caller in cctp event")
+							require.Equal(
+								t,
+								expectedBase64,
+								actual,
+								"expected a different destination caller in cctp event",
+							)
 						case "mint_recipient":
 							bz := common.FromHex(s.mintRecipient)
 							bz, err := types.LeftPadBytes(bz)
@@ -283,7 +434,12 @@ func TestFlowIBC(t *testing.T) {
 							expectedBase64 := base64.StdEncoding.EncodeToString(bz)
 							var actual string
 							require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-							require.Equal(t, expectedBase64, actual, "expected a different mint recipient in cctp event")
+							require.Equal(
+								t,
+								expectedBase64,
+								actual,
+								"expected a different mint recipient in cctp event",
+							)
 						}
 					}
 					eventFound = true
@@ -305,9 +461,19 @@ func TestFlowIBC(t *testing.T) {
 				Denom:   dstIbcDenom,
 				Amount:  ibcAmt2,
 			}
-			_, err = s.IBC.CounterpartyChain.SendIBCTransfer(ctx, counterpartyToAutocctpChannelID, s.IBC.Account.KeyName(), transfer, ibc.TransferOptions{})
+			_, err = s.IBC.CounterpartyChain.SendIBCTransfer(
+				ctx,
+				counterpartyToAutocctpChannelID,
+				s.IBC.Account.KeyName(),
+				transfer,
+				ibc.TransferOptions{},
+			)
 			require.NoError(t, err)
-			require.NoError(t, s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID), "expected no error relaying MsgRecvPacket & MsgAcknowledgement")
+			require.NoError(
+				t,
+				s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID),
+				"expected no error relaying MsgRecvPacket & MsgAcknowledgement",
+			)
 
 			// We retrieve the height at which the IBC tx has been executed on the chain with AutoCCTP.
 			reg := s.Chain.Config().EncodingConfig.InterfaceRegistry
@@ -331,9 +497,19 @@ func TestFlowIBC(t *testing.T) {
 						case "amount":
 							var actual string
 							require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-							require.Equal(t, strconv.Itoa(int(ibcAmt2.Int64())), actual, "expected a different amount in cctp event")
+							require.Equal(
+								t,
+								strconv.Itoa(int(ibcAmt2.Int64())),
+								actual,
+								"expected a different amount in cctp event",
+							)
 						case "destination_domain":
-							require.Equal(t, fmt.Sprintf("%d", s.destinationDomain), attribute.Value, "expected a different destination domain in cctp event")
+							require.Equal(
+								t,
+								fmt.Sprintf("%d", s.destinationDomain),
+								attribute.Value,
+								"expected a different destination domain in cctp event",
+							)
 						case "destination_caller":
 							expectedBase64 := ""
 							if tC.destinationCaller {
@@ -344,7 +520,12 @@ func TestFlowIBC(t *testing.T) {
 							}
 							var actual string
 							require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-							require.Equal(t, expectedBase64, actual, "expected a different destination caller in cctp event")
+							require.Equal(
+								t,
+								expectedBase64,
+								actual,
+								"expected a different destination caller in cctp event",
+							)
 						case "mint_recipient":
 							bz := common.FromHex(s.mintRecipient)
 							bz, err := types.LeftPadBytes(bz)
@@ -352,7 +533,12 @@ func TestFlowIBC(t *testing.T) {
 							expectedBase64 := base64.StdEncoding.EncodeToString(bz)
 							var actual string
 							require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-							require.Equal(t, expectedBase64, actual, "expected a different mint recipient in cctp event")
+							require.Equal(
+								t,
+								expectedBase64,
+								actual,
+								"expected a different mint recipient in cctp event",
+							)
 						}
 					}
 					eventFound = true
@@ -363,7 +549,12 @@ func TestFlowIBC(t *testing.T) {
 			stats := GetAutoCCTPStatsByDestinationDomain(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain))
 			require.Equal(t, uint64(1), stats.Accounts, "expected a different number of accounts")
 			require.Equal(t, uint64(2), stats.Transfers, "expected a different number of transfers")
-			require.Equal(t, ibcAmt1.Add(ibcAmt2).Uint64(), stats.TotalTransferred, "expected a different total transferred")
+			require.Equal(
+				t,
+				ibcAmt1.Add(ibcAmt2).Uint64(),
+				stats.TotalTransferred,
+				"expected a different total transferred",
+			)
 		})
 	}
 }
@@ -375,8 +566,24 @@ func TestIBCSendRestrictionFn(t *testing.T) {
 	val := s.Chain.Validators[0]
 
 	destinationCaller := ""
-	_ = s.RegisterAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
-	address, exists := GetAutoCCTPAccount(t, ctx, val, fmt.Sprintf("%d", s.destinationDomain), s.mintRecipient, s.fallbackRecipient.FormattedAddress(), destinationCaller)
+	_ = s.RegisterAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		destinationCaller,
+	)
+	address, exists := GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		fmt.Sprintf("%d", s.destinationDomain),
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		destinationCaller,
+	)
 	require.True(t, exists, "expected the new autocctp account registered")
 
 	amt, err := s.Chain.BankQueryAllBalances(ctx, address)
@@ -384,7 +591,11 @@ func TestIBCSendRestrictionFn(t *testing.T) {
 	require.Len(t, amt, 0, "expected the autocctp account to have no initial balance")
 
 	// IBC info
-	counterpartyToAutocctpChannelInfo, err := s.IBC.Relayer.GetChannels(ctx, s.IBC.RelayerReporter, s.IBC.CounterpartyChain.Config().ChainID)
+	counterpartyToAutocctpChannelInfo, err := s.IBC.Relayer.GetChannels(
+		ctx,
+		s.IBC.RelayerReporter,
+		s.IBC.CounterpartyChain.Config().ChainID,
+	)
 	require.NoError(t, err)
 	counterpartyToAutocctpChannelID := counterpartyToAutocctpChannelInfo[0].ChannelID
 
@@ -398,19 +609,39 @@ func TestIBCSendRestrictionFn(t *testing.T) {
 		Denom:   "uibc",
 		Amount:  ibcAmt,
 	}
-	_, err = s.IBC.CounterpartyChain.SendIBCTransfer(ctx, counterpartyToAutocctpChannelID, s.IBC.Account.KeyName(), transfer, ibc.TransferOptions{})
+	_, err = s.IBC.CounterpartyChain.SendIBCTransfer(
+		ctx,
+		counterpartyToAutocctpChannelID,
+		s.IBC.Account.KeyName(),
+		transfer,
+		ibc.TransferOptions{},
+	)
 	require.NoError(t, err)
 
 	counterpartyWalletBal, err := s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), "uibc")
 	require.NoError(t, err)
-	require.Equal(t, counterpartyWalletBalInit.Sub(ibcAmt), counterpartyWalletBal, "expected tokens to be in escrow account")
+	require.Equal(
+		t,
+		counterpartyWalletBalInit.Sub(ibcAmt),
+		counterpartyWalletBal,
+		"expected tokens to be in escrow account",
+	)
 
-	require.NoError(t, s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID), "expected no error relaying MsgRecvPacket & MsgAcknowledgement")
+	require.NoError(
+		t,
+		s.IBC.Relayer.Flush(ctx, s.IBC.RelayerReporter, s.IBC.PathName, counterpartyToAutocctpChannelID),
+		"expected no error relaying MsgRecvPacket & MsgAcknowledgement",
+	)
 
 	// ASSERT
 	counterpartyWalletBalFinal, err := s.IBC.CounterpartyChain.GetBalance(ctx, s.IBC.Account.FormattedAddress(), "uibc")
 	require.NoError(t, err)
-	require.Equal(t, counterpartyWalletBalInit.String(), counterpartyWalletBalFinal.String(), "expected refund on counterparty chain")
+	require.Equal(
+		t,
+		counterpartyWalletBalInit.String(),
+		counterpartyWalletBalFinal.String(),
+		"expected refund on counterparty chain",
+	)
 
 	amt, err = s.Chain.BankQueryAllBalances(ctx, address)
 	require.NoError(t, err)

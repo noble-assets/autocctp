@@ -47,9 +47,25 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 	destinationDomain := fmt.Sprintf("%d", s.destinationDomain)
 
 	// Register the AutoCCTP account.
-	_ = s.RegisterAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	_ = s.RegisterAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		destinationDomain,
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 
-	address, exists := GetAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	address, exists := GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		destinationDomain,
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 	require.True(t, exists, "expected the new AutoCCTP account registered")
 
 	// Pause the CCTP module to cause a failure in the clearing of the pending transfers.
@@ -106,7 +122,12 @@ func TestClearAccount_ToFallbackRecipient(t *testing.T) {
 			require.True(t, ok)
 
 			require.Equal(t, address, accountCleared.Address, "expected a different address in the event")
-			require.Equal(t, s.fallbackRecipient.FormattedAddress(), accountCleared.Receiver, "expected a different receiver in the event")
+			require.Equal(
+				t,
+				s.fallbackRecipient.FormattedAddress(),
+				accountCleared.Receiver,
+				"expected a different receiver in the event",
+			)
 			eventFound = true
 		}
 	}
@@ -133,9 +154,25 @@ func TestClearAccount_ToMintRecipient(t *testing.T) {
 	val := s.Chain.Validators[0]
 	destinationDomain := fmt.Sprintf("%d", s.destinationDomain)
 
-	_ = s.RegisterAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	_ = s.RegisterAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		destinationDomain,
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 
-	address, exists := GetAutoCCTPAccount(t, ctx, val, destinationDomain, s.mintRecipient, s.fallbackRecipient.FormattedAddress(), "")
+	address, exists := GetAutoCCTPAccount(
+		t,
+		ctx,
+		val,
+		destinationDomain,
+		s.mintRecipient,
+		s.fallbackRecipient.FormattedAddress(),
+		"",
+	)
 	require.True(t, exists, "expected the new AutoCCTP account registered")
 
 	// Pause the CCTP module to cause a failure in the clearing of the pending transfers.
@@ -196,9 +233,19 @@ func TestClearAccount_ToMintRecipient(t *testing.T) {
 				case "amount":
 					var actual string
 					require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
-					require.Equal(t, strconv.Itoa(int(transferAmt.Int64())), actual, "expected a different amount in cctp event")
+					require.Equal(
+						t,
+						strconv.Itoa(int(transferAmt.Int64())),
+						actual,
+						"expected a different amount in cctp event",
+					)
 				case "destination_domain":
-					require.Equal(t, destinationDomain, attribute.Value, "expected a different destination domain in cctp event")
+					require.Equal(
+						t,
+						destinationDomain,
+						attribute.Value,
+						"expected a different destination domain in cctp event",
+					)
 				case "destination_caller":
 					var actual string
 					require.NoError(t, json.Unmarshal([]byte(attribute.Value), &actual))
