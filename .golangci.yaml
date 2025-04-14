@@ -1,35 +1,39 @@
 version: '2'
+linters:
+  # Default set of linters.
+  # The value can be: `standard`, `all`, `none`, or `fast`.
+  # Default: standa
+  default: standard
+  enable:
+    - gosec
+    - misspell
+    - forcetypeassert
+    - exhaustive
+    - dogsled
 formatters:
-  # Enable specific formatter.
-  # Default: [] (uses standard Go formatting)
   enable:
     - gci
     - gofmt
     - gofumpt
     - golines
-    - goimports
   settings:
-    goimports:
-      # A list of prefixes, which, if set, checks import paths
-      # with the given prefixes are grouped after 3rd-party packages.
-      # Default: []
-      # - github.com/cosmos
-      # - cosmossdk.io
-      # - github.com/cometbft
-      local-prefixes:
-        - 'autocctp.dev'
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/cosmos/,cosmossdk.io)
+        - blank
+        - dot
+        - localmodule
+      custom-order: true
+      no-inline-comments: true
+      no-prefix-comments: true
+    gofmt:
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
     golines:
-      # Target maximum line length.
-      # Default: 100
-      max-len: 100
-      # Length of a tabulation.
-      # Default: 4
+      max-len: 120
       tab-len: 4
-      # Shorten single-line comments.
-      # Default: false
       shorten-comments: true
-      # Default: true
-      reformat-tags: false
-      # Split chained methods on the dots as opposed to the arguments.
-      # Default: true
-      chain-split-dots: false
+      chain-split-dots: true

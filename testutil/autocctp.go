@@ -39,7 +39,7 @@ func randomBytes(n int) []byte {
 }
 
 func randomDestinationDomain() uint32 {
-	return rand.Uint32() % 10
+	return rand.Uint32() % 10 //nolint:gosec
 }
 
 // PendingTransfers generates a specified number of dummy pending transfers
