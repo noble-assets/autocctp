@@ -6,6 +6,7 @@ linters:
   default: standard
   enable:
     - gosec
+    - godot
     - misspell
     - forcetypeassert
     - exhaustive
@@ -21,7 +22,7 @@ formatters:
       sections:
         - standard
         - default
-        - prefix(github.com/cosmos/,cosmossdk.io)
+        - prefix(github.com/cosmos/,cosmossdk.io/,github.com/cometbft/)
         - blank
         - dot
         - localmodule
