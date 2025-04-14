@@ -22,6 +22,7 @@ package keeper_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -61,7 +62,10 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 				}
 			},
 			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (string, error) {
-				msg := msgI.(types.MsgRegisterAccount)
+				msg, ok := msgI.(types.MsgRegisterAccount)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				resp, err := s.RegisterAccount(ctx, &msg)
 				if err != nil {
 					return "", err
@@ -80,7 +84,10 @@ func TestRegisterAccount_NewAccount(t *testing.T) {
 				}
 			},
 			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (string, error) {
-				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+				msg, ok := msgI.(types.MsgRegisterAccountSignerlessly)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				resp, err := s.RegisterAccountSignerlessly(ctx, &msg)
 				if err != nil {
 					return "", err
@@ -156,7 +163,10 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 				}
 			},
 			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
-				msg := msgI.(types.MsgRegisterAccount)
+				msg, ok := msgI.(types.MsgRegisterAccount)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				return s.RegisterAccount(ctx, &msg)
 			},
 		},
@@ -171,7 +181,10 @@ func TestRegisterAccount_ExistingAccount(t *testing.T) {
 				}
 			},
 			serverCall: func(s types.MsgServer, ctx context.Context, msgI interface{}) (interface{}, error) {
-				msg := msgI.(types.MsgRegisterAccountSignerlessly)
+				msg, ok := msgI.(types.MsgRegisterAccountSignerlessly)
+				if !ok {
+					return "", errors.New("error casting message")
+				}
 				return s.RegisterAccountSignerlessly(ctx, &msg)
 			},
 		},
