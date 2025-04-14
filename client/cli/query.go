@@ -24,10 +24,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/gogoproto/proto"
-	"github.com/spf13/cobra"
 
 	"autocctp.dev/types"
 )

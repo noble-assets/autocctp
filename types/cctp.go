@@ -26,8 +26,9 @@ import (
 	"fmt"
 
 	"github.com/circlefin/noble-cctp/x/cctp/types"
-	"github.com/cosmos/btcutil/base58"
 	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/cosmos/btcutil/base58"
 )
 
 // Domain represents a destination domain supported by CCTP.
