@@ -148,7 +148,7 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 				Sequence: 0,
 			})
 			if err != nil {
-				return nil
+				return err
 			}
 
 			if clientCtx.GenerateOnly {
