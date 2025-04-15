@@ -11,8 +11,7 @@ import "google/api/annotations.proto";
 option go_package = "autocctp.dev/types";
 
 service Query {
-  // Address fetches the AutoCCTP address for a specific destination domain, mint recipient,
-  // fallback recipient, and destination caller.
+  // Queries Address.
   rpc Address(QueryAddress) returns (QueryAddressResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http) = {
@@ -20,12 +19,12 @@ service Query {
       additional_bindings: {get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}/{destination_caller}"}
     };
   }
-  // Stats fetches general stats about AutoCCTP forwarding usage.
+  // Queries Stats.
   rpc Stats(QueryStats) returns (QueryStatsResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/noble/autocctp/v1/stats";
   }
-  // Stats fetches general stats about AutoCCTP forwarding usage for a specific destination domain..
+  // Queries StatsByDestinationDomain.
   rpc StatsByDestinationDomain(QueryStatsByDestinationDomain) returns (QueryStatsByDestinationDomainResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/noble/autocctp/v1/stats/{destination_domain}";
