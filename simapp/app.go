@@ -228,7 +228,7 @@ func (app *SimApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 	return keys
 }
 
-// RegisterCCTPServive is a method used to register CCTP message and query servers into the
+// RegisterCCTPServive is a method used to register the CCTP message and query servers into the
 // AutoCCTP keeper after building the app.
 func (app *SimApp) RegisterCCTPServive() {
 	cctpMsgServer := cctpkeeper.NewMsgServerImpl(app.CCTPKeeper)
