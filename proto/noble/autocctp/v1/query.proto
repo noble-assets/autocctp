@@ -14,10 +14,7 @@ service Query {
   // Queries Address.
   rpc Address(QueryAddress) returns (QueryAddressResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
-    option (google.api.http) = {
-      get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}"
-      additional_bindings: {get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}/{destination_caller}"}
-    };
+    option (google.api.http).get = "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}";
   }
   // Queries Stats.
   rpc Stats(QueryStats) returns (QueryStatsResponse) {
