@@ -88,7 +88,7 @@ func (gs *GenesisState) Validate() error {
 		if num == 0 {
 			return fmt.Errorf(
 				"trying to register total transferred without transfers for destination domain %d",
-				keysTotalTransferred,
+				keyTotalTransferred,
 			)
 		}
 
