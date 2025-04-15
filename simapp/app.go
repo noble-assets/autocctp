@@ -155,7 +155,7 @@ func NewSimApp(
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
-	app.RegisterCCTPServive()
+	app.RegisterCCTPService()
 	if err := app.RegisterIBCModules(); err != nil {
 		return nil, err
 	}
@@ -228,9 +228,9 @@ func (app *SimApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 	return keys
 }
 
-// RegisterCCTPServive is a method used to register the CCTP message and query servers into the
+// RegisterCCTPService is a method used to register the CCTP message and query servers into the
 // AutoCCTP keeper after building the app.
-func (app *SimApp) RegisterCCTPServive() {
+func (app *SimApp) RegisterCCTPService() {
 	cctpMsgServer := cctpkeeper.NewMsgServerImpl(app.CCTPKeeper)
 
 	app.AutoCCTPKeeper.SetCCTPService(cctpMsgServer, app.CCTPKeeper)
