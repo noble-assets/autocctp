@@ -11,67 +11,87 @@ import "google/api/annotations.proto";
 option go_package = "autocctp.dev/types";
 
 service Query {
-  // Description for address
+  // Address fetches the AutoCCTP address for a specific destination domain, mint recipient,
+  // fallback recipient, and destination caller.
   rpc Address(QueryAddress) returns (QueryAddressResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http) = {
-      // Is this used?
       get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}"
-      // And this?
       additional_bindings: {get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}/{destination_caller}"}
     };
   }
+  // Stats fetches general stats about AutoCCTP forwarding usage.
   rpc Stats(QueryStats) returns (QueryStatsResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/noble/autocctp/v1/stats";
   }
+  // Stats fetches general stats about AutoCCTP forwarding usage for a specific destination domain..
   rpc StatsByDestinationDomain(QueryStatsByDestinationDomain) returns (QueryStatsByDestinationDomainResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/noble/autocctp/v1/stats/{destination_domain}";
   }
 }
 
-// We need these info
+// QueryAddress is the request message for querying an AutoCCTP address.
 message QueryAddress {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  // This is very important
+  // The receiving chain identifier according to Circle's CCTP.
   uint32 destination_domain = 1;
-  // Also this is very important
+  // The transfer recipient.
   string mint_recipient = 2;
+  // A Noble address used to recover funds in case of errors during the transfer.
   string fallback_recipient = 3;
+  // If specified, represents the only address allowed to complete the transfer on the
+  // destination domain.
   string destination_caller = 4;
 }
 
-// One reponse
+// QueryAddressResponse is the response message containing the AutoCCTP address
+// and existence status.
 message QueryAddressResponse {
-  // Nice, we have it
+  // The AutoCCTP address associated with the inputs parameters.
   string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // A flag indicating wether or not the address is associated with a registered account.
   bool exists = 2 [(amino.dont_omitempty) = true];
 }
 
+// QueryStats is the request message for querying module stats.
 message QueryStats {}
 
+// QueryStatsResponse is the response message containing stats for all domains.
 message QueryStatsResponse {
-  map<uint32, DomainStats> stats = 1 [(gogoproto.nullable) = false];
+  // A map of domain stats keyed by destination domain.
+  map<uint32, DomainStats> destination_domain_stats = 1 [(gogoproto.nullable) = false];
 }
 
+// DomainStats contains the stats for a specific domain.
+message DomainStats {
+  // The number of AutoCCTP accounts created.
+  uint64 accounts = 1 [(amino.dont_omitempty) = true];
+  // The number of transfers executed.
+  uint64 transfers = 2 [(amino.dont_omitempty) = true];
+  // The total amount transferred.
+  uint64 total_transferred = 3 [(amino.dont_omitempty) = true];
+}
+
+// QueryStatsByDestinationDomain is the request message for querying stats by a specific destination domain.
 message QueryStatsByDestinationDomain {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
+  // The destination domain for which stats are requested.
   uint32 destination_domain = 1;
 }
 
+// QueryStatsByDestinationDomainResponse is the response message containing stats for a
+// specific destination domain.
 message QueryStatsByDestinationDomainResponse {
+  // The number of AutoCCTP accounts created.
   uint64 accounts = 1 [(amino.dont_omitempty) = true];
+  // The number of transfers executed.
   uint64 transfers = 2 [(amino.dont_omitempty) = true];
-  uint64 total_transferred = 3 [(amino.dont_omitempty) = true];
-}
-
-message DomainStats {
-  uint64 accounts = 1 [(amino.dont_omitempty) = true];
-  uint64 transfers = 2 [(amino.dont_omitempty) = true];
+  // The total amount transferred.
   uint64 total_transferred = 3 [(amino.dont_omitempty) = true];
 }

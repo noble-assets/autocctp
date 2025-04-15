@@ -28,9 +28,12 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
-	// Description for address
+	// Address fetches the AutoCCTP address for a specific destination domain, mint recipient,
+	// fallback recipient, and destination caller.
 	Address(ctx context.Context, in *QueryAddress, opts ...grpc.CallOption) (*QueryAddressResponse, error)
+	// Stats fetches general stats about AutoCCTP forwarding usage.
 	Stats(ctx context.Context, in *QueryStats, opts ...grpc.CallOption) (*QueryStatsResponse, error)
+	// Stats fetches general stats about AutoCCTP forwarding usage for a specific destination domain..
 	StatsByDestinationDomain(ctx context.Context, in *QueryStatsByDestinationDomain, opts ...grpc.CallOption) (*QueryStatsByDestinationDomainResponse, error)
 }
 
@@ -76,9 +79,12 @@ func (c *queryClient) StatsByDestinationDomain(ctx context.Context, in *QuerySta
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
 type QueryServer interface {
-	// Description for address
+	// Address fetches the AutoCCTP address for a specific destination domain, mint recipient,
+	// fallback recipient, and destination caller.
 	Address(context.Context, *QueryAddress) (*QueryAddressResponse, error)
+	// Stats fetches general stats about AutoCCTP forwarding usage.
 	Stats(context.Context, *QueryStats) (*QueryStatsResponse, error)
+	// Stats fetches general stats about AutoCCTP forwarding usage for a specific destination domain..
 	StatsByDestinationDomain(context.Context, *QueryStatsByDestinationDomain) (*QueryStatsByDestinationDomainResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }

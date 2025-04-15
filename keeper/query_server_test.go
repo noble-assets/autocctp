@@ -299,7 +299,7 @@ func TestStats(t *testing.T) {
 			req:   &types.QueryStats{},
 			setup: func(*keeper.Keeper, sdk.Context) {},
 			expResponse: &types.QueryStatsResponse{
-				Stats: map[uint32]types.DomainStats{},
+				DestinationDomainStats: map[uint32]types.DomainStats{},
 			},
 		},
 		{
@@ -314,7 +314,7 @@ func TestStats(t *testing.T) {
 				require.NoError(t, err, "expected no error setting the total transferred")
 			},
 			expResponse: &types.QueryStatsResponse{
-				Stats: map[uint32]types.DomainStats{
+				DestinationDomainStats: map[uint32]types.DomainStats{
 					0: {
 						Accounts:         3,
 						Transfers:        10,
@@ -346,7 +346,7 @@ func TestStats(t *testing.T) {
 				require.NoError(t, err, "expected no error setting the total transferred")
 			},
 			expResponse: &types.QueryStatsResponse{
-				Stats: map[uint32]types.DomainStats{
+				DestinationDomainStats: map[uint32]types.DomainStats{
 					0: {
 						Accounts:         3,
 						Transfers:        10,
