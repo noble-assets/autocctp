@@ -32,8 +32,11 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// We need these info
 type QueryAddress struct {
+	// This is very important
 	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+	// Also this is very important
 	MintRecipient     string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
 	FallbackRecipient string `protobuf:"bytes,3,opt,name=fallback_recipient,json=fallbackRecipient,proto3" json:"fallback_recipient,omitempty"`
 	DestinationCaller string `protobuf:"bytes,4,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
@@ -72,7 +75,9 @@ func (m *QueryAddress) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryAddress proto.InternalMessageInfo
 
+// One reponse
 type QueryAddressResponse struct {
+	// Nice, we have it
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Exists  bool   `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
 }
@@ -433,6 +438,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
+	// Description for address
 	Address(ctx context.Context, in *QueryAddress, opts ...grpc.CallOption) (*QueryAddressResponse, error)
 	Stats(ctx context.Context, in *QueryStats, opts ...grpc.CallOption) (*QueryStatsResponse, error)
 	StatsByDestinationDomain(ctx context.Context, in *QueryStatsByDestinationDomain, opts ...grpc.CallOption) (*QueryStatsByDestinationDomainResponse, error)
@@ -475,6 +481,7 @@ func (c *queryClient) StatsByDestinationDomain(ctx context.Context, in *QuerySta
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
+	// Description for address
 	Address(context.Context, *QueryAddress) (*QueryAddressResponse, error)
 	Stats(context.Context, *QueryStats) (*QueryStatsResponse, error)
 	StatsByDestinationDomain(context.Context, *QueryStatsByDestinationDomain) (*QueryStatsByDestinationDomainResponse, error)

@@ -3529,12 +3529,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// We need these info
 type QueryAddress struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// This is very important
 	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+	// Also this is very important
 	MintRecipient     string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
 	FallbackRecipient string `protobuf:"bytes,3,opt,name=fallback_recipient,json=fallbackRecipient,proto3" json:"fallback_recipient,omitempty"`
 	DestinationCaller string `protobuf:"bytes,4,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
@@ -3588,11 +3591,13 @@ func (x *QueryAddress) GetDestinationCaller() string {
 	return ""
 }
 
+// One reponse
 type QueryAddressResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Nice, we have it
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Exists  bool   `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
 }

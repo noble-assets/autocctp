@@ -11,10 +11,13 @@ import "google/api/annotations.proto";
 option go_package = "autocctp.dev/types";
 
 service Query {
+  // Description for address
   rpc Address(QueryAddress) returns (QueryAddressResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http) = {
+      // Is this used?
       get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}"
+      // And this?
       additional_bindings: {get: "/noble/autocctp/v1/address/{destination_domain}/{mint_recipient}/{fallback_recipient}/{destination_caller}"}
     };
   }
@@ -28,17 +31,22 @@ service Query {
   }
 }
 
+// We need these info
 message QueryAddress {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
+  // This is very important
   uint32 destination_domain = 1;
+  // Also this is very important
   string mint_recipient = 2;
   string fallback_recipient = 3;
   string destination_caller = 4;
 }
 
+// One reponse
 message QueryAddressResponse {
+  // Nice, we have it
   string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bool exists = 2 [(amino.dont_omitempty) = true];
 }
