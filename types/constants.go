@@ -23,6 +23,12 @@ package types
 import "cosmossdk.io/math"
 
 const (
-	// MinimumTransferAmount defines the minimum amount that can be transferred via AutoCCTP.
-	MinimumTransferAmount = 10_000 // 1 cent
+	// minimumTransferAmount defines the minimum amount that can be transferred via AutoCCTP.
+	minimumTransferAmount = 10_000 // 1 cent
 )
+
+// GetMinimumTransferAmount returns the minimum amount of the minting denom that can be
+// transferred to an AutoCCTP account.
+func GetMinimumTransferAmount() math.Int {
+	return math.NewInt(minimumTransferAmount)
+}

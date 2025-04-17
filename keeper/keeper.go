@@ -137,6 +137,8 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 		return toAddr, nil
 	}
 
+	// Send validation
+
 	// Check coins contains only the minting denom.
 	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
 	if len(coins) != 1 || coins[0].Denom != mintingDenom {
@@ -147,8 +149,8 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 
 	// Check on the minimum transferable amount.
 
-	if mintingDenomAmount.LT(k.getMinTransferAmount()) {
-		return toAddr, types.ErrInvalidTransferAmount.Wrapf("cannot be lower than %s", k.getMinTransferAmount())
+	if mintingDenomAmount.LT(types.GetMinimumTransferAmount()) {
+		return toAddr, types.ErrInvalidTransferAmount.Wrapf("cannot be lower than %s", types.GetMinimumTransferAmount().String())
 	}
 
 	maxTransferAmount, err := k.getMaxTransferAmount(ctx, mintingDenom)
@@ -158,8 +160,10 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 
 	finalBalance := k.bankKeeper.GetBalance(ctx, toAddr, mintingDenom).AddAmount(mintingDenomAmount)
 	if finalBalance.Amount.GT(maxTransferAmount) {
-		return toAddr, types.ErrInvalidTransferAmount.Wrapf("resulting balance cannotn exceed %s", maxTransferAmount)
+		return toAddr, types.ErrInvalidTransferAmount.Wrapf("resulting balance cannot exceed %s", maxTransferAmount)
 	}
+
+	// State transition
 
 	if err = k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
 		k.logger.Error(`unable to set account for pending transfer`,
@@ -181,10 +185,6 @@ func (k *Keeper) getMaxTransferAmount(ctx context.Context, denom string) (math.I
 	}
 
 	return resp.BurnLimit.Amount, nil
-}
-
-func (k *Keeper) getMinTransferAmount() math.Int {
-	return math.NewInt(types.MinimumTransferAmount)
 }
 
 // registerAccount handles the AutoCCTP account registration given certain properties.
@@ -216,7 +216,7 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 
 		mintingToken := k.ftfKeeper.GetMintingDenom(ctx)
 		accountBalance := k.bankKeeper.GetBalance(ctx, address, mintingToken.Denom)
-		if accountBalance.Amount.GTE(k.getMinTransferAmount()) {
+		if accountBalance.Amount.GTE(types.GetMinimumTransferAmount()) {
 			account, _ := rawAccount.(*types.Account)
 			if err := k.PendingTransfers.Set(ctx, address.String(), *account); err != nil {
 				k.logger.Error("error registering pending transfer for address %s", address.String())

@@ -115,22 +115,22 @@ func TestSendRestrictionFn(t *testing.T) {
 
 	testCases := []struct {
 		name               string
-		setup              func(*mocks.AccountKeeper)
+		setup              func(*mocks.Mocks)
 		coins              sdk.Coins
 		expPendingTransfer bool
 		errContains        string
 	}{
 		{
 			name:               "valid when the account does not exist",
-			setup:              func(_ *mocks.AccountKeeper) {},
+			setup:              func(_ *mocks.Mocks) {},
 			coins:              sdk.Coins{},
 			expPendingTransfer: false,
 			errContains:        "",
 		},
 		{
 			name: "valid when the account is base account",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = acc.BaseAccount
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = acc.BaseAccount
 			},
 			coins:              sdk.Coins{},
 			expPendingTransfer: false,
@@ -138,8 +138,8 @@ func TestSendRestrictionFn(t *testing.T) {
 		},
 		{
 			name: "invalid when coins is empty",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = &acc
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
 			},
 			coins:              sdk.Coins{},
 			expPendingTransfer: false,
@@ -147,8 +147,8 @@ func TestSendRestrictionFn(t *testing.T) {
 		},
 		{
 			name: "invalid when coin is not minting denom",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = &acc
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
 			},
 			coins:              sdk.NewCoins(sdk.NewInt64Coin("unobl", 1)),
 			expPendingTransfer: false,
@@ -156,8 +156,8 @@ func TestSendRestrictionFn(t *testing.T) {
 		},
 		{
 			name: "invalid when coins contains more than one coin",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = &acc
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
 			},
 			coins: sdk.NewCoins(
 				sdk.NewInt64Coin("unobl", 1),
@@ -168,26 +168,36 @@ func TestSendRestrictionFn(t *testing.T) {
 		},
 		{
 			name: "invalid when coins contains only minting denom but lower than minimum",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = &acc
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
 			},
 			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64()-1)),
 			expPendingTransfer: false,
-			errContains:        "transfer amount to autocctp account should be",
+			errContains:        types.ErrInvalidTransferAmount.Error(),
 		},
 		{
 			name: "invalid when coins contains only minting denom but higher than maximum",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = &acc
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
 			},
 			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000+1)),
 			expPendingTransfer: false,
-			errContains:        "transfer amount to autocctp account should be",
+			errContains:        types.ErrInvalidTransferAmount.Error(),
+		},
+		{
+			name: "invalid when coins contains only minting denom but resulting balance is higher than maximum",
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
+				m.BankKeeper.Balances[acc.GetAddress().String()] = sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1))
+			},
+			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", 1_000_000_000)),
+			expPendingTransfer: false,
+			errContains:        types.ErrInvalidTransferAmount.Error(),
 		},
 		{
 			name: "valid when correct denom and amount",
-			setup: func(ak *mocks.AccountKeeper) {
-				ak.Accounts[acc.GetAddress().String()] = &acc
+			setup: func(m *mocks.Mocks) {
+				m.AccountKeeper.Accounts[acc.GetAddress().String()] = &acc
 			},
 			coins:              sdk.NewCoins(sdk.NewInt64Coin("uusdc", types.GetMinimumTransferAmount().Int64())),
 			expPendingTransfer: true,
@@ -199,9 +209,8 @@ func TestSendRestrictionFn(t *testing.T) {
 		t.Run(tC.name, func(t *testing.T) {
 			// ARRANGE
 			mocks, k, ctx := mocks.AutoCCTPKeeper(t)
-			ak := mocks.AccountKeeper
 
-			tC.setup(ak)
+			tC.setup(mocks)
 
 			// ACT
 			toAddr, err := k.SendRestrictionFn(ctx, sdk.AccAddress{}, acc.GetAddress(), tC.coins)
