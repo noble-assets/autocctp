@@ -27,7 +27,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"autocctp.dev/keeper"
 	"autocctp.dev/types"
 )
 
@@ -49,7 +48,8 @@ var _ sdk.AnteDecorator = SigVerificationDecorator{}
 
 // SigVerificationDecorator is a custom ante handler used to verify signerless registration messages for AutoCCTP accounts.
 type SigVerificationDecorator struct {
-	autocctp   keeper.Keeper
+	ftf        types.FiatTokenfactoryKeeper
+	bank       types.BankKeeper
 	underlying sdk.AnteDecorator
 }
 
@@ -57,7 +57,9 @@ type SigVerificationDecorator struct {
 // wraps another ante handler. The custom signature verification allows to broadcast a
 // signerless tx to create an AutoCCTP account.
 func NewSigVerificationDecorator(
-	autocctp keeper.Keeper,
+	fk types.FiatTokenfactoryKeeper,
+	bk types.BankKeeper,
+	ak ante.AccountKeeper,
 	underlying sdk.AnteDecorator,
 ) SigVerificationDecorator {
 	if underlying == nil {
@@ -65,7 +67,8 @@ func NewSigVerificationDecorator(
 	}
 
 	return SigVerificationDecorator{
-		autocctp:   autocctp,
+		ftf:        fk,
+		bank:       bk,
 		underlying: underlying,
 	}
 }

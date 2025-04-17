@@ -148,16 +148,15 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	mintingDenomAmount := coins[0].Amount
 
 	// Check on the minimum transferable amount.
-
 	if mintingDenomAmount.LT(types.GetMinimumTransferAmount()) {
 		return toAddr, types.ErrInvalidTransferAmount.Wrapf("cannot be lower than %s", types.GetMinimumTransferAmount().String())
 	}
 
+	// Check on maximum transferable amount.
 	maxTransferAmount, err := k.getMaxTransferAmount(ctx, mintingDenom)
 	if err != nil {
 		return toAddr, fmt.Errorf("error retrieving the max transfer amount: %w", err)
 	}
-
 	finalBalance := k.bankKeeper.GetBalance(ctx, toAddr, mintingDenom).AddAmount(mintingDenomAmount)
 	if finalBalance.Amount.GT(maxTransferAmount) {
 		return toAddr, types.ErrInvalidTransferAmount.Wrapf("resulting balance cannot exceed %s", maxTransferAmount)
