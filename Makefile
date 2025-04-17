@@ -7,7 +7,7 @@ all: proto-all format lint license test-unit build
 
 build:
 	@echo "🤖 Building simd..."
-	@cd simapp && make build 1> /dev/null
+	@cd simapp && GOWORK=off make build 1> /dev/null
 	@echo "✅ Completed build!"
 
 ###############################################################################
