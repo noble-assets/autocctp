@@ -124,17 +124,6 @@ func (k *Keeper) ValidateAccountProperties(accountProperties types.AccountProper
 	return nil
 }
 
-func (k *Keeper) getMaxTransferAmount(ctx context.Context, denom string) (math.Int, error) {
-	resp, err := k.cctpService.PerMessageBurnLimit(ctx, &cctptypes.QueryGetPerMessageBurnLimitRequest{
-		Denom: denom,
-	})
-	if err != nil {
-		return math.Int{}, err
-	}
-
-	return resp.BurnLimit.Amount, nil
-}
-
 // SendRestrictionFn checks every transfer executed on the Noble chain to see if
 // the recipient is an AutoCCTP account, allowing us to mark them for clearing.
 func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress, coins sdk.Coins) (newToAddr sdk.AccAddress, err error) {
@@ -148,32 +137,28 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 		return toAddr, nil
 	}
 
+	// Check coins contains only the minting denom.
 	mintingDenom := k.ftfKeeper.GetMintingDenom(ctx).Denom
 	if len(coins) != 1 || coins[0].Denom != mintingDenom {
-		return toAddr, fmt.Errorf(
-			"autocctp accounts can only receive %s coins",
-			mintingDenom,
-		)
+		return toAddr, fmt.Errorf("autocctp accounts can only receive %s coins", mintingDenom)
 	}
 
 	mintingDenomAmount := coins[0].Amount
-	maxTransferAmount, err := k.getMaxTransferAmount(ctx, mintingDenom)
-	if err != nil {
-		return toAddr, fmt.Errorf(
-			"error retrieving the max transfer amount: %w",
-			err,
-		)
+
+	// Check on the minimum transferable amount.
+
+	if mintingDenomAmount.LT(k.getMinTransferAmount()) {
+		return toAddr, types.ErrInvalidTransferAmount.Wrapf("cannot be lower than %s", k.getMinTransferAmount())
 	}
 
-	// NOTE: Here we are limiting the minimum amount an AutoCCTP account can receive. We are
-	// intentionally not checking if the coins sent plus the current balance are higher
-	// than the minimum amount to transfer to always force the minimum amount.
-	if mintingDenomAmount.LT(types.GetMinimumTransferAmount()) || mintingDenomAmount.GT(maxTransferAmount) {
-		return toAddr, fmt.Errorf(
-			"transfer amount to autocctp account should be %s <= x <= %s",
-			types.GetMinimumTransferAmount().String(),
-			maxTransferAmount.String(),
-		)
+	maxTransferAmount, err := k.getMaxTransferAmount(ctx, mintingDenom)
+	if err != nil {
+		return toAddr, fmt.Errorf("error retrieving the max transfer amount: %w", err)
+	}
+
+	finalBalance := k.bankKeeper.GetBalance(ctx, toAddr, mintingDenom).AddAmount(mintingDenomAmount)
+	if finalBalance.Amount.GT(maxTransferAmount) {
+		return toAddr, types.ErrInvalidTransferAmount.Wrapf("resulting balance cannotn exceed %s", maxTransferAmount)
 	}
 
 	if err = k.PendingTransfers.Set(ctx, account.Address, *account); err != nil {
@@ -185,6 +170,21 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	}
 
 	return toAddr, nil
+}
+
+func (k *Keeper) getMaxTransferAmount(ctx context.Context, denom string) (math.Int, error) {
+	resp, err := k.cctpService.PerMessageBurnLimit(ctx, &cctptypes.QueryGetPerMessageBurnLimitRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		return math.Int{}, err
+	}
+
+	return resp.BurnLimit.Amount, nil
+}
+
+func (k *Keeper) getMinTransferAmount() math.Int {
+	return math.NewInt(types.MinimumTransferAmount)
 }
 
 // registerAccount handles the AutoCCTP account registration given certain properties.
@@ -216,7 +216,7 @@ func (k Keeper) registerAccount(ctx context.Context, accountProperties types.Acc
 
 		mintingToken := k.ftfKeeper.GetMintingDenom(ctx)
 		accountBalance := k.bankKeeper.GetBalance(ctx, address, mintingToken.Denom)
-		if accountBalance.Amount.GTE(types.GetMinimumTransferAmount()) {
+		if accountBalance.Amount.GTE(k.getMinTransferAmount()) {
 			account, _ := rawAccount.(*types.Account)
 			if err := k.PendingTransfers.Set(ctx, address.String(), *account); err != nil {
 				k.logger.Error("error registering pending transfer for address %s", address.String())
