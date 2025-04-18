@@ -32,10 +32,16 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// QueryAddress is the request message for querying an AutoCCTP address.
 type QueryAddress struct {
+	// The receiving chain identifier according to Circle's CCTP.
 	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-	MintRecipient     string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
+	// The transfer recipient.
+	MintRecipient string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
+	// A Noble address used to recover funds in case of errors during the transfer.
 	FallbackRecipient string `protobuf:"bytes,3,opt,name=fallback_recipient,json=fallbackRecipient,proto3" json:"fallback_recipient,omitempty"`
+	// If specified, represents the only address allowed to complete the transfer on the
+	// destination domain.
 	DestinationCaller string `protobuf:"bytes,4,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
 }
 
@@ -72,9 +78,13 @@ func (m *QueryAddress) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryAddress proto.InternalMessageInfo
 
+// QueryAddressResponse is the response message containing the AutoCCTP address
+// and existence status.
 type QueryAddressResponse struct {
+	// The AutoCCTP address associated with the inputs parameters.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Exists  bool   `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
+	// A flag indicating wether or not the address is associated with a registered account.
+	Exists bool `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
 }
 
 func (m *QueryAddressResponse) Reset()         { *m = QueryAddressResponse{} }
@@ -124,6 +134,7 @@ func (m *QueryAddressResponse) GetExists() bool {
 	return false
 }
 
+// QueryStats is the request message for querying module stats.
 type QueryStats struct {
 }
 
@@ -160,8 +171,10 @@ func (m *QueryStats) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryStats proto.InternalMessageInfo
 
+// QueryStatsResponse is the response message containing stats for all domains.
 type QueryStatsResponse struct {
-	Stats map[uint32]DomainStats `protobuf:"bytes,1,rep,name=stats,proto3" json:"stats" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// A map of domain stats keyed by destination domain.
+	DestinationDomainStats map[uint32]DomainStats `protobuf:"bytes,1,rep,name=destination_domain_stats,json=destinationDomainStats,proto3" json:"destination_domain_stats" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *QueryStatsResponse) Reset()         { *m = QueryStatsResponse{} }
@@ -197,113 +210,20 @@ func (m *QueryStatsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryStatsResponse proto.InternalMessageInfo
 
-func (m *QueryStatsResponse) GetStats() map[uint32]DomainStats {
+func (m *QueryStatsResponse) GetDestinationDomainStats() map[uint32]DomainStats {
 	if m != nil {
-		return m.Stats
+		return m.DestinationDomainStats
 	}
 	return nil
 }
 
-type QueryStatsByDestinationDomain struct {
-	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-}
-
-func (m *QueryStatsByDestinationDomain) Reset()         { *m = QueryStatsByDestinationDomain{} }
-func (m *QueryStatsByDestinationDomain) String() string { return proto.CompactTextString(m) }
-func (*QueryStatsByDestinationDomain) ProtoMessage()    {}
-func (*QueryStatsByDestinationDomain) Descriptor() ([]byte, []int) {
-	return fileDescriptor_483d98375be4f886, []int{4}
-}
-func (m *QueryStatsByDestinationDomain) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryStatsByDestinationDomain) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryStatsByDestinationDomain.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryStatsByDestinationDomain) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStatsByDestinationDomain.Merge(m, src)
-}
-func (m *QueryStatsByDestinationDomain) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryStatsByDestinationDomain) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStatsByDestinationDomain.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryStatsByDestinationDomain proto.InternalMessageInfo
-
-type QueryStatsByDestinationDomainResponse struct {
-	Accounts         uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
-	Transfers        uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
-	TotalTransferred uint64 `protobuf:"varint,3,opt,name=total_transferred,json=totalTransferred,proto3" json:"total_transferred,omitempty"`
-}
-
-func (m *QueryStatsByDestinationDomainResponse) Reset()         { *m = QueryStatsByDestinationDomainResponse{} }
-func (m *QueryStatsByDestinationDomainResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryStatsByDestinationDomainResponse) ProtoMessage()    {}
-func (*QueryStatsByDestinationDomainResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_483d98375be4f886, []int{5}
-}
-func (m *QueryStatsByDestinationDomainResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryStatsByDestinationDomainResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryStatsByDestinationDomainResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryStatsByDestinationDomainResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStatsByDestinationDomainResponse.Merge(m, src)
-}
-func (m *QueryStatsByDestinationDomainResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryStatsByDestinationDomainResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStatsByDestinationDomainResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryStatsByDestinationDomainResponse proto.InternalMessageInfo
-
-func (m *QueryStatsByDestinationDomainResponse) GetAccounts() uint64 {
-	if m != nil {
-		return m.Accounts
-	}
-	return 0
-}
-
-func (m *QueryStatsByDestinationDomainResponse) GetTransfers() uint64 {
-	if m != nil {
-		return m.Transfers
-	}
-	return 0
-}
-
-func (m *QueryStatsByDestinationDomainResponse) GetTotalTransferred() uint64 {
-	if m != nil {
-		return m.TotalTransferred
-	}
-	return 0
-}
-
+// DomainStats contains the stats for a specific domain.
 type DomainStats struct {
-	Accounts         uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
-	Transfers        uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
+	// The number of AutoCCTP accounts created.
+	Accounts uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
+	// The number of transfers executed.
+	Transfers uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
+	// The total amount transferred.
 	TotalTransferred uint64 `protobuf:"varint,3,opt,name=total_transferred,json=totalTransferred,proto3" json:"total_transferred,omitempty"`
 }
 
@@ -311,7 +231,7 @@ func (m *DomainStats) Reset()         { *m = DomainStats{} }
 func (m *DomainStats) String() string { return proto.CompactTextString(m) }
 func (*DomainStats) ProtoMessage()    {}
 func (*DomainStats) Descriptor() ([]byte, []int) {
-	return fileDescriptor_483d98375be4f886, []int{6}
+	return fileDescriptor_483d98375be4f886, []int{4}
 }
 func (m *DomainStats) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -361,64 +281,168 @@ func (m *DomainStats) GetTotalTransferred() uint64 {
 	return 0
 }
 
+// QueryStatsByDestinationDomain is the request message for querying stats by a specific destination domain.
+type QueryStatsByDestinationDomain struct {
+	// The destination domain for which stats are requested.
+	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+}
+
+func (m *QueryStatsByDestinationDomain) Reset()         { *m = QueryStatsByDestinationDomain{} }
+func (m *QueryStatsByDestinationDomain) String() string { return proto.CompactTextString(m) }
+func (*QueryStatsByDestinationDomain) ProtoMessage()    {}
+func (*QueryStatsByDestinationDomain) Descriptor() ([]byte, []int) {
+	return fileDescriptor_483d98375be4f886, []int{5}
+}
+func (m *QueryStatsByDestinationDomain) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryStatsByDestinationDomain) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryStatsByDestinationDomain.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryStatsByDestinationDomain) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStatsByDestinationDomain.Merge(m, src)
+}
+func (m *QueryStatsByDestinationDomain) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryStatsByDestinationDomain) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStatsByDestinationDomain.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryStatsByDestinationDomain proto.InternalMessageInfo
+
+// QueryStatsByDestinationDomainResponse is the response message containing stats for a
+// specific destination domain.
+type QueryStatsByDestinationDomainResponse struct {
+	// The number of AutoCCTP accounts created.
+	Accounts uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
+	// The number of transfers executed.
+	Transfers uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
+	// The total amount transferred.
+	TotalTransferred uint64 `protobuf:"varint,3,opt,name=total_transferred,json=totalTransferred,proto3" json:"total_transferred,omitempty"`
+}
+
+func (m *QueryStatsByDestinationDomainResponse) Reset()         { *m = QueryStatsByDestinationDomainResponse{} }
+func (m *QueryStatsByDestinationDomainResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryStatsByDestinationDomainResponse) ProtoMessage()    {}
+func (*QueryStatsByDestinationDomainResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_483d98375be4f886, []int{6}
+}
+func (m *QueryStatsByDestinationDomainResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryStatsByDestinationDomainResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryStatsByDestinationDomainResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryStatsByDestinationDomainResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStatsByDestinationDomainResponse.Merge(m, src)
+}
+func (m *QueryStatsByDestinationDomainResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryStatsByDestinationDomainResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStatsByDestinationDomainResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryStatsByDestinationDomainResponse proto.InternalMessageInfo
+
+func (m *QueryStatsByDestinationDomainResponse) GetAccounts() uint64 {
+	if m != nil {
+		return m.Accounts
+	}
+	return 0
+}
+
+func (m *QueryStatsByDestinationDomainResponse) GetTransfers() uint64 {
+	if m != nil {
+		return m.Transfers
+	}
+	return 0
+}
+
+func (m *QueryStatsByDestinationDomainResponse) GetTotalTransferred() uint64 {
+	if m != nil {
+		return m.TotalTransferred
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*QueryAddress)(nil), "noble.autocctp.v1.QueryAddress")
 	proto.RegisterType((*QueryAddressResponse)(nil), "noble.autocctp.v1.QueryAddressResponse")
 	proto.RegisterType((*QueryStats)(nil), "noble.autocctp.v1.QueryStats")
 	proto.RegisterType((*QueryStatsResponse)(nil), "noble.autocctp.v1.QueryStatsResponse")
-	proto.RegisterMapType((map[uint32]DomainStats)(nil), "noble.autocctp.v1.QueryStatsResponse.StatsEntry")
+	proto.RegisterMapType((map[uint32]DomainStats)(nil), "noble.autocctp.v1.QueryStatsResponse.DestinationDomainStatsEntry")
+	proto.RegisterType((*DomainStats)(nil), "noble.autocctp.v1.DomainStats")
 	proto.RegisterType((*QueryStatsByDestinationDomain)(nil), "noble.autocctp.v1.QueryStatsByDestinationDomain")
 	proto.RegisterType((*QueryStatsByDestinationDomainResponse)(nil), "noble.autocctp.v1.QueryStatsByDestinationDomainResponse")
-	proto.RegisterType((*DomainStats)(nil), "noble.autocctp.v1.DomainStats")
 }
 
 func init() { proto.RegisterFile("noble/autocctp/v1/query.proto", fileDescriptor_483d98375be4f886) }
 
 var fileDescriptor_483d98375be4f886 = []byte{
-	// 686 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0x3f, 0x6f, 0x13, 0x4f,
-	0x10, 0xf5, 0x3a, 0x76, 0xfe, 0x6c, 0x92, 0x9f, 0xe2, 0x55, 0x8a, 0xfb, 0x1d, 0xf8, 0x1c, 0x0e,
-	0x59, 0x44, 0x88, 0xf8, 0x88, 0xa1, 0x88, 0xd2, 0x61, 0x42, 0x47, 0xc3, 0x05, 0xa4, 0x28, 0x8d,
-	0xb5, 0x39, 0x6f, 0xac, 0x23, 0xe7, 0x5d, 0x73, 0xbb, 0xb6, 0xb0, 0x22, 0x37, 0x54, 0xa1, 0x43,
-	0xe2, 0x0b, 0x44, 0xa2, 0x80, 0x92, 0x82, 0x92, 0x0a, 0x09, 0x29, 0x05, 0x45, 0x80, 0x86, 0x0a,
-	0xa1, 0x04, 0x09, 0x0a, 0x3e, 0x04, 0xba, 0xdd, 0xfb, 0x17, 0xec, 0x18, 0x52, 0x20, 0x9a, 0xe8,
-	0x76, 0xde, 0x9b, 0x99, 0xb7, 0x33, 0xfb, 0x62, 0x58, 0xa4, 0x6c, 0xcb, 0x23, 0x16, 0xee, 0x08,
-	0xe6, 0x38, 0xa2, 0x6d, 0x75, 0x97, 0xad, 0x07, 0x1d, 0xe2, 0xf7, 0x2a, 0x6d, 0x9f, 0x09, 0x86,
-	0x0a, 0x12, 0xae, 0x44, 0x70, 0xa5, 0xbb, 0xac, 0x17, 0x70, 0xcb, 0xa5, 0xcc, 0x92, 0x7f, 0x15,
-	0x4b, 0x3f, 0xe7, 0x30, 0xde, 0x62, 0x5c, 0x65, 0xfe, 0x52, 0x42, 0xff, 0x5f, 0x81, 0x75, 0x79,
-	0xb2, 0xd4, 0x21, 0x84, 0xe6, 0x9b, 0xac, 0xc9, 0x54, 0x3c, 0xf8, 0x0a, 0xa3, 0xe7, 0x9b, 0x8c,
-	0x35, 0x03, 0x4d, 0x6d, 0xd7, 0xc2, 0x94, 0x32, 0x81, 0x85, 0xcb, 0x68, 0x98, 0x63, 0xbe, 0x03,
-	0x70, 0xe6, 0x4e, 0x50, 0xfe, 0x46, 0xa3, 0xe1, 0x13, 0xce, 0xd1, 0x12, 0x44, 0x0d, 0xc2, 0x85,
-	0x4b, 0x25, 0xad, 0xde, 0x60, 0x2d, 0xec, 0x52, 0x0d, 0x2c, 0x80, 0xc5, 0x59, 0xbb, 0x90, 0x42,
-	0xd6, 0x24, 0x80, 0xca, 0xf0, 0xbf, 0x96, 0x4b, 0x45, 0xdd, 0x27, 0x8e, 0xdb, 0x76, 0x09, 0x15,
-	0x5a, 0x76, 0x01, 0x2c, 0x4e, 0xd9, 0xb3, 0x41, 0xd4, 0x8e, 0x82, 0x41, 0xd5, 0x6d, 0xec, 0x79,
-	0x5b, 0xd8, 0xd9, 0x49, 0x51, 0xc7, 0x24, 0xb5, 0x10, 0x21, 0x27, 0xe8, 0x69, 0x11, 0x0e, 0xf6,
-	0x3c, 0xe2, 0x6b, 0x39, 0x45, 0x4f, 0x21, 0x37, 0x25, 0xb0, 0x3a, 0xb9, 0xb7, 0x5f, 0xca, 0x7c,
-	0xdf, 0x2f, 0x65, 0x4c, 0x17, 0xce, 0xa7, 0x6f, 0x63, 0x13, 0xde, 0x66, 0x94, 0x13, 0x54, 0x85,
-	0x13, 0x58, 0x85, 0xe4, 0x55, 0xa6, 0x6a, 0xda, 0x87, 0x57, 0x4b, 0xf3, 0xe1, 0xf4, 0x42, 0xf2,
-	0xba, 0xf0, 0x5d, 0xda, 0xb4, 0x23, 0x22, 0x2a, 0xc2, 0x71, 0xf2, 0xd0, 0xe5, 0x82, 0xcb, 0x2b,
-	0x4d, 0xd6, 0xf2, 0x2f, 0xbe, 0xbd, 0xbc, 0x0c, 0xec, 0x30, 0x68, 0xce, 0x40, 0x28, 0x5b, 0xad,
-	0x0b, 0x2c, 0xb8, 0xf9, 0x1a, 0x40, 0x94, 0x1c, 0xe3, 0xbe, 0xb7, 0x61, 0x9e, 0x07, 0x01, 0x0d,
-	0x2c, 0x8c, 0x2d, 0x4e, 0x57, 0xaf, 0x56, 0x06, 0x1e, 0x40, 0x65, 0x30, 0xab, 0x22, 0x4f, 0xb7,
-	0xa8, 0xf0, 0x7b, 0xb5, 0xdc, 0xc1, 0xe7, 0x52, 0xc6, 0x56, 0x45, 0xf4, 0x0d, 0x08, 0x13, 0x08,
-	0xcd, 0xc1, 0xb1, 0x1d, 0xd2, 0x0b, 0x57, 0x13, 0x7c, 0xa2, 0xeb, 0x30, 0xdf, 0xc5, 0x5e, 0x87,
-	0x48, 0xc1, 0xd3, 0x55, 0x63, 0x48, 0x37, 0xb5, 0x36, 0xd5, 0x4e, 0x91, 0x57, 0xb3, 0x2b, 0xc0,
-	0xdc, 0x80, 0xc5, 0x44, 0x47, 0xad, 0xb7, 0x36, 0xb0, 0xe7, 0xb3, 0x3d, 0x8b, 0xd4, 0x46, 0x9e,
-	0x01, 0x58, 0x1e, 0x59, 0x3a, 0x9e, 0xd5, 0x05, 0x38, 0x89, 0x1d, 0x87, 0x75, 0xa8, 0x50, 0x4b,
-	0xca, 0x45, 0x13, 0x8f, 0xc3, 0xe8, 0x22, 0x9c, 0x12, 0x3e, 0xa6, 0x7c, 0x9b, 0xf8, 0x6a, 0x2b,
-	0x31, 0x27, 0x89, 0xa3, 0x2a, 0x2c, 0x08, 0x26, 0xb0, 0x57, 0x8f, 0x42, 0x3e, 0x69, 0xc8, 0xa7,
-	0x16, 0x93, 0xe7, 0x24, 0x7e, 0x37, 0x81, 0xcd, 0xc7, 0x00, 0x4e, 0xa7, 0x46, 0xf3, 0x2f, 0xb5,
-	0x54, 0x7f, 0xe4, 0x60, 0x5e, 0x4e, 0x0c, 0x3d, 0xcf, 0xc2, 0x89, 0xc8, 0x97, 0xa5, 0xd3, 0x9e,
-	0x4e, 0x48, 0xd0, 0x2f, 0xfd, 0x86, 0x10, 0xcd, 0xd9, 0x7c, 0x0f, 0xf6, 0x82, 0xce, 0x8f, 0x3e,
-	0x7e, 0x7d, 0x9a, 0x7d, 0x0b, 0x36, 0x3d, 0x74, 0xdf, 0x1a, 0xfc, 0xaf, 0x15, 0x9a, 0xc0, 0xda,
-	0x1d, 0xdc, 0x7a, 0xdf, 0xda, 0x3d, 0x69, 0xf9, 0xbe, 0xb5, 0x3b, 0x68, 0xee, 0xfe, 0xc9, 0x54,
-	0x65, 0xe1, 0x3e, 0xba, 0xf7, 0x57, 0x7a, 0x21, 0x01, 0xf3, 0x6a, 0x71, 0xc5, 0x91, 0x0e, 0xd3,
-	0xcb, 0x7f, 0x64, 0x40, 0xb3, 0x9c, 0x4c, 0x48, 0x47, 0xda, 0x10, 0xc9, 0xd2, 0x8f, 0xe8, 0x0d,
-	0x80, 0xda, 0xa9, 0x8e, 0x19, 0xed, 0xf5, 0x21, 0x19, 0xfa, 0xca, 0x59, 0x33, 0x62, 0xbd, 0xab,
-	0x89, 0x5e, 0x0b, 0x2d, 0x9d, 0xa6, 0x77, 0xe8, 0x80, 0x6b, 0x57, 0x0e, 0x8e, 0x0c, 0x70, 0x78,
-	0x64, 0x80, 0x2f, 0x47, 0x06, 0x78, 0x72, 0x6c, 0x64, 0x0e, 0x8f, 0x8d, 0xcc, 0xa7, 0x63, 0x23,
-	0xb3, 0x89, 0x62, 0x21, 0x0d, 0xd2, 0xb5, 0x44, 0xaf, 0x4d, 0xf8, 0xd6, 0xb8, 0xfc, 0xd9, 0xb8,
-	0xf6, 0x33, 0x00, 0x00, 0xff, 0xff, 0x0a, 0xff, 0x95, 0xea, 0xe9, 0x06, 0x00, 0x00,
+	// 679 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0xbf, 0x6f, 0xd3, 0x40,
+	0x14, 0xce, 0x25, 0x4d, 0x7f, 0x5c, 0x5b, 0xd4, 0x9c, 0x2a, 0x64, 0x5c, 0xe2, 0x14, 0xa3, 0x88,
+	0x0a, 0xd1, 0x98, 0x06, 0x86, 0xaa, 0x5b, 0x43, 0xf9, 0x03, 0x70, 0x41, 0x20, 0x96, 0xe8, 0x62,
+	0x5f, 0x23, 0xab, 0xce, 0x5d, 0xf0, 0x5d, 0x22, 0xa2, 0xaa, 0x03, 0xb0, 0x94, 0x0d, 0x89, 0x7f,
+	0xa0, 0x12, 0x0b, 0x23, 0x03, 0x12, 0x3b, 0x53, 0x07, 0x86, 0x0a, 0x16, 0x26, 0x84, 0x5a, 0x24,
+	0xf8, 0x23, 0x18, 0x90, 0xcf, 0x3f, 0x5b, 0xa7, 0x81, 0x4e, 0x2c, 0x91, 0xfd, 0xbe, 0xef, 0xbd,
+	0xfb, 0xde, 0xe7, 0xf7, 0x2e, 0xb0, 0x4c, 0x59, 0xcb, 0x25, 0x06, 0xee, 0x09, 0x66, 0x59, 0xa2,
+	0x6b, 0xf4, 0x57, 0x8c, 0x27, 0x3d, 0xe2, 0x0d, 0x6a, 0x5d, 0x8f, 0x09, 0x86, 0x4a, 0x12, 0xae,
+	0x45, 0x70, 0xad, 0xbf, 0xa2, 0x96, 0x70, 0xc7, 0xa1, 0xcc, 0x90, 0xbf, 0x01, 0x4b, 0x5d, 0xb0,
+	0x18, 0xef, 0x30, 0x1e, 0x64, 0x9e, 0x2a, 0xa1, 0x5e, 0x0a, 0xc0, 0xa6, 0x7c, 0x33, 0x82, 0x97,
+	0x10, 0x9a, 0x6f, 0xb3, 0x36, 0x0b, 0xe2, 0xfe, 0x53, 0x18, 0xbd, 0xdc, 0x66, 0xac, 0xed, 0x6b,
+	0xea, 0x3a, 0x06, 0xa6, 0x94, 0x09, 0x2c, 0x1c, 0x46, 0xc3, 0x1c, 0xfd, 0x13, 0x80, 0x33, 0xf7,
+	0xfc, 0xf2, 0xeb, 0xb6, 0xed, 0x11, 0xce, 0xd1, 0x32, 0x44, 0x36, 0xe1, 0xc2, 0xa1, 0x92, 0xd6,
+	0xb4, 0x59, 0x07, 0x3b, 0x54, 0x01, 0x8b, 0x60, 0x69, 0xd6, 0x2c, 0xa5, 0x90, 0x0d, 0x09, 0xa0,
+	0x2a, 0xbc, 0xd0, 0x71, 0xa8, 0x68, 0x7a, 0xc4, 0x72, 0xba, 0x0e, 0xa1, 0x42, 0xc9, 0x2f, 0x82,
+	0xa5, 0x29, 0x73, 0xd6, 0x8f, 0x9a, 0x51, 0xd0, 0xaf, 0xba, 0x85, 0x5d, 0xb7, 0x85, 0xad, 0xed,
+	0x14, 0xb5, 0x20, 0xa9, 0xa5, 0x08, 0x39, 0x41, 0x4f, 0x8b, 0xb0, 0xb0, 0xeb, 0x12, 0x4f, 0x19,
+	0x0b, 0xe8, 0x29, 0xe4, 0x8e, 0x04, 0xd6, 0x26, 0xf7, 0xf6, 0x2b, 0xb9, 0x5f, 0xfb, 0x95, 0x9c,
+	0xee, 0xc0, 0xf9, 0x74, 0x37, 0x26, 0xe1, 0x5d, 0x46, 0x39, 0x41, 0x75, 0x38, 0x81, 0x83, 0x90,
+	0x6c, 0x65, 0xaa, 0xa1, 0x7c, 0x7e, 0xbf, 0x3c, 0x1f, 0xba, 0x17, 0x92, 0x37, 0x85, 0xe7, 0xd0,
+	0xb6, 0x19, 0x11, 0x51, 0x19, 0x8e, 0x93, 0xa7, 0x0e, 0x17, 0x5c, 0xb6, 0x34, 0xd9, 0x28, 0xbe,
+	0xfd, 0xf9, 0xee, 0x3a, 0x30, 0xc3, 0xa0, 0x3e, 0x03, 0xa1, 0x3c, 0x6a, 0x53, 0x60, 0xc1, 0xf5,
+	0x17, 0x79, 0x88, 0x92, 0xd7, 0xf8, 0xdc, 0x67, 0x00, 0x2a, 0x59, 0x3b, 0x9b, 0xdc, 0x27, 0x29,
+	0x60, 0xb1, 0xb0, 0x34, 0x5d, 0x5f, 0xaf, 0x65, 0x86, 0xa2, 0x96, 0xad, 0x54, 0xdb, 0x38, 0x6d,
+	0xbd, 0x84, 0xef, 0x52, 0xe1, 0x0d, 0x1a, 0x63, 0x07, 0xdf, 0x2a, 0x39, 0xf3, 0xa2, 0x3d, 0x94,
+	0xa2, 0x3a, 0x70, 0x61, 0x44, 0x32, 0x9a, 0x83, 0x85, 0x6d, 0x32, 0x08, 0xbf, 0xb0, 0xff, 0x88,
+	0x6e, 0xc3, 0x62, 0x1f, 0xbb, 0x3d, 0x22, 0xfb, 0x9e, 0xae, 0x6b, 0x43, 0x04, 0xa6, 0xaa, 0x98,
+	0x01, 0x79, 0x2d, 0xbf, 0x0a, 0xf4, 0x97, 0x00, 0x4e, 0xa7, 0x20, 0x74, 0x05, 0x4e, 0x62, 0xcb,
+	0x62, 0x3d, 0x2a, 0x02, 0xdf, 0xc7, 0x22, 0x13, 0xe3, 0x30, 0xba, 0x0a, 0xa7, 0x84, 0x87, 0x29,
+	0xdf, 0x22, 0x5e, 0x60, 0x74, 0xcc, 0x49, 0xe2, 0xa8, 0x0e, 0x4b, 0x82, 0x09, 0xec, 0x36, 0xa3,
+	0x90, 0x47, 0x6c, 0x39, 0x3d, 0x31, 0x79, 0x4e, 0xe2, 0xf7, 0x13, 0x58, 0x7f, 0x04, 0xcb, 0x89,
+	0x8d, 0x8d, 0x41, 0xc6, 0x82, 0x73, 0x4e, 0x7a, 0x6a, 0xc8, 0xde, 0x00, 0x58, 0x1d, 0x59, 0x3a,
+	0xfe, 0xfc, 0xff, 0xb1, 0xff, 0xfa, 0xef, 0x02, 0x2c, 0x4a, 0x95, 0xe8, 0x03, 0x80, 0x13, 0xd1,
+	0x7a, 0x57, 0xce, 0x9a, 0xb6, 0x90, 0xa0, 0x5e, 0xfb, 0x0b, 0x21, 0xea, 0x4d, 0x6f, 0xed, 0xf9,
+	0x07, 0x3f, 0xff, 0xf2, 0xe3, 0x75, 0xfe, 0x21, 0x7a, 0x60, 0x64, 0x2f, 0xbe, 0x70, 0x8f, 0x8c,
+	0x9d, 0xac, 0xcb, 0xbb, 0xc6, 0xce, 0xc9, 0x5b, 0x63, 0xd7, 0xd8, 0xc9, 0xde, 0x0f, 0xbb, 0x48,
+	0xc0, 0x62, 0x30, 0x48, 0xe5, 0x91, 0x4b, 0xa2, 0x56, 0xff, 0x69, 0x87, 0xf4, 0x6a, 0x22, 0x59,
+	0x45, 0xca, 0x10, 0xc9, 0x72, 0x2f, 0xd1, 0x47, 0x00, 0x95, 0x33, 0xa7, 0xe6, 0xe6, 0xc8, 0xa3,
+	0x86, 0x64, 0xa8, 0xab, 0xe7, 0xcd, 0x88, 0xf5, 0xae, 0x25, 0x7a, 0x0d, 0xb4, 0x7c, 0x96, 0xde,
+	0xa1, 0x06, 0x37, 0x6e, 0x1c, 0x1c, 0x69, 0xe0, 0xf0, 0x48, 0x03, 0xdf, 0x8f, 0x34, 0xf0, 0xea,
+	0x58, 0xcb, 0x1d, 0x1e, 0x6b, 0xb9, 0xaf, 0xc7, 0x5a, 0xee, 0x31, 0x8a, 0x85, 0xd8, 0xa4, 0x6f,
+	0x88, 0x41, 0x97, 0xf0, 0xd6, 0xb8, 0xfc, 0x37, 0xb8, 0xf5, 0x27, 0x00, 0x00, 0xff, 0xff, 0x94,
+	0x69, 0x73, 0x2d, 0xc0, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -433,8 +457,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
+	// Queries Address.
 	Address(ctx context.Context, in *QueryAddress, opts ...grpc.CallOption) (*QueryAddressResponse, error)
+	// Queries Stats.
 	Stats(ctx context.Context, in *QueryStats, opts ...grpc.CallOption) (*QueryStatsResponse, error)
+	// Queries StatsByDestinationDomain.
 	StatsByDestinationDomain(ctx context.Context, in *QueryStatsByDestinationDomain, opts ...grpc.CallOption) (*QueryStatsByDestinationDomainResponse, error)
 }
 
@@ -475,8 +502,11 @@ func (c *queryClient) StatsByDestinationDomain(ctx context.Context, in *QuerySta
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
+	// Queries Address.
 	Address(context.Context, *QueryAddress) (*QueryAddressResponse, error)
+	// Queries Stats.
 	Stats(context.Context, *QueryStats) (*QueryStatsResponse, error)
+	// Queries StatsByDestinationDomain.
 	StatsByDestinationDomain(context.Context, *QueryStatsByDestinationDomain) (*QueryStatsByDestinationDomainResponse, error)
 }
 
@@ -706,9 +736,9 @@ func (m *QueryStatsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Stats) > 0 {
-		for k := range m.Stats {
-			v := m.Stats[k]
+	if len(m.DestinationDomainStats) > 0 {
+		for k := range m.DestinationDomainStats {
+			v := m.DestinationDomainStats[k]
 			baseI := i
 			{
 				size, err := (&v).MarshalToSizedBuffer(dAtA[:i])
@@ -727,6 +757,44 @@ func (m *QueryStatsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i--
 			dAtA[i] = 0xa
 		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DomainStats) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DomainStats) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DomainStats) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.TotalTransferred != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.TotalTransferred))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Transfers != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Transfers))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Accounts != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Accounts))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -775,44 +843,6 @@ func (m *QueryStatsByDestinationDomainResponse) MarshalTo(dAtA []byte) (int, err
 }
 
 func (m *QueryStatsByDestinationDomainResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.TotalTransferred != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.TotalTransferred))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.Transfers != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Transfers))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.Accounts != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Accounts))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *DomainStats) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *DomainStats) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *DomainStats) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -901,8 +931,8 @@ func (m *QueryStatsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.Stats) > 0 {
-		for k, v := range m.Stats {
+	if len(m.DestinationDomainStats) > 0 {
+		for k, v := range m.DestinationDomainStats {
 			_ = k
 			_ = v
 			l = v.Size()
@@ -913,19 +943,7 @@ func (m *QueryStatsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryStatsByDestinationDomain) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.DestinationDomain != 0 {
-		n += 1 + sovQuery(uint64(m.DestinationDomain))
-	}
-	return n
-}
-
-func (m *QueryStatsByDestinationDomainResponse) Size() (n int) {
+func (m *DomainStats) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -943,7 +961,19 @@ func (m *QueryStatsByDestinationDomainResponse) Size() (n int) {
 	return n
 }
 
-func (m *DomainStats) Size() (n int) {
+func (m *QueryStatsByDestinationDomain) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.DestinationDomain != 0 {
+		n += 1 + sovQuery(uint64(m.DestinationDomain))
+	}
+	return n
+}
+
+func (m *QueryStatsByDestinationDomainResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1315,7 +1345,7 @@ func (m *QueryStatsResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Stats", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationDomainStats", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1342,8 +1372,8 @@ func (m *QueryStatsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Stats == nil {
-				m.Stats = make(map[uint32]DomainStats)
+			if m.DestinationDomainStats == nil {
+				m.DestinationDomainStats = make(map[uint32]DomainStats)
 			}
 			var mapkey uint32
 			mapvalue := &DomainStats{}
@@ -1426,8 +1456,115 @@ func (m *QueryStatsResponse) Unmarshal(dAtA []byte) error {
 					iNdEx += skippy
 				}
 			}
-			m.Stats[mapkey] = *mapvalue
+			m.DestinationDomainStats[mapkey] = *mapvalue
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DomainStats) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DomainStats: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DomainStats: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+			}
+			m.Accounts = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Accounts |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Transfers", wireType)
+			}
+			m.Transfers = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Transfers |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalTransferred", wireType)
+			}
+			m.TotalTransferred = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TotalTransferred |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -1545,113 +1682,6 @@ func (m *QueryStatsByDestinationDomainResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: QueryStatsByDestinationDomainResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
-			}
-			m.Accounts = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Accounts |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Transfers", wireType)
-			}
-			m.Transfers = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Transfers |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TotalTransferred", wireType)
-			}
-			m.TotalTransferred = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.TotalTransferred |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *DomainStats) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: DomainStats: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DomainStats: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

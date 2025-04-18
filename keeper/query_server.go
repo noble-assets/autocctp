@@ -100,7 +100,7 @@ func (q queryServer) Stats(ctx context.Context, req *types.QueryStats) (*types.Q
 		}
 	}
 
-	return &types.QueryStatsResponse{Stats: stats}, nil
+	return &types.QueryStatsResponse{DestinationDomainStats: stats}, nil
 }
 
 // StatsByDestinationDomain implements types.QueryServer.

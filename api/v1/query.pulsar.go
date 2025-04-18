@@ -1535,14 +1535,14 @@ func (x *_QueryStatsResponse_1_map) IsValid() bool {
 }
 
 var (
-	md_QueryStatsResponse       protoreflect.MessageDescriptor
-	fd_QueryStatsResponse_stats protoreflect.FieldDescriptor
+	md_QueryStatsResponse                          protoreflect.MessageDescriptor
+	fd_QueryStatsResponse_destination_domain_stats protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_noble_autocctp_v1_query_proto_init()
 	md_QueryStatsResponse = File_noble_autocctp_v1_query_proto.Messages().ByName("QueryStatsResponse")
-	fd_QueryStatsResponse_stats = md_QueryStatsResponse.Fields().ByName("stats")
+	fd_QueryStatsResponse_destination_domain_stats = md_QueryStatsResponse.Fields().ByName("destination_domain_stats")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryStatsResponse)(nil)
@@ -1610,9 +1610,9 @@ func (x *fastReflection_QueryStatsResponse) Interface() protoreflect.ProtoMessag
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryStatsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Stats) != 0 {
-		value := protoreflect.ValueOfMap(&_QueryStatsResponse_1_map{m: &x.Stats})
-		if !f(fd_QueryStatsResponse_stats, value) {
+	if len(x.DestinationDomainStats) != 0 {
+		value := protoreflect.ValueOfMap(&_QueryStatsResponse_1_map{m: &x.DestinationDomainStats})
+		if !f(fd_QueryStatsResponse_destination_domain_stats, value) {
 			return
 		}
 	}
@@ -1631,8 +1631,8 @@ func (x *fastReflection_QueryStatsResponse) Range(f func(protoreflect.FieldDescr
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryStatsResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsResponse.stats":
-		return len(x.Stats) != 0
+	case "noble.autocctp.v1.QueryStatsResponse.destination_domain_stats":
+		return len(x.DestinationDomainStats) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsResponse"))
@@ -1649,8 +1649,8 @@ func (x *fastReflection_QueryStatsResponse) Has(fd protoreflect.FieldDescriptor)
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryStatsResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsResponse.stats":
-		x.Stats = nil
+	case "noble.autocctp.v1.QueryStatsResponse.destination_domain_stats":
+		x.DestinationDomainStats = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsResponse"))
@@ -1667,11 +1667,11 @@ func (x *fastReflection_QueryStatsResponse) Clear(fd protoreflect.FieldDescripto
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryStatsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "noble.autocctp.v1.QueryStatsResponse.stats":
-		if len(x.Stats) == 0 {
+	case "noble.autocctp.v1.QueryStatsResponse.destination_domain_stats":
+		if len(x.DestinationDomainStats) == 0 {
 			return protoreflect.ValueOfMap(&_QueryStatsResponse_1_map{})
 		}
-		mapValue := &_QueryStatsResponse_1_map{m: &x.Stats}
+		mapValue := &_QueryStatsResponse_1_map{m: &x.DestinationDomainStats}
 		return protoreflect.ValueOfMap(mapValue)
 	default:
 		if descriptor.IsExtension() {
@@ -1693,10 +1693,10 @@ func (x *fastReflection_QueryStatsResponse) Get(descriptor protoreflect.FieldDes
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryStatsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsResponse.stats":
+	case "noble.autocctp.v1.QueryStatsResponse.destination_domain_stats":
 		mv := value.Map()
 		cmv := mv.(*_QueryStatsResponse_1_map)
-		x.Stats = *cmv.m
+		x.DestinationDomainStats = *cmv.m
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsResponse"))
@@ -1717,11 +1717,11 @@ func (x *fastReflection_QueryStatsResponse) Set(fd protoreflect.FieldDescriptor,
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryStatsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsResponse.stats":
-		if x.Stats == nil {
-			x.Stats = make(map[uint32]*DomainStats)
+	case "noble.autocctp.v1.QueryStatsResponse.destination_domain_stats":
+		if x.DestinationDomainStats == nil {
+			x.DestinationDomainStats = make(map[uint32]*DomainStats)
 		}
-		value := &_QueryStatsResponse_1_map{m: &x.Stats}
+		value := &_QueryStatsResponse_1_map{m: &x.DestinationDomainStats}
 		return protoreflect.ValueOfMap(value)
 	default:
 		if fd.IsExtension() {
@@ -1736,7 +1736,7 @@ func (x *fastReflection_QueryStatsResponse) Mutable(fd protoreflect.FieldDescrip
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryStatsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsResponse.stats":
+	case "noble.autocctp.v1.QueryStatsResponse.destination_domain_stats":
 		m := make(map[uint32]*DomainStats)
 		return protoreflect.ValueOfMap(&_QueryStatsResponse_1_map{m: &m})
 	default:
@@ -1808,7 +1808,7 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if len(x.Stats) > 0 {
+		if len(x.DestinationDomainStats) > 0 {
 			SiZeMaP := func(k uint32, v *DomainStats) {
 				l := 0
 				if v != nil {
@@ -1819,19 +1819,19 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 				n += mapEntrySize + 1 + runtime.Sov(uint64(mapEntrySize))
 			}
 			if options.Deterministic {
-				sortme := make([]uint32, 0, len(x.Stats))
-				for k := range x.Stats {
+				sortme := make([]uint32, 0, len(x.DestinationDomainStats))
+				for k := range x.DestinationDomainStats {
 					sortme = append(sortme, k)
 				}
 				sort.Slice(sortme, func(i, j int) bool {
 					return sortme[i] < sortme[j]
 				})
 				for _, k := range sortme {
-					v := x.Stats[k]
+					v := x.DestinationDomainStats[k]
 					SiZeMaP(k, v)
 				}
 			} else {
-				for k, v := range x.Stats {
+				for k, v := range x.DestinationDomainStats {
 					SiZeMaP(k, v)
 				}
 			}
@@ -1865,7 +1865,7 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Stats) > 0 {
+		if len(x.DestinationDomainStats) > 0 {
 			MaRsHaLmAp := func(k uint32, v *DomainStats) (protoiface.MarshalOutput, error) {
 				baseI := i
 				encoded, err := options.Marshal(v)
@@ -1889,23 +1889,23 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 				return protoiface.MarshalOutput{}, nil
 			}
 			if options.Deterministic {
-				keysForStats := make([]uint32, 0, len(x.Stats))
-				for k := range x.Stats {
-					keysForStats = append(keysForStats, uint32(k))
+				keysForDestinationDomainStats := make([]uint32, 0, len(x.DestinationDomainStats))
+				for k := range x.DestinationDomainStats {
+					keysForDestinationDomainStats = append(keysForDestinationDomainStats, uint32(k))
 				}
-				sort.Slice(keysForStats, func(i, j int) bool {
-					return keysForStats[i] < keysForStats[j]
+				sort.Slice(keysForDestinationDomainStats, func(i, j int) bool {
+					return keysForDestinationDomainStats[i] < keysForDestinationDomainStats[j]
 				})
-				for iNdEx := len(keysForStats) - 1; iNdEx >= 0; iNdEx-- {
-					v := x.Stats[uint32(keysForStats[iNdEx])]
-					out, err := MaRsHaLmAp(keysForStats[iNdEx], v)
+				for iNdEx := len(keysForDestinationDomainStats) - 1; iNdEx >= 0; iNdEx-- {
+					v := x.DestinationDomainStats[uint32(keysForDestinationDomainStats[iNdEx])]
+					out, err := MaRsHaLmAp(keysForDestinationDomainStats[iNdEx], v)
 					if err != nil {
 						return out, err
 					}
 				}
 			} else {
-				for k := range x.Stats {
-					v := x.Stats[k]
+				for k := range x.DestinationDomainStats {
+					v := x.DestinationDomainStats[k]
 					out, err := MaRsHaLmAp(k, v)
 					if err != nil {
 						return out, err
@@ -1964,7 +1964,7 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Stats", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DestinationDomainStats", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1991,8 +1991,8 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				if x.Stats == nil {
-					x.Stats = make(map[uint32]*DomainStats)
+				if x.DestinationDomainStats == nil {
+					x.DestinationDomainStats = make(map[uint32]*DomainStats)
 				}
 				var mapkey uint32
 				var mapvalue *DomainStats
@@ -2075,912 +2075,8 @@ func (x *fastReflection_QueryStatsResponse) ProtoMethods() *protoiface.Methods {
 						iNdEx += skippy
 					}
 				}
-				x.Stats[mapkey] = mapvalue
+				x.DestinationDomainStats[mapkey] = mapvalue
 				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_QueryStatsByDestinationDomain                    protoreflect.MessageDescriptor
-	fd_QueryStatsByDestinationDomain_destination_domain protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_noble_autocctp_v1_query_proto_init()
-	md_QueryStatsByDestinationDomain = File_noble_autocctp_v1_query_proto.Messages().ByName("QueryStatsByDestinationDomain")
-	fd_QueryStatsByDestinationDomain_destination_domain = md_QueryStatsByDestinationDomain.Fields().ByName("destination_domain")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryStatsByDestinationDomain)(nil)
-
-type fastReflection_QueryStatsByDestinationDomain QueryStatsByDestinationDomain
-
-func (x *QueryStatsByDestinationDomain) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryStatsByDestinationDomain)(x)
-}
-
-func (x *QueryStatsByDestinationDomain) slowProtoReflect() protoreflect.Message {
-	mi := &file_noble_autocctp_v1_query_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryStatsByDestinationDomain_messageType fastReflection_QueryStatsByDestinationDomain_messageType
-var _ protoreflect.MessageType = fastReflection_QueryStatsByDestinationDomain_messageType{}
-
-type fastReflection_QueryStatsByDestinationDomain_messageType struct{}
-
-func (x fastReflection_QueryStatsByDestinationDomain_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryStatsByDestinationDomain)(nil)
-}
-func (x fastReflection_QueryStatsByDestinationDomain_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryStatsByDestinationDomain)
-}
-func (x fastReflection_QueryStatsByDestinationDomain_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryStatsByDestinationDomain
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryStatsByDestinationDomain) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryStatsByDestinationDomain
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryStatsByDestinationDomain) Type() protoreflect.MessageType {
-	return _fastReflection_QueryStatsByDestinationDomain_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryStatsByDestinationDomain) New() protoreflect.Message {
-	return new(fastReflection_QueryStatsByDestinationDomain)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryStatsByDestinationDomain) Interface() protoreflect.ProtoMessage {
-	return (*QueryStatsByDestinationDomain)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryStatsByDestinationDomain) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.DestinationDomain != uint32(0) {
-		value := protoreflect.ValueOfUint32(x.DestinationDomain)
-		if !f(fd_QueryStatsByDestinationDomain_destination_domain, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryStatsByDestinationDomain) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
-		return x.DestinationDomain != uint32(0)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomain) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
-		x.DestinationDomain = uint32(0)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryStatsByDestinationDomain) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
-		value := x.DestinationDomain
-		return protoreflect.ValueOfUint32(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomain) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
-		x.DestinationDomain = uint32(value.Uint())
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomain) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
-		panic(fmt.Errorf("field destination_domain of message noble.autocctp.v1.QueryStatsByDestinationDomain is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryStatsByDestinationDomain) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
-		return protoreflect.ValueOfUint32(uint32(0))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryStatsByDestinationDomain) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in noble.autocctp.v1.QueryStatsByDestinationDomain", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryStatsByDestinationDomain) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomain) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryStatsByDestinationDomain) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryStatsByDestinationDomain) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryStatsByDestinationDomain)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.DestinationDomain != 0 {
-			n += 1 + runtime.Sov(uint64(x.DestinationDomain))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryStatsByDestinationDomain)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if x.DestinationDomain != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.DestinationDomain))
-			i--
-			dAtA[i] = 0x8
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryStatsByDestinationDomain)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomain: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomain: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
-				}
-				x.DestinationDomain = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.DestinationDomain |= uint32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_QueryStatsByDestinationDomainResponse                   protoreflect.MessageDescriptor
-	fd_QueryStatsByDestinationDomainResponse_accounts          protoreflect.FieldDescriptor
-	fd_QueryStatsByDestinationDomainResponse_transfers         protoreflect.FieldDescriptor
-	fd_QueryStatsByDestinationDomainResponse_total_transferred protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_noble_autocctp_v1_query_proto_init()
-	md_QueryStatsByDestinationDomainResponse = File_noble_autocctp_v1_query_proto.Messages().ByName("QueryStatsByDestinationDomainResponse")
-	fd_QueryStatsByDestinationDomainResponse_accounts = md_QueryStatsByDestinationDomainResponse.Fields().ByName("accounts")
-	fd_QueryStatsByDestinationDomainResponse_transfers = md_QueryStatsByDestinationDomainResponse.Fields().ByName("transfers")
-	fd_QueryStatsByDestinationDomainResponse_total_transferred = md_QueryStatsByDestinationDomainResponse.Fields().ByName("total_transferred")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryStatsByDestinationDomainResponse)(nil)
-
-type fastReflection_QueryStatsByDestinationDomainResponse QueryStatsByDestinationDomainResponse
-
-func (x *QueryStatsByDestinationDomainResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryStatsByDestinationDomainResponse)(x)
-}
-
-func (x *QueryStatsByDestinationDomainResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_noble_autocctp_v1_query_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryStatsByDestinationDomainResponse_messageType fastReflection_QueryStatsByDestinationDomainResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryStatsByDestinationDomainResponse_messageType{}
-
-type fastReflection_QueryStatsByDestinationDomainResponse_messageType struct{}
-
-func (x fastReflection_QueryStatsByDestinationDomainResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryStatsByDestinationDomainResponse)(nil)
-}
-func (x fastReflection_QueryStatsByDestinationDomainResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryStatsByDestinationDomainResponse)
-}
-func (x fastReflection_QueryStatsByDestinationDomainResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryStatsByDestinationDomainResponse
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryStatsByDestinationDomainResponse
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryStatsByDestinationDomainResponse_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryStatsByDestinationDomainResponse)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryStatsByDestinationDomainResponse)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Accounts != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Accounts)
-		if !f(fd_QueryStatsByDestinationDomainResponse_accounts, value) {
-			return
-		}
-	}
-	if x.Transfers != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Transfers)
-		if !f(fd_QueryStatsByDestinationDomainResponse_transfers, value) {
-			return
-		}
-	}
-	if x.TotalTransferred != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.TotalTransferred)
-		if !f(fd_QueryStatsByDestinationDomainResponse_total_transferred, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
-		return x.Accounts != uint64(0)
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
-		return x.Transfers != uint64(0)
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
-		return x.TotalTransferred != uint64(0)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
-		x.Accounts = uint64(0)
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
-		x.Transfers = uint64(0)
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
-		x.TotalTransferred = uint64(0)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
-		value := x.Accounts
-		return protoreflect.ValueOfUint64(value)
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
-		value := x.Transfers
-		return protoreflect.ValueOfUint64(value)
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
-		value := x.TotalTransferred
-		return protoreflect.ValueOfUint64(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
-		x.Accounts = value.Uint()
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
-		x.Transfers = value.Uint()
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
-		x.TotalTransferred = value.Uint()
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
-		panic(fmt.Errorf("field accounts of message noble.autocctp.v1.QueryStatsByDestinationDomainResponse is not mutable"))
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
-		panic(fmt.Errorf("field transfers of message noble.autocctp.v1.QueryStatsByDestinationDomainResponse is not mutable"))
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
-		panic(fmt.Errorf("field total_transferred of message noble.autocctp.v1.QueryStatsByDestinationDomainResponse is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
-		return protoreflect.ValueOfUint64(uint64(0))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
-		}
-		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in noble.autocctp.v1.QueryStatsByDestinationDomainResponse", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryStatsByDestinationDomainResponse) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryStatsByDestinationDomainResponse)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.Accounts != 0 {
-			n += 1 + runtime.Sov(uint64(x.Accounts))
-		}
-		if x.Transfers != 0 {
-			n += 1 + runtime.Sov(uint64(x.Transfers))
-		}
-		if x.TotalTransferred != 0 {
-			n += 1 + runtime.Sov(uint64(x.TotalTransferred))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryStatsByDestinationDomainResponse)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if x.TotalTransferred != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.TotalTransferred))
-			i--
-			dAtA[i] = 0x18
-		}
-		if x.Transfers != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Transfers))
-			i--
-			dAtA[i] = 0x10
-		}
-		if x.Accounts != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Accounts))
-			i--
-			dAtA[i] = 0x8
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryStatsByDestinationDomainResponse)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomainResponse: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomainResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
-				}
-				x.Accounts = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Accounts |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Transfers", wireType)
-				}
-				x.Transfers = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Transfers |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 3:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalTransferred", wireType)
-				}
-				x.TotalTransferred = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.TotalTransferred |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -3040,7 +2136,7 @@ func (x *DomainStats) ProtoReflect() protoreflect.Message {
 }
 
 func (x *DomainStats) slowProtoReflect() protoreflect.Message {
-	mi := &file_noble_autocctp_v1_query_proto_msgTypes[6]
+	mi := &file_noble_autocctp_v1_query_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3516,6 +2612,910 @@ func (x *fastReflection_DomainStats) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var (
+	md_QueryStatsByDestinationDomain                    protoreflect.MessageDescriptor
+	fd_QueryStatsByDestinationDomain_destination_domain protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_noble_autocctp_v1_query_proto_init()
+	md_QueryStatsByDestinationDomain = File_noble_autocctp_v1_query_proto.Messages().ByName("QueryStatsByDestinationDomain")
+	fd_QueryStatsByDestinationDomain_destination_domain = md_QueryStatsByDestinationDomain.Fields().ByName("destination_domain")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryStatsByDestinationDomain)(nil)
+
+type fastReflection_QueryStatsByDestinationDomain QueryStatsByDestinationDomain
+
+func (x *QueryStatsByDestinationDomain) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryStatsByDestinationDomain)(x)
+}
+
+func (x *QueryStatsByDestinationDomain) slowProtoReflect() protoreflect.Message {
+	mi := &file_noble_autocctp_v1_query_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryStatsByDestinationDomain_messageType fastReflection_QueryStatsByDestinationDomain_messageType
+var _ protoreflect.MessageType = fastReflection_QueryStatsByDestinationDomain_messageType{}
+
+type fastReflection_QueryStatsByDestinationDomain_messageType struct{}
+
+func (x fastReflection_QueryStatsByDestinationDomain_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryStatsByDestinationDomain)(nil)
+}
+func (x fastReflection_QueryStatsByDestinationDomain_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryStatsByDestinationDomain)
+}
+func (x fastReflection_QueryStatsByDestinationDomain_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStatsByDestinationDomain
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryStatsByDestinationDomain) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStatsByDestinationDomain
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryStatsByDestinationDomain) Type() protoreflect.MessageType {
+	return _fastReflection_QueryStatsByDestinationDomain_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryStatsByDestinationDomain) New() protoreflect.Message {
+	return new(fastReflection_QueryStatsByDestinationDomain)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryStatsByDestinationDomain) Interface() protoreflect.ProtoMessage {
+	return (*QueryStatsByDestinationDomain)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryStatsByDestinationDomain) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.DestinationDomain != uint32(0) {
+		value := protoreflect.ValueOfUint32(x.DestinationDomain)
+		if !f(fd_QueryStatsByDestinationDomain_destination_domain, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryStatsByDestinationDomain) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
+		return x.DestinationDomain != uint32(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomain) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
+		x.DestinationDomain = uint32(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryStatsByDestinationDomain) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
+		value := x.DestinationDomain
+		return protoreflect.ValueOfUint32(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomain) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
+		x.DestinationDomain = uint32(value.Uint())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomain) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
+		panic(fmt.Errorf("field destination_domain of message noble.autocctp.v1.QueryStatsByDestinationDomain is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryStatsByDestinationDomain) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomain.destination_domain":
+		return protoreflect.ValueOfUint32(uint32(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomain"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomain does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryStatsByDestinationDomain) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in noble.autocctp.v1.QueryStatsByDestinationDomain", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryStatsByDestinationDomain) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomain) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryStatsByDestinationDomain) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryStatsByDestinationDomain) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryStatsByDestinationDomain)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.DestinationDomain != 0 {
+			n += 1 + runtime.Sov(uint64(x.DestinationDomain))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStatsByDestinationDomain)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.DestinationDomain != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.DestinationDomain))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStatsByDestinationDomain)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomain: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomain: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
+				}
+				x.DestinationDomain = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.DestinationDomain |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryStatsByDestinationDomainResponse                   protoreflect.MessageDescriptor
+	fd_QueryStatsByDestinationDomainResponse_accounts          protoreflect.FieldDescriptor
+	fd_QueryStatsByDestinationDomainResponse_transfers         protoreflect.FieldDescriptor
+	fd_QueryStatsByDestinationDomainResponse_total_transferred protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_noble_autocctp_v1_query_proto_init()
+	md_QueryStatsByDestinationDomainResponse = File_noble_autocctp_v1_query_proto.Messages().ByName("QueryStatsByDestinationDomainResponse")
+	fd_QueryStatsByDestinationDomainResponse_accounts = md_QueryStatsByDestinationDomainResponse.Fields().ByName("accounts")
+	fd_QueryStatsByDestinationDomainResponse_transfers = md_QueryStatsByDestinationDomainResponse.Fields().ByName("transfers")
+	fd_QueryStatsByDestinationDomainResponse_total_transferred = md_QueryStatsByDestinationDomainResponse.Fields().ByName("total_transferred")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryStatsByDestinationDomainResponse)(nil)
+
+type fastReflection_QueryStatsByDestinationDomainResponse QueryStatsByDestinationDomainResponse
+
+func (x *QueryStatsByDestinationDomainResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryStatsByDestinationDomainResponse)(x)
+}
+
+func (x *QueryStatsByDestinationDomainResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_noble_autocctp_v1_query_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryStatsByDestinationDomainResponse_messageType fastReflection_QueryStatsByDestinationDomainResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryStatsByDestinationDomainResponse_messageType{}
+
+type fastReflection_QueryStatsByDestinationDomainResponse_messageType struct{}
+
+func (x fastReflection_QueryStatsByDestinationDomainResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryStatsByDestinationDomainResponse)(nil)
+}
+func (x fastReflection_QueryStatsByDestinationDomainResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryStatsByDestinationDomainResponse)
+}
+func (x fastReflection_QueryStatsByDestinationDomainResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStatsByDestinationDomainResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStatsByDestinationDomainResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryStatsByDestinationDomainResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryStatsByDestinationDomainResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryStatsByDestinationDomainResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Accounts != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Accounts)
+		if !f(fd_QueryStatsByDestinationDomainResponse_accounts, value) {
+			return
+		}
+	}
+	if x.Transfers != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Transfers)
+		if !f(fd_QueryStatsByDestinationDomainResponse_transfers, value) {
+			return
+		}
+	}
+	if x.TotalTransferred != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TotalTransferred)
+		if !f(fd_QueryStatsByDestinationDomainResponse_total_transferred, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
+		return x.Accounts != uint64(0)
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
+		return x.Transfers != uint64(0)
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
+		return x.TotalTransferred != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
+		x.Accounts = uint64(0)
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
+		x.Transfers = uint64(0)
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
+		x.TotalTransferred = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
+		value := x.Accounts
+		return protoreflect.ValueOfUint64(value)
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
+		value := x.Transfers
+		return protoreflect.ValueOfUint64(value)
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
+		value := x.TotalTransferred
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
+		x.Accounts = value.Uint()
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
+		x.Transfers = value.Uint()
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
+		x.TotalTransferred = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
+		panic(fmt.Errorf("field accounts of message noble.autocctp.v1.QueryStatsByDestinationDomainResponse is not mutable"))
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
+		panic(fmt.Errorf("field transfers of message noble.autocctp.v1.QueryStatsByDestinationDomainResponse is not mutable"))
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
+		panic(fmt.Errorf("field total_transferred of message noble.autocctp.v1.QueryStatsByDestinationDomainResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.accounts":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.transfers":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "noble.autocctp.v1.QueryStatsByDestinationDomainResponse.total_transferred":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: noble.autocctp.v1.QueryStatsByDestinationDomainResponse"))
+		}
+		panic(fmt.Errorf("message noble.autocctp.v1.QueryStatsByDestinationDomainResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in noble.autocctp.v1.QueryStatsByDestinationDomainResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryStatsByDestinationDomainResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryStatsByDestinationDomainResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Accounts != 0 {
+			n += 1 + runtime.Sov(uint64(x.Accounts))
+		}
+		if x.Transfers != 0 {
+			n += 1 + runtime.Sov(uint64(x.Transfers))
+		}
+		if x.TotalTransferred != 0 {
+			n += 1 + runtime.Sov(uint64(x.TotalTransferred))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStatsByDestinationDomainResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.TotalTransferred != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TotalTransferred))
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.Transfers != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Transfers))
+			i--
+			dAtA[i] = 0x10
+		}
+		if x.Accounts != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Accounts))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStatsByDestinationDomainResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomainResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStatsByDestinationDomainResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+				}
+				x.Accounts = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Accounts |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Transfers", wireType)
+				}
+				x.Transfers = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Transfers |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalTransferred", wireType)
+				}
+				x.TotalTransferred = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TotalTransferred |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -3529,14 +3529,20 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// QueryAddress is the request message for querying an AutoCCTP address.
 type QueryAddress struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The receiving chain identifier according to Circle's CCTP.
 	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-	MintRecipient     string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
+	// The transfer recipient.
+	MintRecipient string `protobuf:"bytes,2,opt,name=mint_recipient,json=mintRecipient,proto3" json:"mint_recipient,omitempty"`
+	// A Noble address used to recover funds in case of errors during the transfer.
 	FallbackRecipient string `protobuf:"bytes,3,opt,name=fallback_recipient,json=fallbackRecipient,proto3" json:"fallback_recipient,omitempty"`
+	// If specified, represents the only address allowed to complete the transfer on the
+	// destination domain.
 	DestinationCaller string `protobuf:"bytes,4,opt,name=destination_caller,json=destinationCaller,proto3" json:"destination_caller,omitempty"`
 }
 
@@ -3588,13 +3594,17 @@ func (x *QueryAddress) GetDestinationCaller() string {
 	return ""
 }
 
+// QueryAddressResponse is the response message containing the AutoCCTP address
+// and existence status.
 type QueryAddressResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The AutoCCTP address associated with the inputs parameters.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Exists  bool   `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
+	// A flag indicating wether or not the address is associated with a registered account.
+	Exists bool `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
 }
 
 func (x *QueryAddressResponse) Reset() {
@@ -3631,6 +3641,7 @@ func (x *QueryAddressResponse) GetExists() bool {
 	return false
 }
 
+// QueryStats is the request message for querying module stats.
 type QueryStats struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -3657,12 +3668,14 @@ func (*QueryStats) Descriptor() ([]byte, []int) {
 	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{2}
 }
 
+// QueryStatsResponse is the response message containing stats for all domains.
 type QueryStatsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Stats map[uint32]*DomainStats `protobuf:"bytes,1,rep,name=stats,proto3" json:"stats,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// A map of domain stats keyed by destination domain.
+	DestinationDomainStats map[uint32]*DomainStats `protobuf:"bytes,1,rep,name=destination_domain_stats,json=destinationDomainStats,proto3" json:"destination_domain_stats,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *QueryStatsResponse) Reset() {
@@ -3685,113 +3698,31 @@ func (*QueryStatsResponse) Descriptor() ([]byte, []int) {
 	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *QueryStatsResponse) GetStats() map[uint32]*DomainStats {
+func (x *QueryStatsResponse) GetDestinationDomainStats() map[uint32]*DomainStats {
 	if x != nil {
-		return x.Stats
+		return x.DestinationDomainStats
 	}
 	return nil
 }
 
-type QueryStatsByDestinationDomain struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-}
-
-func (x *QueryStatsByDestinationDomain) Reset() {
-	*x = QueryStatsByDestinationDomain{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_noble_autocctp_v1_query_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryStatsByDestinationDomain) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryStatsByDestinationDomain) ProtoMessage() {}
-
-// Deprecated: Use QueryStatsByDestinationDomain.ProtoReflect.Descriptor instead.
-func (*QueryStatsByDestinationDomain) Descriptor() ([]byte, []int) {
-	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *QueryStatsByDestinationDomain) GetDestinationDomain() uint32 {
-	if x != nil {
-		return x.DestinationDomain
-	}
-	return 0
-}
-
-type QueryStatsByDestinationDomainResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Accounts         uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
-	Transfers        uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
-	TotalTransferred uint64 `protobuf:"varint,3,opt,name=total_transferred,json=totalTransferred,proto3" json:"total_transferred,omitempty"`
-}
-
-func (x *QueryStatsByDestinationDomainResponse) Reset() {
-	*x = QueryStatsByDestinationDomainResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_noble_autocctp_v1_query_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryStatsByDestinationDomainResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryStatsByDestinationDomainResponse) ProtoMessage() {}
-
-// Deprecated: Use QueryStatsByDestinationDomainResponse.ProtoReflect.Descriptor instead.
-func (*QueryStatsByDestinationDomainResponse) Descriptor() ([]byte, []int) {
-	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *QueryStatsByDestinationDomainResponse) GetAccounts() uint64 {
-	if x != nil {
-		return x.Accounts
-	}
-	return 0
-}
-
-func (x *QueryStatsByDestinationDomainResponse) GetTransfers() uint64 {
-	if x != nil {
-		return x.Transfers
-	}
-	return 0
-}
-
-func (x *QueryStatsByDestinationDomainResponse) GetTotalTransferred() uint64 {
-	if x != nil {
-		return x.TotalTransferred
-	}
-	return 0
-}
-
+// DomainStats contains the stats for a specific domain.
 type DomainStats struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Accounts         uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
-	Transfers        uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
+	// The number of AutoCCTP accounts created.
+	Accounts uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
+	// The number of transfers executed.
+	Transfers uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
+	// The total amount transferred.
 	TotalTransferred uint64 `protobuf:"varint,3,opt,name=total_transferred,json=totalTransferred,proto3" json:"total_transferred,omitempty"`
 }
 
 func (x *DomainStats) Reset() {
 	*x = DomainStats{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_noble_autocctp_v1_query_proto_msgTypes[6]
+		mi := &file_noble_autocctp_v1_query_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3805,7 +3736,7 @@ func (*DomainStats) ProtoMessage() {}
 
 // Deprecated: Use DomainStats.ProtoReflect.Descriptor instead.
 func (*DomainStats) Descriptor() ([]byte, []int) {
-	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{6}
+	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *DomainStats) GetAccounts() uint64 {
@@ -3823,6 +3754,99 @@ func (x *DomainStats) GetTransfers() uint64 {
 }
 
 func (x *DomainStats) GetTotalTransferred() uint64 {
+	if x != nil {
+		return x.TotalTransferred
+	}
+	return 0
+}
+
+// QueryStatsByDestinationDomain is the request message for querying stats by a specific destination domain.
+type QueryStatsByDestinationDomain struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The destination domain for which stats are requested.
+	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+}
+
+func (x *QueryStatsByDestinationDomain) Reset() {
+	*x = QueryStatsByDestinationDomain{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_noble_autocctp_v1_query_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryStatsByDestinationDomain) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryStatsByDestinationDomain) ProtoMessage() {}
+
+// Deprecated: Use QueryStatsByDestinationDomain.ProtoReflect.Descriptor instead.
+func (*QueryStatsByDestinationDomain) Descriptor() ([]byte, []int) {
+	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *QueryStatsByDestinationDomain) GetDestinationDomain() uint32 {
+	if x != nil {
+		return x.DestinationDomain
+	}
+	return 0
+}
+
+// QueryStatsByDestinationDomainResponse is the response message containing stats for a
+// specific destination domain.
+type QueryStatsByDestinationDomainResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The number of AutoCCTP accounts created.
+	Accounts uint64 `protobuf:"varint,1,opt,name=accounts,proto3" json:"accounts,omitempty"`
+	// The number of transfers executed.
+	Transfers uint64 `protobuf:"varint,2,opt,name=transfers,proto3" json:"transfers,omitempty"`
+	// The total amount transferred.
+	TotalTransferred uint64 `protobuf:"varint,3,opt,name=total_transferred,json=totalTransferred,proto3" json:"total_transferred,omitempty"`
+}
+
+func (x *QueryStatsByDestinationDomainResponse) Reset() {
+	*x = QueryStatsByDestinationDomainResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_noble_autocctp_v1_query_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryStatsByDestinationDomainResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryStatsByDestinationDomainResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryStatsByDestinationDomainResponse.ProtoReflect.Descriptor instead.
+func (*QueryStatsByDestinationDomainResponse) Descriptor() ([]byte, []int) {
+	return file_noble_autocctp_v1_query_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *QueryStatsByDestinationDomainResponse) GetAccounts() uint64 {
+	if x != nil {
+		return x.Accounts
+	}
+	return 0
+}
+
+func (x *QueryStatsByDestinationDomainResponse) GetTransfers() uint64 {
+	if x != nil {
+		return x.Transfers
+	}
+	return 0
+}
+
+func (x *QueryStatsByDestinationDomainResponse) GetTotalTransferred() uint64 {
 	if x != nil {
 		return x.TotalTransferred
 	}
@@ -3863,95 +3887,92 @@ var file_noble_autocctp_v1_query_proto_rawDesc = []byte{
 	0x69, 0x6e, 0x67, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1d, 0x0a, 0x06,
 	0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x42, 0x05, 0xa8, 0xe7,
 	0xb0, 0x2a, 0x01, 0x52, 0x06, 0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x22, 0x0c, 0x0a, 0x0a, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x22, 0xbc, 0x01, 0x0a, 0x12, 0x51, 0x75,
+	0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x22, 0x83, 0x02, 0x0a, 0x12, 0x51, 0x75,
 	0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x4c, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x30, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70,
-	0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x1a, 0x58,
-	0x0a, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03,
-	0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x34,
-	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e,
-	0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76,
-	0x31, 0x2e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x05, 0x76,
-	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x58, 0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x2d, 0x0a, 0x12, 0x64, 0x65, 0x73,
-	0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x11, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0,
-	0x1f, 0x00, 0x22, 0xa3, 0x01, 0x0a, 0x25, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74,
-	0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f,
-	0x6d, 0x61, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x08,
-	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x42, 0x05,
-	0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x08, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12,
-	0x23, 0x0a, 0x09, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x09, 0x74, 0x72, 0x61, 0x6e, 0x73,
-	0x66, 0x65, 0x72, 0x73, 0x12, 0x32, 0x0a, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x74, 0x72,
-	0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x72, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x42,
-	0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x54, 0x72, 0x61,
-	0x6e, 0x73, 0x66, 0x65, 0x72, 0x72, 0x65, 0x64, 0x22, 0x89, 0x01, 0x0a, 0x0b, 0x44, 0x6f, 0x6d,
-	0x61, 0x69, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x21, 0x0a, 0x08, 0x61, 0x63, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a,
-	0x01, 0x52, 0x08, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12, 0x23, 0x0a, 0x09, 0x74,
-	0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x42, 0x05,
-	0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x09, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73,
-	0x12, 0x32, 0x0a, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66,
-	0x65, 0x72, 0x72, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0,
-	0x2a, 0x01, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65,
-	0x72, 0x72, 0x65, 0x64, 0x32, 0xec, 0x04, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0xa7,
-	0x02, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1f, 0x2e, 0x6e, 0x6f, 0x62,
-	0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x1a, 0x27, 0x2e, 0x6e, 0x6f,
-	0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0xd1, 0x01, 0x88, 0xe7, 0xb0, 0x2a, 0x01, 0x82, 0xd3, 0xe4, 0x93,
-	0x02, 0xc5, 0x01, 0x5a, 0x6c, 0x12, 0x6a, 0x2f, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75,
-	0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x2f, 0x7b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x64,
-	0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x7d, 0x2f, 0x7b, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63,
-	0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x2f, 0x7b, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63,
-	0x6b, 0x5f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x2f, 0x7b, 0x64, 0x65,
-	0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x65, 0x72,
-	0x7d, 0x12, 0x55, 0x2f, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63,
-	0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x2f, 0x7b, 0x64,
-	0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69,
-	0x6e, 0x7d, 0x2f, 0x7b, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65,
-	0x6e, 0x74, 0x7d, 0x2f, 0x7b, 0x66, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x5f, 0x72, 0x65,
-	0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x12, 0x74, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x74,
-	0x73, 0x12, 0x1d, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63,
-	0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73,
-	0x1a, 0x25, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74,
-	0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x25, 0x88, 0xe7, 0xb0, 0x2a, 0x01, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x1a, 0x12, 0x18, 0x2f, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74,
-	0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x12, 0xc2,
-	0x01, 0x0a, 0x18, 0x53, 0x74, 0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x30, 0x2e, 0x6e, 0x6f,
-	0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74,
-	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x1a, 0x38, 0x2e,
-	0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76,
-	0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65,
-	0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a, 0x88, 0xe7, 0xb0, 0x2a, 0x01, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74,
-	0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x2f, 0x7b,
+	0x12, 0x81, 0x01, 0x0a, 0x18, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x41, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f,
+	0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61,
+	0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x73, 0x74, 0x69,
+	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x53, 0x74, 0x61, 0x74,
+	0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x16, 0x64, 0x65,
+	0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x1a, 0x69, 0x0a, 0x1b, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x45, 0x6e,
+	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d,
+	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x34, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74,
+	0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22,
+	0x89, 0x01, 0x0a, 0x0b, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12,
+	0x21, 0x0a, 0x08, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x08, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x73, 0x12, 0x23, 0x0a, 0x09, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x09, 0x74, 0x72,
+	0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73, 0x12, 0x32, 0x0a, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x5f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x72, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x72, 0x65, 0x64, 0x22, 0x58, 0x0a, 0x1d, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69,
+	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x2d, 0x0a, 0x12,
 	0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61,
-	0x69, 0x6e, 0x7d, 0x42, 0xb8, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x6e, 0x6f, 0x62, 0x6c,
-	0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2d, 0x61, 0x75, 0x74,
-	0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6e, 0x6f,
-	0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x3b,
-	0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4e, 0x41, 0x58,
-	0xaa, 0x02, 0x11, 0x4e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74,
-	0x70, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x11, 0x4e, 0x6f, 0x62, 0x6c, 0x65, 0x5c, 0x41, 0x75, 0x74,
-	0x6f, 0x63, 0x63, 0x74, 0x70, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1d, 0x4e, 0x6f, 0x62, 0x6c, 0x65,
-	0x5c, 0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42,
-	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x13, 0x4e, 0x6f, 0x62, 0x6c, 0x65,
-	0x3a, 0x3a, 0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x11, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x3a, 0x08, 0x88, 0xa0, 0x1f,
+	0x00, 0xe8, 0xa0, 0x1f, 0x00, 0x22, 0xa3, 0x01, 0x0a, 0x25, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x21, 0x0a, 0x08, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x08, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x73, 0x12, 0x23, 0x0a, 0x09, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x09, 0x74, 0x72,
+	0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x73, 0x12, 0x32, 0x0a, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x5f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x72, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x04, 0x42, 0x05, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x72, 0x65, 0x64, 0x32, 0xfc, 0x03, 0x0a, 0x05,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0xb7, 0x01, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x12, 0x1f, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63,
+	0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x1a, 0x27, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63,
+	0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x62, 0x88, 0xe7, 0xb0,
+	0x2a, 0x01, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x57, 0x12, 0x55, 0x2f, 0x6e, 0x6f, 0x62, 0x6c, 0x65,
+	0x2f, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x2f, 0x7b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x7d, 0x2f, 0x7b, 0x6d, 0x69, 0x6e, 0x74, 0x5f,
+	0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x2f, 0x7b, 0x66, 0x61, 0x6c, 0x6c,
+	0x62, 0x61, 0x63, 0x6b, 0x5f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x12,
+	0x74, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x1d, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65,
+	0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x1a, 0x25, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e,
+	0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x25,
+	0x88, 0xe7, 0xb0, 0x2a, 0x01, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1a, 0x12, 0x18, 0x2f, 0x6e, 0x6f,
+	0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f,
+	0x73, 0x74, 0x61, 0x74, 0x73, 0x12, 0xc2, 0x01, 0x0a, 0x18, 0x53, 0x74, 0x61, 0x74, 0x73, 0x42,
+	0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61,
+	0x69, 0x6e, 0x12, 0x30, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63,
+	0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74,
+	0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f,
+	0x6d, 0x61, 0x69, 0x6e, 0x1a, 0x38, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74,
+	0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74,
+	0x61, 0x74, 0x73, 0x42, 0x79, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a,
+	0x88, 0xe7, 0xb0, 0x2a, 0x01, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x6e, 0x6f,
+	0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x2f,
+	0x73, 0x74, 0x61, 0x74, 0x73, 0x2f, 0x7b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x7d, 0x42, 0xb8, 0x01, 0x0a, 0x15, 0x63,
+	0x6f, 0x6d, 0x2e, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2e, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74,
+	0x70, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f,
+	0x50, 0x01, 0x5a, 0x2d, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x64, 0x65, 0x76,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6e, 0x6f, 0x62, 0x6c, 0x65, 0x2f, 0x61, 0x75, 0x74, 0x6f, 0x63,
+	0x63, 0x74, 0x70, 0x2f, 0x76, 0x31, 0x3b, 0x61, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x76,
+	0x31, 0xa2, 0x02, 0x03, 0x4e, 0x41, 0x58, 0xaa, 0x02, 0x11, 0x4e, 0x6f, 0x62, 0x6c, 0x65, 0x2e,
+	0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x11, 0x4e, 0x6f,
+	0x62, 0x6c, 0x65, 0x5c, 0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70, 0x5c, 0x56, 0x31, 0xe2,
+	0x02, 0x1d, 0x4e, 0x6f, 0x62, 0x6c, 0x65, 0x5c, 0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74, 0x70,
+	0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea,
+	0x02, 0x13, 0x4e, 0x6f, 0x62, 0x6c, 0x65, 0x3a, 0x3a, 0x41, 0x75, 0x74, 0x6f, 0x63, 0x63, 0x74,
+	0x70, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3972,20 +3993,20 @@ var file_noble_autocctp_v1_query_proto_goTypes = []interface{}{
 	(*QueryAddressResponse)(nil),                  // 1: noble.autocctp.v1.QueryAddressResponse
 	(*QueryStats)(nil),                            // 2: noble.autocctp.v1.QueryStats
 	(*QueryStatsResponse)(nil),                    // 3: noble.autocctp.v1.QueryStatsResponse
-	(*QueryStatsByDestinationDomain)(nil),         // 4: noble.autocctp.v1.QueryStatsByDestinationDomain
-	(*QueryStatsByDestinationDomainResponse)(nil), // 5: noble.autocctp.v1.QueryStatsByDestinationDomainResponse
-	(*DomainStats)(nil),                           // 6: noble.autocctp.v1.DomainStats
-	nil,                                           // 7: noble.autocctp.v1.QueryStatsResponse.StatsEntry
+	(*DomainStats)(nil),                           // 4: noble.autocctp.v1.DomainStats
+	(*QueryStatsByDestinationDomain)(nil),         // 5: noble.autocctp.v1.QueryStatsByDestinationDomain
+	(*QueryStatsByDestinationDomainResponse)(nil), // 6: noble.autocctp.v1.QueryStatsByDestinationDomainResponse
+	nil, // 7: noble.autocctp.v1.QueryStatsResponse.DestinationDomainStatsEntry
 }
 var file_noble_autocctp_v1_query_proto_depIdxs = []int32{
-	7, // 0: noble.autocctp.v1.QueryStatsResponse.stats:type_name -> noble.autocctp.v1.QueryStatsResponse.StatsEntry
-	6, // 1: noble.autocctp.v1.QueryStatsResponse.StatsEntry.value:type_name -> noble.autocctp.v1.DomainStats
+	7, // 0: noble.autocctp.v1.QueryStatsResponse.destination_domain_stats:type_name -> noble.autocctp.v1.QueryStatsResponse.DestinationDomainStatsEntry
+	4, // 1: noble.autocctp.v1.QueryStatsResponse.DestinationDomainStatsEntry.value:type_name -> noble.autocctp.v1.DomainStats
 	0, // 2: noble.autocctp.v1.Query.Address:input_type -> noble.autocctp.v1.QueryAddress
 	2, // 3: noble.autocctp.v1.Query.Stats:input_type -> noble.autocctp.v1.QueryStats
-	4, // 4: noble.autocctp.v1.Query.StatsByDestinationDomain:input_type -> noble.autocctp.v1.QueryStatsByDestinationDomain
+	5, // 4: noble.autocctp.v1.Query.StatsByDestinationDomain:input_type -> noble.autocctp.v1.QueryStatsByDestinationDomain
 	1, // 5: noble.autocctp.v1.Query.Address:output_type -> noble.autocctp.v1.QueryAddressResponse
 	3, // 6: noble.autocctp.v1.Query.Stats:output_type -> noble.autocctp.v1.QueryStatsResponse
-	5, // 7: noble.autocctp.v1.Query.StatsByDestinationDomain:output_type -> noble.autocctp.v1.QueryStatsByDestinationDomainResponse
+	6, // 7: noble.autocctp.v1.Query.StatsByDestinationDomain:output_type -> noble.autocctp.v1.QueryStatsByDestinationDomainResponse
 	5, // [5:8] is the sub-list for method output_type
 	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -4048,7 +4069,7 @@ func file_noble_autocctp_v1_query_proto_init() {
 			}
 		}
 		file_noble_autocctp_v1_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryStatsByDestinationDomain); i {
+			switch v := v.(*DomainStats); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4060,7 +4081,7 @@ func file_noble_autocctp_v1_query_proto_init() {
 			}
 		}
 		file_noble_autocctp_v1_query_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryStatsByDestinationDomainResponse); i {
+			switch v := v.(*QueryStatsByDestinationDomain); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4072,7 +4093,7 @@ func file_noble_autocctp_v1_query_proto_init() {
 			}
 		}
 		file_noble_autocctp_v1_query_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DomainStats); i {
+			switch v := v.(*QueryStatsByDestinationDomainResponse); i {
 			case 0:
 				return &v.state
 			case 1:

@@ -149,126 +149,6 @@ func local_request_Query_Address_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func request_Query_Address_1(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryAddress
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["destination_domain"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_domain")
-	}
-
-	protoReq.DestinationDomain, err = runtime.Uint32(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_domain", err)
-	}
-
-	val, ok = pathParams["mint_recipient"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "mint_recipient")
-	}
-
-	protoReq.MintRecipient, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "mint_recipient", err)
-	}
-
-	val, ok = pathParams["fallback_recipient"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "fallback_recipient")
-	}
-
-	protoReq.FallbackRecipient, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fallback_recipient", err)
-	}
-
-	val, ok = pathParams["destination_caller"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_caller")
-	}
-
-	protoReq.DestinationCaller, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_caller", err)
-	}
-
-	msg, err := client.Address(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_Query_Address_1(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryAddress
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["destination_domain"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_domain")
-	}
-
-	protoReq.DestinationDomain, err = runtime.Uint32(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_domain", err)
-	}
-
-	val, ok = pathParams["mint_recipient"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "mint_recipient")
-	}
-
-	protoReq.MintRecipient, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "mint_recipient", err)
-	}
-
-	val, ok = pathParams["fallback_recipient"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "fallback_recipient")
-	}
-
-	protoReq.FallbackRecipient, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fallback_recipient", err)
-	}
-
-	val, ok = pathParams["destination_caller"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_caller")
-	}
-
-	protoReq.DestinationCaller, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_caller", err)
-	}
-
-	msg, err := server.Address(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
 func request_Query_Stats_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryStats
 	var metadata runtime.ServerMetadata
@@ -367,29 +247,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_Address_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("GET", pattern_Query_Address_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_Query_Address_1(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_Query_Address_1(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -500,26 +357,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 
 	})
 
-	mux.Handle("GET", pattern_Query_Address_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_Query_Address_1(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_Query_Address_1(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("GET", pattern_Query_Stats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -566,8 +403,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Address_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"noble", "autocctp", "v1", "address", "destination_domain", "mint_recipient", "fallback_recipient"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Address_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"noble", "autocctp", "v1", "address", "destination_domain", "mint_recipient", "fallback_recipient", "destination_caller"}, "", runtime.AssumeColonVerbOpt(false)))
-
 	pattern_Query_Stats_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"noble", "autocctp", "v1", "stats"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_StatsByDestinationDomain_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"noble", "autocctp", "v1", "stats", "destination_domain"}, "", runtime.AssumeColonVerbOpt(false)))
@@ -575,8 +410,6 @@ var (
 
 var (
 	forward_Query_Address_0 = runtime.ForwardResponseMessage
-
-	forward_Query_Address_1 = runtime.ForwardResponseMessage
 
 	forward_Query_Stats_0 = runtime.ForwardResponseMessage
 

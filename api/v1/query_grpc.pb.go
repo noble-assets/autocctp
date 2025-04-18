@@ -28,8 +28,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
+	// Queries Address.
 	Address(ctx context.Context, in *QueryAddress, opts ...grpc.CallOption) (*QueryAddressResponse, error)
+	// Queries Stats.
 	Stats(ctx context.Context, in *QueryStats, opts ...grpc.CallOption) (*QueryStatsResponse, error)
+	// Queries StatsByDestinationDomain.
 	StatsByDestinationDomain(ctx context.Context, in *QueryStatsByDestinationDomain, opts ...grpc.CallOption) (*QueryStatsByDestinationDomainResponse, error)
 }
 
@@ -75,8 +78,11 @@ func (c *queryClient) StatsByDestinationDomain(ctx context.Context, in *QuerySta
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
 type QueryServer interface {
+	// Queries Address.
 	Address(context.Context, *QueryAddress) (*QueryAddressResponse, error)
+	// Queries Stats.
 	Stats(context.Context, *QueryStats) (*QueryStatsResponse, error)
+	// Queries StatsByDestinationDomain.
 	StatsByDestinationDomain(context.Context, *QueryStatsByDestinationDomain) (*QueryStatsByDestinationDomainResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
