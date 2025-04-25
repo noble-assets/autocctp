@@ -47,7 +47,7 @@ message QueryAddress {
 // QueryAddressResponse is the response message containing the AutoCCTP address
 // and existence status.
 message QueryAddressResponse {
-  // The AutoCCTP address associated with the inputs parameters.
+  // The AutoCCTP address associated with the input parameters.
   string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // A flag indicating whether or not the address is associated with a registered account.
   bool exists = 2 [(amino.dont_omitempty) = true];

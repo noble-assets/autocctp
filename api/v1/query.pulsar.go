@@ -3601,9 +3601,9 @@ type QueryAddressResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The AutoCCTP address associated with the inputs parameters.
+	// The AutoCCTP address associated with the input parameters.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	// A flag indicating wether or not the address is associated with a registered account.
+	// A flag indicating whether or not the address is associated with a registered account.
 	Exists bool `protobuf:"varint,2,opt,name=exists,proto3" json:"exists,omitempty"`
 }
 
