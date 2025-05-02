@@ -137,6 +137,18 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 				return err
 			}
 
+			// Since the signerless transaction does not require the AutoCCTP account to be in
+			// the keychain, all time a signerless tx is sent, the sequence is always zero. By
+			// querying the account it is possible to use the correct sequence.
+			sequence := uint64(0)
+			if err := clientCtx.AccountRetriever.EnsureExists(clientCtx, address); err == nil {
+				acc, err := clientCtx.AccountRetriever.GetAccount(clientCtx, address)
+				if err != nil {
+					return fmt.Errorf("error executing the query to get address sequence: %w", err)
+				}
+				sequence = acc.GetSequence()
+			}
+
 			// Create an empty signature with the custom PubKey to allow non existent
 			// account to send `MsgRegisterAccountSignerlessly` messages.
 			err = builder.SetSignatures(signingtypes.SignatureV2{
@@ -145,7 +157,7 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 					SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
 					Signature: []byte(""),
 				},
-				Sequence: 0,
+				Sequence: sequence,
 			})
 			if err != nil {
 				return err

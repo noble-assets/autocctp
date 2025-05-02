@@ -169,7 +169,7 @@ func (k *Keeper) SendRestrictionFn(ctx context.Context, _, toAddr sdk.AccAddress
 	// intentionally not checking if the coins sent plus the current balance are higher
 	// than the minimum amount to transfer to always force the minimum amount.
 	if mintingDenomAmount.LT(types.GetMinimumTransferAmount()) || mintingDenomAmount.GT(maxTransferAmount) {
-		return toAddr, fmt.Errorf(
+		return toAddr, types.ErrInvalidAmount.Wrapf(
 			"transfer amount to autocctp account should be %s <= x <= %s",
 			types.GetMinimumTransferAmount().String(),
 			maxTransferAmount.String(),

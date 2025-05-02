@@ -210,8 +210,12 @@ To register a new AutoCCTP account for the same information of the previous
 example:
 
 ```sh
+./simapp/build/simd tx bank send validator noble1du3zaju8jjne4qa8m2n0tgg707khcvrm5h2stg 100000uusdc --from validator --home .autocctp --chain-id autocctp-1 --keyring-backend test
 ./simapp/build/simd tx autocctp register-account 0 0xaB537dC791355d986A4f7a9a53f3D8810fd870D1 noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za --from validator --home .autocctp --chain-id autocctp-1 --keyring-backend test
 ```
+
+Doing the registration without first sending at least `10000uusdc` to the future
+AutoCCTP account will fail in the ante handler.
 
 To register the account signerlessly:
 
