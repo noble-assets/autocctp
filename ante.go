@@ -93,7 +93,7 @@ func (d SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 		mintToken := d.ftf.GetMintingDenom(ctx)
 		balance := d.bank.GetBalance(ctx, address, mintToken.Denom)
 		if balance.Amount.LT(types.GetMinimumTransferAmount()) {
-			return ctx, types.ErrInvalidAmount.Wrapf("future autocctp account must have at least %s%s in the balance", types.GetMinimumTransferAmount().String(), mintToken.Denom)
+			return ctx, types.ErrInvalidAmount.Wrapf("must have at least %s%s", types.GetMinimumTransferAmount().String(), mintToken.Denom)
 		}
 
 		return next(ctx, tx, simulate)
