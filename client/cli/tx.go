@@ -138,8 +138,8 @@ func TxRegisterAccountSignerlessly() *cobra.Command {
 			}
 
 			// Since the signerless transaction does not require the AutoCCTP account to be in
-			// the keychain, all time a signerless tx is sent, the sequence is always zero. By
-			// querying the account it is possible to use the correct sequence.
+			// the keychain, by default, the transaction sequence is always zero. By
+			// querying the account, it is possible to use the correct sequence.
 			sequence := uint64(0)
 			if err := clientCtx.AccountRetriever.EnsureExists(clientCtx, address); err == nil {
 				acc, err := clientCtx.AccountRetriever.GetAccount(clientCtx, address)
