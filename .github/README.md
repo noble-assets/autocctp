@@ -213,11 +213,11 @@ example:
 ./simapp/build/simd tx autocctp register-account 0 0xaB537dC791355d986A4f7a9a53f3D8810fd870D1 noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za --from validator --home .autocctp --chain-id autocctp-1 --keyring-backend test
 ```
 
-To register the account signerlessly:
+To register the account signerlessly, the future AutoCCTP account has to be
+registered in the store and should have at least the minimum amount of $USDC
+required from the protocol.
 
 ```sh
+./simapp/build/simd tx bank send validator noble1du3zaju8jjne4qa8m2n0tgg707khcvrm5h2stg 100000uusdc --from validator --home .autocctp --chain-id autocctp-1 --keyring-backend test
 ./simapp/build/simd tx autocctp register-account-signerlessly 0 0xaB537dC791355d986A4f7a9a53f3D8810fd870D1 noble1h8tqx833l3t2s45mwxjz29r85dcevy93wk63za --from validator --home .autocctp --chain-id autocctp-1 --keyring-backend test
 ```
-
-For this transaction to work, the future AutoCCTP account has to be registered
-in the store and should have funds to pay for the tx fees.

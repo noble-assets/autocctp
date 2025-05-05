@@ -29,5 +29,6 @@ var (
 	ErrInvalidMintRecipient     = errors.Register(ModuleName, 3, "invalid mint recipient")
 	ErrInvalidFallbackRecipient = errors.Register(ModuleName, 4, "invalid fallback recipient")
 	ErrInvalidDestinationCaller = errors.Register(ModuleName, 5, "invalid destination caller")
-	ErrInvalidTransferAmount    = errors.Register(ModuleName, 6, "invalid autocctp transfer amount")
+	ErrInvalidTransferAmount    = errors.Register(ModuleName, 6, "invalid transfer amount")
+	ErrInvalidAccountBalance    = errors.Register(ModuleName, 7, "invalid account balance")
 )

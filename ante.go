@@ -84,12 +84,16 @@ func (d SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 
 		address := types.GenerateAddress(msg.GetAccountProperties())
 
+		if msg.Signer != address.String() {
+			return d.underlying.AnteHandle(ctx, tx, simulate, next)
+		}
+
 		// Check if the balance of the wannabe AutoCCTP account is not zero to prevent spam
 		// attacks of AutoCCTP accounts.
 		mintToken := d.ftf.GetMintingDenom(ctx)
 		balance := d.bank.GetBalance(ctx, address, mintToken.Denom)
-		if balance.Amount.LT(types.GetMinimumTransferAmount()) || msg.Signer != address.String() {
-			return d.underlying.AnteHandle(ctx, tx, simulate, next)
+		if balance.Amount.LT(types.GetMinimumTransferAmount()) {
+			return ctx, types.ErrInvalidAccountBalance.Wrapf("must have at least %s%s", types.GetMinimumTransferAmount().String(), mintToken.Denom)
 		}
 
 		return next(ctx, tx, simulate)
